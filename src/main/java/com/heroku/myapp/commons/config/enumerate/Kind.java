@@ -37,7 +37,7 @@ public enum Kind {
             }
         }
         String resourcePath = "/message/" + this.name() + ".json";
-        InputStream resourceAsStream = ClassLoader.class
+        InputStream resourceAsStream = com.heroku.myapp.App.class
                 .getResourceAsStream(resourcePath);
         try (BufferedReader buffer
                 = new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8"))) {
