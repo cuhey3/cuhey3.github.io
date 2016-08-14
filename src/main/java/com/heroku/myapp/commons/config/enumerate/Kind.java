@@ -42,7 +42,7 @@ public enum Kind {
         try (BufferedReader buffer
                 = new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8"))) {
             preMessage = buffer.lines().collect(Collectors.joining("\n"));
-            System.out.println("loaded... " + resourcePath);
+            System.out.println("loaded " + resourcePath);
         } catch (Exception ex) {
             System.out.println("premessage initialization failed..."
                     + "\nSystem is shutting down.");
