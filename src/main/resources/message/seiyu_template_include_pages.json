@@ -1,0 +1,6 @@
+{
+    "kind": "seiyu_template_include_pages",
+    "affect": [
+      "seiyu_category_members_include_template"
+    ]
+}
