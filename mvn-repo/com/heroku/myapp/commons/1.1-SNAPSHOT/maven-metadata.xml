@@ -2,23 +2,23 @@
 <metadata modelVersion="1.1.0">
   <groupId>com.heroku.myapp</groupId>
   <artifactId>commons</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20160814.130052</timestamp>
+      <timestamp>20160814.130849</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
-    <lastUpdated>20160814130052</lastUpdated>
+    <lastUpdated>20160814130849</lastUpdated>
     <snapshotVersions>
       <snapshotVersion>
         <extension>jar</extension>
-        <value>1.0-20160814.130052-1</value>
-        <updated>20160814130052</updated>
+        <value>1.1-20160814.130849-1</value>
+        <updated>20160814130849</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>1.0-20160814.130052-1</value>
-        <updated>20160814130052</updated>
+        <value>1.1-20160814.130849-1</value>
+        <updated>20160814130849</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
