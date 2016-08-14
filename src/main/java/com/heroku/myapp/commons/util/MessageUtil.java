@@ -96,4 +96,8 @@ public class MessageUtil {
     public boolean getBool(String key) {
         return get(key, Boolean.class).orElse(false);
     }
+
+    public boolean isSkipDiff() {
+        return getBool("skip_diff");
+    }
 }

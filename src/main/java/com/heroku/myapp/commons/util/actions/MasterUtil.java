@@ -2,7 +2,6 @@ package com.heroku.myapp.commons.util.actions;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
-import com.heroku.myapp.commons.config.enumerate.SenseType;
 import com.heroku.myapp.commons.util.consumers.IronmqUtil;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
 import java.util.ArrayList;
@@ -42,30 +41,21 @@ public class MasterUtil extends ActionUtil {
         return this;
     }
 
-    public boolean comparedIsEmpty() {
-        Optional<String> getOptional = message().get("compared_master_id");
-        return getOptional.isPresent()
-                && SenseType.EMPTY.expression().equals(getOptional.get());
-    }
-
-    public boolean isSkipDiff() {
-        return message().getBool("skip_diff");
-    }
-
-    public boolean comparedIsValid(RouteBuilder rb) {
-        try {
-            Optional<String> getOptional = message().get("compared_master_id");
-            return getOptional.isPresent()
-                    && DocumentUtil.objectIdHexString(optionalFind().get())
-                    .equals(getOptional.get());
-        } catch (Exception ex) {
-            IronmqUtil.sendError(rb, "comparedIsValid", ex);
-            return false;
+    public boolean toCompleteLogic(RouteBuilder rb) {
+        if (message().isSkipDiff()) {
+            return true;
+        } else {
+            Optional<Document> optionalFind = optionalFind();
+            if (optionalFind.isPresent()) {
+                Optional<String> comparedId
+                        = message().get("compared_master_id");
+                return comparedId.isPresent() && DocumentUtil
+                        .objectIdHexString(optionalFind.get())
+                        .equals(comparedId.get());
+            } else {
+                return true;
+            }
         }
-    }
-
-    public boolean isSkipComparedValidation() {
-        return isSkipDiff() || comparedIsEmpty();
     }
 
     public boolean snapshotSaveToMaster(RouteBuilder rb) {
