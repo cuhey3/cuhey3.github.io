@@ -40,21 +40,8 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
         return DiffUtil.basicDiff(master, snapshot, commonDiffKey);
     }
 
-    public void doWhenMasterIsEmpty(Exchange exchange) {
-        new DiffUtil(exchange)
-                .updateMessageComparedId(SenseType.EMPTY.expression());
-    }
-
-    public void doWhenSkipDiff(Exchange exchange) {
-        // none
-    }
-
     public Predicate comparePredicate() {
         return (Exchange exchange) -> {
-            if (new MessageUtil(exchange).getBool("skip_diff")) {
-                doWhenSkipDiff(exchange);
-                return true;
-            }
             Optional<Document> optSnapshot, optMaster, optDiff;
             try {
                 optSnapshot = new SnapshotUtil(exchange).loadDocument();
@@ -64,7 +51,6 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
                 MasterUtil masterUtil = new MasterUtil(exchange);
                 optMaster = masterUtil.optionalFind();
                 if (!optMaster.isPresent()) {
-                    doWhenMasterIsEmpty(exchange);
                     return true;
                 }
                 Document master = optMaster.get();
