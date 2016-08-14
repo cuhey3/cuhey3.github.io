@@ -36,7 +36,7 @@ public enum Kind {
                 this.useDevelop = true;
             }
         }
-        String resourcePath = "/message/" + this.name() + ".json";
+        String resourcePath = "../../../../../../message/" + this.name() + ".json";
         InputStream resourceAsStream = this.getClass()
                 .getResourceAsStream(resourcePath);
         try (BufferedReader buffer
