@@ -1,8 +1,6 @@
 package com.heroku.myapp.commons.consumers;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
-import com.heroku.myapp.commons.config.enumerate.SenseType;
-import com.heroku.myapp.commons.util.MessageUtil;
 import com.heroku.myapp.commons.util.actions.DiffUtil;
 import com.heroku.myapp.commons.util.actions.MasterUtil;
 import com.heroku.myapp.commons.util.actions.SnapshotUtil;
@@ -18,7 +16,7 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
 
     public DiffQueueConsumer() {
         route().diff();
-        kind(Kind.findKindByClassName(this));
+        setKindByClassName();
     }
 
     public DiffQueueConsumer(Kind kind) {
@@ -49,7 +47,7 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
                     return false;
                 }
                 MasterUtil masterUtil = new MasterUtil(exchange);
-                optMaster = masterUtil.optionalFind();
+                optMaster = masterUtil.optionalLatest();
                 if (!optMaster.isPresent()) {
                     return true;
                 }

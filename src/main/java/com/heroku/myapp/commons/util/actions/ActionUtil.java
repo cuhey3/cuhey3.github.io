@@ -8,17 +8,15 @@ import org.bson.Document;
 
 public abstract class ActionUtil extends MongoUtil {
 
-    protected Exchange exchange;
     private final MessageUtil messageUtil;
 
     public ActionUtil(Exchange exchange) {
         super(exchange);
-        this.exchange = exchange;
         this.messageUtil = new MessageUtil(exchange);
     }
 
     public Optional<Document> loadDocument() {
-        return findByMessage(message().getMessage());
+        return optionalFindByMessage(message().getMessage());
     }
 
     public void writeDocument(Document document) {

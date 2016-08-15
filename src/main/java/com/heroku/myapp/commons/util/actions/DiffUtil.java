@@ -3,7 +3,6 @@ package com.heroku.myapp.commons.util.actions;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.util.consumers.IronmqUtil;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
-import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +11,7 @@ import java.util.stream.Collectors;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.bson.Document;
+import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 
 public class DiffUtil extends ActionUtil {
 
@@ -56,9 +56,9 @@ public class DiffUtil extends ActionUtil {
     public boolean enableDiff(RouteBuilder rb) {
         try {
             if (diffIdIsExists()) {
-                Optional<Document> findById = loadDocument();
-                if (findById.isPresent()) {
-                    Document diff = findById.get();
+                Optional<Document> optionalLoadedDocument = loadDocument();
+                if (optionalLoadedDocument.isPresent()) {
+                    Document diff = optionalLoadedDocument.get();
                     if (!diff.get("enable", Boolean.class)) {
                         Document query = new Document("_id", diff.get("_id"));
                         Document updateDocument = new Document(
@@ -77,18 +77,13 @@ public class DiffUtil extends ActionUtil {
         }
     }
 
-    public DiffUtil updateMessageComparedId(String id) {
-        message().updateMessage("compared_master_id", id);
-        return this;
-    }
-
-    public DiffUtil updateMessageComparedId(Document document) {
-        message().writeObjectId("compared_master_id", document);
+    public DiffUtil updateMessageComparedId(Document masterDocument) {
+        message().writeObjectId("compared_master_id", masterDocument);
         return this;
     }
 
     public boolean diffIdIsExists() {
-        return message().get("diff_id").isPresent();
+        return message().optionalGet("diff_id").isPresent();
     }
 
     @Override

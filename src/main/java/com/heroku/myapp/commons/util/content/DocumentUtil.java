@@ -20,9 +20,9 @@ public final class DocumentUtil {
     public static Document restorePrefix(Document document) {
         Map<String, String> prefixs = document.get("prefix", Map.class);
         if (prefixs != null) {
-            prefixs.entrySet().stream().forEach((entry) -> {
-                restorePrefixSpecific(document, entry.getKey(), entry.getValue());
-            });
+            prefixs.entrySet().stream().forEach((entry)
+                    -> restorePrefixSpecific(
+                            document, entry.getKey(), entry.getValue()));
         }
         return document;
     }
@@ -30,9 +30,7 @@ public final class DocumentUtil {
     private static void restorePrefixSpecific(Document document, String key, String prefix) {
         DocumentUtil util = new DocumentUtil().setDocument(document);
         List<Map<String, Object>> list = util.getData();
-        list.stream().forEach((map) -> {
-            map.put(key, prefix + map.get(key));
-        });
+        list.stream().forEach((map) -> map.put(key, prefix + map.get(key)));
         util.setData(list);
     }
 

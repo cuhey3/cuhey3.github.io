@@ -6,6 +6,7 @@ import com.heroku.myapp.commons.util.MessageUtil;
 import io.iron.ironmq.Client;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
 import org.apache.camel.Exchange;
 import org.apache.camel.Expression;
 import org.apache.camel.Processor;
@@ -31,12 +32,12 @@ public class IronmqUtil {
         try {
             Client client = rb.getContext().getRegistry()
                     .lookupByNameAndType(IRONMQ_CLIENT_BEAN_NAME, Client.class);
-            client.queue("exception_in").push(
-                    new Date().toString()
-                    + "\nClass: " + rb.getClass().getName()
-                    + "\nmethod: " + method
-                    + "\nException class: " + ex.getClass().getName()
-                    + "\nmessage: " + ex.getMessage());
+            client.queue("exception_in")
+                    .push(new Date().toString()
+                            + "\nClass: " + rb.getClass().getName()
+                            + "\nmethod: " + method
+                            + "\nException class: " + ex.getClass().getName()
+                            + "\nmessage: " + ex.getMessage());
         } catch (IOException ex1) {
         }
     }
@@ -45,23 +46,26 @@ public class IronmqUtil {
         try {
             Client client = rb.getContext().getRegistry()
                     .lookupByNameAndType(IRONMQ_CLIENT_BEAN_NAME, Client.class);
-            client.queue("log_in").push(
-                    new Date().toString()
-                    + "\nClass: " + rb.getClass().getName()
-                    + "\nmethod: " + method
-                    + "\nmessage: " + message);
+            client.queue("log_in")
+                    .push(new Date().toString()
+                            + "\nClass: " + rb.getClass().getName()
+                            + "\nmethod: " + method
+                            + "\nmessage: " + message);
         } catch (IOException ex1) {
         }
     }
 
     public static Processor requestSnapshotProcess() {
         return (Exchange exchange) -> {
-            Kind k = Kind.valueOf(MessageUtil.getKind(exchange).get());
-            new IronmqUtil().snapshot().postMessage(exchange, k);
+            Optional<Kind> optionalKind = MessageUtil.optionalGetKind(exchange);
+            if (optionalKind.isPresent()) {
+                new IronmqUtil().snapshot()
+                        .postMessage(exchange, optionalKind.get());
+            }
         };
     }
 
-    private String type, kind;
+    private String type, kindString;
     private int timeout;
 
     public IronmqUtil() {
@@ -74,12 +78,12 @@ public class IronmqUtil {
     }
 
     public IronmqUtil kind(Kind kind) {
-        this.kind = kind.expression();
+        this.kindString = kind.expression();
         return this;
     }
 
-    public IronmqUtil kind(String kind) {
-        this.kind = kind;
+    public IronmqUtil kindString(String kindString) {
+        this.kindString = kindString;
         return this;
     }
 
@@ -100,13 +104,13 @@ public class IronmqUtil {
 
     private IronmqUtil completion() {
         this.type = QueueType.COMPLETION.expression();
-        this.kind = "all";
+        this.kindString = "all";
         return this;
     }
 
     public IronmqUtil changed() {
         this.type = QueueType.CHANGED.expression();
-        this.kind = "all";
+        this.kindString = "all";
         return this;
     }
 
@@ -127,12 +131,12 @@ public class IronmqUtil {
                 + "?client=%s"
                 + "&timeout=%s"
                 + "&maxMessagesPerPoll=100",
-                type + "_" + kind, IRONMQ_CLIENT_BEAN_NAME, timeout);
+                type + "_" + kindString, IRONMQ_CLIENT_BEAN_NAME, timeout);
     }
 
     public String postUri() {
         return String.format("ironmq:%s?client=%s",
-                type + "_" + kind, IRONMQ_CLIENT_BEAN_NAME);
+                type + "_" + kindString, IRONMQ_CLIENT_BEAN_NAME);
     }
 
     public String completionPostUri() {

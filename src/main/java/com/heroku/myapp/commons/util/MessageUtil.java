@@ -19,8 +19,13 @@ public class MessageUtil {
                 .orElseThrow(() -> new MessageNotSetException());
     }
 
-    public static Optional<String> getKind(Exchange ex) {
-        return get(ex, "kind", String.class);
+    public static Optional<Kind> optionalGetKind(Exchange ex) {
+        Optional<String> optionalKindString = get(ex, "kind", String.class);
+        if (optionalKindString.isPresent()) {
+            return ofNullable(Kind.valueOf(optionalKindString.get()));
+        } else {
+            return Optional.empty();
+        }
     }
 
     private static <T> Optional<T> get(Exchange ex, String key, Class<T> clazz) {
@@ -42,16 +47,8 @@ public class MessageUtil {
     public static Predicate messageKindIs(Kind kind) {
         return (Exchange ex)
                 -> {
-            Optional<String> k = getKind(ex);
-            return k.isPresent() && k.get().equals(kind.expression());
-        };
-    }
-
-    public static Predicate messageKindContains(String str) {
-        return (Exchange ex)
-                -> {
-            Optional<String> k = getKind(ex);
-            return k.isPresent() && k.get().contains(str);
+            Optional<Kind> k = optionalGetKind(ex);
+            return k.isPresent() && k.get() == kind;
         };
     }
 
@@ -76,17 +73,17 @@ public class MessageUtil {
         updateMessage(key, DocumentUtil.objectIdHexString(document));
     }
 
-    public <T> Optional<T> get(String key, Class<T> clazz) {
+    private <T> Optional<T> optionalGet(String key, Class<T> clazz) {
         return ofNullable(clazz.cast(getMessage().get(key)));
     }
 
     public <T> T getOrElseThrow(String key, Class<T> clazz) {
-        return get(key, clazz)
+        return this.optionalGet(key, clazz)
                 .orElseThrow(() -> new MessageElementNotFoundException());
     }
 
-    public Optional<String> get(String key) {
-        return get(key, String.class);
+    public Optional<String> optionalGet(String key) {
+        return this.optionalGet(key, String.class);
     }
 
     public String getOrElseThrow(String key) {
@@ -94,7 +91,7 @@ public class MessageUtil {
     }
 
     public boolean getBool(String key) {
-        return get(key, Boolean.class).orElse(false);
+        return this.optionalGet(key, Boolean.class).orElse(false);
     }
 
     public boolean isSkipDiff() {

@@ -1,6 +1,5 @@
 package com.heroku.myapp.commons.consumers;
 
-import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.util.MessageUtil;
 import com.heroku.myapp.commons.util.actions.SnapshotUtil;
 import com.heroku.myapp.commons.util.consumers.IronmqUtil;
@@ -13,7 +12,7 @@ public abstract class SnapshotQueueConsumer extends QueueConsumer {
 
     public SnapshotQueueConsumer() {
         route().snapshot();
-        kind(Kind.findKindByClassName(this));
+        setKindByClassName();
     }
 
     @Override

@@ -10,29 +10,28 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-public enum Settings {
+public enum Environments {
     ENV, IRON;
     private final String path;
     private Map<String, String> map;
 
-    private Settings() {
+    private Environments() {
         this.path = String.format(
                 "/config/%s.json", this.name().toLowerCase(Locale.US));
     }
 
     public String get(String key) {
-        return this.get(key, key);
+        return this.getOr(key, key);
     }
 
-    public String get(String key1, String key2) {
+    public String getOr(String key1, String key2) {
         return Optional.ofNullable(System.getenv(key1))
                 .orElseGet(() -> Optional.ofNullable(map().get(key2))
                         .orElseThrow(() -> new SettingNotFoundException()));
     }
 
     private Map<String, String> map() {
-        return Optional.ofNullable(map)
-                .orElseGet(() -> loadResource());
+        return Optional.ofNullable(map).orElseGet(() -> loadResource());
     }
 
     private Map<String, String> loadResource() {

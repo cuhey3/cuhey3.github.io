@@ -45,13 +45,13 @@ public class MasterUtil extends ActionUtil {
         if (message().isSkipDiff()) {
             return true;
         } else {
-            Optional<Document> optionalFind = optionalFind();
-            if (optionalFind.isPresent()) {
-                Optional<String> comparedId
-                        = message().get("compared_master_id");
-                return comparedId.isPresent() && DocumentUtil
-                        .objectIdHexString(optionalFind.get())
-                        .equals(comparedId.get());
+            Optional<Document> optionalLatest = optionalLatest();
+            if (optionalLatest.isPresent()) {
+                Optional<String> optionalComparedMasterId
+                        = message().optionalGet("compared_master_id");
+                return optionalComparedMasterId.isPresent()
+                        && DocumentUtil.objectIdHexString(optionalLatest.get())
+                        .equals(optionalComparedMasterId.get());
             } else {
                 return true;
             }
@@ -59,11 +59,11 @@ public class MasterUtil extends ActionUtil {
     }
 
     public boolean snapshotSaveToMaster(RouteBuilder rb) {
-        try {
-            this.writeDocument(snapshotUtil.loadDocument().get());
+        Optional<Document> optionalSnapshot = snapshotUtil.loadDocument();
+        if (optionalSnapshot.isPresent()) {
+            this.writeDocument(optionalSnapshot.get());
             return true;
-        } catch (Exception ex) {
-            IronmqUtil.sendError(rb, "snapshotSaveToMaster", ex);
+        } else {
             return false;
         }
     }
@@ -81,12 +81,12 @@ public class MasterUtil extends ActionUtil {
     }
 
     public boolean checkNotFilled(Document document) {
-        Optional<String> getOptional = message().get("fill");
-        if (getOptional.isPresent()) {
-            String fillField = getOptional.get();
-            return DocumentUtil.getData(Optional.ofNullable(document)
-                    .orElse(findOrElseThrow())).stream()
-                    .anyMatch((map) -> !map.containsKey(fillField));
+        Optional<String> optionalGet = message().optionalGet("fill");
+        if (optionalGet.isPresent()) {
+            String fillField = optionalGet.get();
+            return DocumentUtil.getData(
+                    Optional.ofNullable(document).orElse(findOrElseThrow()))
+                    .stream().anyMatch((map) -> !map.containsKey(fillField));
         } else {
             return false;
         }

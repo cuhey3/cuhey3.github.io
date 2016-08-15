@@ -58,10 +58,6 @@
             <id>internal.repo</id>
             <name>Local Github Pages</name>
             <url>file://${github.repo.directory}</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
         </repository>
     </distributionManagement>
     <name>commons</name>

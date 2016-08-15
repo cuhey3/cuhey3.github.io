@@ -29,9 +29,9 @@ public class MongoUtil {
 
     public MongoUtil(Exchange exchange) {
         this.registry = exchange.getContext().getRegistry();
-        Optional<String> kindString = MessageUtil.getKind(exchange);
-        if (kindString.isPresent()) {
-            this.kind = Kind.valueOf(kindString.get());
+        Optional<Kind> optionalKind = MessageUtil.optionalGetKind(exchange);
+        if (optionalKind.isPresent()) {
+            this.kind = optionalKind.get();
         }
     }
 
@@ -75,13 +75,13 @@ public class MongoUtil {
     }
 
     public MongoCollection<Document> collection() {
-        return database(ofNullable(ofNullable(
-                this.customTarget).orElse(this.target))
+        return database(ofNullable(
+                ofNullable(this.customTarget).orElse(this.target))
                 .orElseThrow(() -> new MongoUtilTypeNotSetException()))
                 .getCollection(collectionName());
     }
 
-    public Optional<Document> optionalFind() {
+    public Optional<Document> optionalLatest() {
         return nextDocument(latestIterable(), false);
     }
 
@@ -90,16 +90,16 @@ public class MongoUtil {
                 .sort(new Document("creationDate", -1)).limit(1);
     }
 
-    public Optional<Document> findById(String objectIdHexString) {
+    private Optional<Document> optionalFindById(String objectIdHexString) {
         return nextDocument(collection().find(
                 new Document("_id", new ObjectId(objectIdHexString))), false);
     }
 
-    public Optional<Document> findByMessage(Map message) {
-        return findById((String) message.get(targetIdKey()));
+    public Optional<Document> optionalFindByMessage(Map message) {
+        return optionalFindById((String) message.get(targetIdKey()));
     }
 
-    public String insertOne(Document document) {
+    protected String insertOne(Document document) {
         if (!document.containsKey("creationDate")) {
             document.append("creationDate", new Date());
         }
@@ -108,7 +108,7 @@ public class MongoUtil {
     }
 
     private String collectionName() {
-        return target.expression() + "_" + kind;
+        return target.expression() + "_" + kind.expression();
     }
 
     private String targetIdKey() {
@@ -124,9 +124,6 @@ public class MongoUtil {
         } else {
             return Optional.empty();
         }
-    }
-
-    public void disableDocument() {
     }
 
     public Document findOrElseThrow() {

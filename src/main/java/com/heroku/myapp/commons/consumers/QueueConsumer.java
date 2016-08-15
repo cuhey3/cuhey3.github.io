@@ -27,4 +27,8 @@ public abstract class QueueConsumer extends RouteBuilder {
         return Optional.ofNullable(routeUtil)
                 .orElseGet(() -> routeUtil = new RouteUtil());
     }
+
+    public final void setKindByClassName() {
+        kind(Kind.findKindByClassName(this));
+    }
 }

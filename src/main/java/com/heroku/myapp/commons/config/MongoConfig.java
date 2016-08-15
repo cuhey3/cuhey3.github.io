@@ -11,26 +11,27 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MongoConfig {
 
-    private static final Map<String, String> MONGO_SETTINGS
-            = new LinkedHashMap();
+    private static final Map<String, MongoClientURI> MONGO_SETTINGS
+            = new LinkedHashMap<>();
 
     public static MongoClientURI getMongoClientURI(MongoTarget target) {
-        return new MongoClientURI(MONGO_SETTINGS.get(target.expression()));
+        return MONGO_SETTINGS.get(target.expression());
     }
-
-    private String ownMongodbUri;
 
     public MongoConfig() {
         try {
-            ownMongodbUri = Settings.ENV.get("MONGODB_URI");
-            MongoClientURI mongoClientURI = new MongoClientURI(ownMongodbUri);
-            try (MongoClient mongoClient = new MongoClient(mongoClientURI)) {
-                MONGO_SETTINGS.putAll(
-                        mongoClient.getDatabase(mongoClientURI.getDatabase())
+            MongoClientURI ownMongoClientURI
+                    = new MongoClientURI(Environments.ENV.get("MONGODB_URI"));
+            try (MongoClient mongoClient = new MongoClient(ownMongoClientURI)) {
+                Map<String, String> settings = mongoClient.
+                        getDatabase(ownMongoClientURI.getDatabase())
                         .getCollection("settings").find().iterator().next()
-                        .get("mongodb", Map.class));
+                        .get("mongodb", Map.class);
+                settings.entrySet().stream().forEach((entry)
+                        -> MONGO_SETTINGS.put(entry.getKey(),
+                                new MongoClientURI(entry.getValue())));
                 MONGO_SETTINGS.put(
-                        MongoTarget.DUMMY.expression(), ownMongodbUri);
+                        MongoTarget.DUMMY.expression(), ownMongoClientURI);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
