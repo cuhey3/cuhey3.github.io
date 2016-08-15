@@ -20,8 +20,11 @@ public class MongoConfig {
 
     public MongoConfig() {
         try {
-            MongoClientURI ownMongoClientURI
-                    = new MongoClientURI(Environments.ENV.get("MONGODB_URI"));
+            String mongodbUri = System.getenv("MONGOLAB_URI");
+            if (mongodbUri == null) {
+                mongodbUri = Environments.ENV.get("MONGODB_URI");
+            }
+            MongoClientURI ownMongoClientURI = new MongoClientURI(mongodbUri);
             try (MongoClient mongoClient = new MongoClient(ownMongoClientURI)) {
                 Map<String, String> settings = mongoClient.
                         getDatabase(ownMongoClientURI.getDatabase())
