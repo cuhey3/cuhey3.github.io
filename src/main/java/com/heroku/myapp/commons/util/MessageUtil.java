@@ -19,10 +19,14 @@ public class MessageUtil {
                 .orElseThrow(() -> new MessageNotSetException());
     }
 
+    public static boolean hasMessage(Exchange ex) {
+        return ex.getIn().getBody(Map.class) != null;
+    }
+
     public static Optional<Kind> optionalGetKind(Exchange ex) {
         Optional<String> optionalKindString = get(ex, "kind", String.class);
         if (optionalKindString.isPresent()) {
-            return ofNullable(Kind.valueOf(optionalKindString.get()));
+            return Kind.optionalGetKindFromString(optionalKindString.get());
         } else {
             return Optional.empty();
         }

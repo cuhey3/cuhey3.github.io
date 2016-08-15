@@ -21,9 +21,15 @@ public class IronmqUtil {
             @Override
             public <T> T evaluate(Exchange exchange, Class<T> type) {
                 String kindString = exchange.getIn().getBody(String.class);
-                exchange.getIn().setBody(Kind.valueOf(kindString).preMessage());
-                return type.cast(String.format("ironmq:%s?client=%s",
-                        "snapshot_" + kindString, IRONMQ_CLIENT_BEAN_NAME));
+                Optional<Kind> optionalKind
+                        = Kind.optionalGetKindFromString(kindString);
+                if (optionalKind.isPresent()) {
+                    exchange.getIn().setBody(optionalKind.get().preMessage());
+                    return type.cast(String.format("ironmq:%s?client=%s",
+                            "snapshot_" + kindString, IRONMQ_CLIENT_BEAN_NAME));
+                } else {
+                    return type.cast("");
+                }
             }
         };
     }

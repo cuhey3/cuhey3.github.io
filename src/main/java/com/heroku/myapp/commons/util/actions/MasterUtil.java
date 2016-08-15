@@ -91,4 +91,13 @@ public class MasterUtil extends ActionUtil {
             return false;
         }
     }
+
+    public Optional<Document> optionalDocumentFromKindString(String str) {
+        Optional<Kind> optionalKind = Kind.optionalGetKindFromString(str);
+        if (optionalKind.isPresent()) {
+            return kind(optionalKind.get()).optionalLatest();
+        } else {
+            return Optional.empty();
+        }
+    }
 }

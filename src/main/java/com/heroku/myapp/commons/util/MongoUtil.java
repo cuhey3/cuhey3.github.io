@@ -29,9 +29,11 @@ public class MongoUtil {
 
     public MongoUtil(Exchange exchange) {
         this.registry = exchange.getContext().getRegistry();
-        Optional<Kind> optionalKind = MessageUtil.optionalGetKind(exchange);
-        if (optionalKind.isPresent()) {
-            this.kind = optionalKind.get();
+        if (MessageUtil.hasMessage(exchange)) {
+            Optional<Kind> optionalKind = MessageUtil.optionalGetKind(exchange);
+            if (optionalKind.isPresent()) {
+                this.kind = optionalKind.get();
+            }
         }
     }
 

@@ -5,7 +5,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public enum Kind {
 
@@ -97,5 +99,11 @@ public enum Kind {
 
     public String preMessage() {
         return this.preMessage;
+    }
+
+    public static Optional<Kind> optionalGetKindFromString(String str) {
+        return Stream.of(Kind.values())
+                .filter((kind) -> kind.name().equals(str))
+                .findFirst();
     }
 }
