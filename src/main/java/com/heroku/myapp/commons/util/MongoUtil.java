@@ -11,7 +11,9 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
@@ -90,6 +92,21 @@ public class MongoUtil {
     private FindIterable<Document> latestIterable() {
         return collection().find()
                 .sort(new Document("creationDate", -1)).limit(1);
+    }
+
+    private FindIterable<Document> latestLimitIterable(int limit) {
+        return collection().find()
+                .sort(new Document("creationDate", -1)).limit(limit);
+    }
+
+    public List<Document> getDocuments(int limit) {
+        MongoCursor<Document> iterator
+                = latestLimitIterable(limit).iterator();
+        List<Document> list = new ArrayList<>();
+        while (iterator.hasNext()) {
+            list.add(iterator.next());
+        }
+        return list;
     }
 
     private Optional<Document> optionalFindById(String objectIdHexString) {

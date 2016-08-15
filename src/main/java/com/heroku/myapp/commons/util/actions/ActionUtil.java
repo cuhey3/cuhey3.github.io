@@ -1,5 +1,6 @@
 package com.heroku.myapp.commons.util.actions;
 
+import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.util.MessageUtil;
 import com.heroku.myapp.commons.util.MongoUtil;
 import java.util.Optional;
@@ -26,5 +27,14 @@ public abstract class ActionUtil extends MongoUtil {
 
     public MessageUtil message() {
         return this.messageUtil;
+    }
+
+    public Optional<Document> optionalDocumentFromKindString(String str) {
+        Optional<Kind> optionalKind = Kind.optionalGetKindFromString(str);
+        if (optionalKind.isPresent()) {
+            return kind(optionalKind.get()).optionalLatest();
+        } else {
+            return Optional.empty();
+        }
     }
 }
