@@ -28,30 +28,8 @@ public enum Kind {
     test;
 
     private Kind(String... token) {
-        for (String t : token) {
-            if (t.contains("common_diff_key=")) {
-                this.useCommonDiff = true;
-                this.commonDiffKey = t.replace("common_diff_key=", "");
-            } else if (t.contains("period=")) {
-                this.timerUri = String.format("timer:%s?%s", this.name(), t);
-            } else if (t.equals("develop")) {
-                this.useDevelop = true;
-            }
-        }
-        String resourcePath
-                = "../../../../../../message/" + this.name() + ".json";
-        InputStream resourceAsStream = this.getClass()
-                .getResourceAsStream(resourcePath);
-        try (BufferedReader buffer
-                = new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8"))) {
-            preMessage = buffer.lines().collect(Collectors.joining("\n"));
-            System.out.println("loaded " + resourcePath);
-        } catch (Exception ex) {
-            System.out.println("premessage initialization failed..."
-                    + "\nSystem is shutting down.");
-            System.out.println(resourcePath);
-            System.exit(1);
-        }
+        parseToken(token);
+        setPremessage();
     }
 
     private String timerUri, preMessage;
@@ -105,5 +83,35 @@ public enum Kind {
         return Stream.of(Kind.values())
                 .filter((kind) -> kind.name().equals(str))
                 .findFirst();
+    }
+
+    private void parseToken(String... token) {
+        for (String t : token) {
+            if (t.contains("common_diff_key=")) {
+                this.useCommonDiff = true;
+                this.commonDiffKey = t.replace("common_diff_key=", "");
+            } else if (t.contains("period=")) {
+                this.timerUri = String.format("timer:%s?%s", this.name(), t);
+            } else if (t.equals("develop")) {
+                this.useDevelop = true;
+            }
+        }
+    }
+
+    private void setPremessage() {
+        String resourcePath
+                = "../../../../../../message/" + this.name() + ".json";
+        InputStream resourceAsStream
+                = this.getClass().getResourceAsStream(resourcePath);
+        try (BufferedReader buffer = new BufferedReader(
+                new InputStreamReader(resourceAsStream, "UTF-8"))) {
+            preMessage = buffer.lines().collect(Collectors.joining("\n"));
+            System.out.println("loaded " + resourcePath);
+        } catch (Exception ex) {
+            System.out.println("premessage initialization failed..."
+                    + "\nSystem is shutting down.");
+            System.out.println(resourcePath);
+            System.exit(1);
+        }
     }
 }

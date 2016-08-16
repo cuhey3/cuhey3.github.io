@@ -5,6 +5,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static java.util.Optional.ofNullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,11 +21,9 @@ public class MongoConfig {
 
     public MongoConfig() {
         try {
-            String mongodbUri = System.getenv("MONGOLAB_URI");
-            if (mongodbUri == null) {
-                mongodbUri = Environments.ENV.get("MONGODB_URI");
-            }
-            MongoClientURI ownMongoClientURI = new MongoClientURI(mongodbUri);
+            MongoClientURI ownMongoClientURI = new MongoClientURI(
+                    ofNullable(System.getenv("MONGOLAB_URI"))
+                    .orElse(Environments.ENV.get("MONGODB_URI")));
             try (MongoClient mongoClient = new MongoClient(ownMongoClientURI)) {
                 Map<String, String> settings = mongoClient.
                         getDatabase(ownMongoClientURI.getDatabase())
