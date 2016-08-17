@@ -4,6 +4,7 @@ import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.util.consumers.IronmqUtil;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
+import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,13 +43,13 @@ public class MasterUtil extends ActionUtil {
     }
 
     public boolean toCompleteLogic(RouteBuilder rb) {
-        if (message().isSkipDiff()) {
+        if (queueMessage().isSkipDiff()) {
             return true;
         } else {
             Optional<Document> optionalLatest = optionalLatest();
             if (optionalLatest.isPresent()) {
                 Optional<String> optionalComparedMasterId
-                        = message().optionalGet("compared_master_id");
+                        = queueMessage().optionalGet("compared_master_id");
                 return optionalComparedMasterId.isPresent()
                         && DocumentUtil.objectIdHexString(optionalLatest.get())
                         .equals(optionalComparedMasterId.get());
@@ -81,9 +82,9 @@ public class MasterUtil extends ActionUtil {
     }
 
     public boolean checkNotFilled(Document document) {
-        Optional<String> optionalGet = message().optionalGet("fill");
-        if (optionalGet.isPresent()) {
-            String fillField = optionalGet.get();
+        Optional<String> optionalFillField = queueMessage().optionalFillField();
+        if (optionalFillField.isPresent()) {
+            String fillField = optionalFillField.get();
             return DocumentUtil.getData(
                     Optional.ofNullable(document).orElse(findOrElseThrow()))
                     .stream().anyMatch((map) -> !map.containsKey(fillField));

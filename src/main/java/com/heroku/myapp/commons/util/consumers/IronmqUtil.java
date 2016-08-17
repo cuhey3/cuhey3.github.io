@@ -2,7 +2,6 @@ package com.heroku.myapp.commons.util.consumers;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.config.enumerate.QueueType;
-import com.heroku.myapp.commons.util.MessageUtil;
 import io.iron.ironmq.Client;
 import java.io.IOException;
 import java.util.Date;
@@ -63,7 +62,8 @@ public class IronmqUtil {
 
     public static Processor requestSnapshotProcess() {
         return (Exchange exchange) -> {
-            Optional<Kind> optionalKind = MessageUtil.optionalGetKind(exchange);
+            Optional<Kind> optionalKind
+                    = new QueueMessage(exchange).optionalKind();
             if (optionalKind.isPresent()) {
                 new IronmqUtil().snapshot()
                         .postMessage(exchange, optionalKind.get());

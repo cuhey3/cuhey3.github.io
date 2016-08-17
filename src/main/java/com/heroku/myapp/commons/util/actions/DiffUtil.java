@@ -80,19 +80,19 @@ public class DiffUtil extends ActionUtil {
     }
 
     public DiffUtil updateMessageComparedId(Document masterDocument) {
-        message().writeObjectId("compared_master_id", masterDocument);
+        queueMessage().writeObjectId("compared_master_id", masterDocument);
         return this;
     }
 
     public boolean diffIdIsExists() {
-        return message().optionalGet("diff_id").isPresent();
+        return queueMessage().optionalGet("diff_id").isPresent();
     }
 
     @Override
     public void writeDocument(Document document) {
         document.append("enable", false);
         this.insertOne(document);
-        message().writeObjectId(target.expression() + "_id", document);
+        queueMessage().writeObjectId(target.expression() + "_id", document);
     }
 
     private void saveToSummary(Document diff) {

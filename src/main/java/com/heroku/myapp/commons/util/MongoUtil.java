@@ -6,6 +6,7 @@ import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.exceptions.DocumentNotFoundException;
 import com.heroku.myapp.commons.exceptions.MongoUtilTypeNotSetException;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
+import com.heroku.myapp.commons.util.consumers.QueueMessage;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -31,12 +32,7 @@ public class MongoUtil {
 
     public MongoUtil(Exchange exchange) {
         this.registry = exchange.getContext().getRegistry();
-        if (MessageUtil.hasMessage(exchange)) {
-            Optional<Kind> optionalKind = MessageUtil.optionalGetKind(exchange);
-            if (optionalKind.isPresent()) {
-                this.kind = optionalKind.get();
-            }
-        }
+        this.kind = new QueueMessage(exchange).optionalKind().orElse(null);
     }
 
     public final MongoUtil target(MongoTarget target) {

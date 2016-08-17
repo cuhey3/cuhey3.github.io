@@ -1,8 +1,8 @@
 package com.heroku.myapp.commons.consumers;
 
-import com.heroku.myapp.commons.util.MessageUtil;
 import com.heroku.myapp.commons.util.actions.SnapshotUtil;
 import com.heroku.myapp.commons.util.consumers.IronmqUtil;
+import com.heroku.myapp.commons.util.consumers.QueueMessage;
 import java.util.Optional;
 import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
@@ -23,7 +23,7 @@ public abstract class SnapshotQueueConsumer extends QueueConsumer {
                 .filter(defaultPredicate())
                 .choice()
                 .when((Exchange exchange)
-                        -> new MessageUtil(exchange).getBool("skip_diff"))
+                        -> new QueueMessage(exchange).isSkipDiff())
                 .to(ironmq().completionPostUri())
                 .otherwise()
                 .to(ironmq().diff().postUri());
