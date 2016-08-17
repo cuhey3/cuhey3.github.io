@@ -81,9 +81,13 @@ public enum Kind {
     }
 
     public static Optional<Kind> optionalGetKindFromString(String str) {
-        return Stream.of(Kind.values())
-                .filter((kind) -> kind.name().equals(str))
-                .findFirst();
+        if (str == null) {
+            return Optional.empty();
+        } else {
+            return Stream.of(Kind.values())
+                    .filter((kind) -> kind.name().equals(str))
+                    .findFirst();
+        }
     }
 
     private void parseToken(String... token) {
