@@ -95,9 +95,14 @@ public class MongoUtil {
                 .sort(new Document("creationDate", -1)).limit(limit);
     }
 
+    
+    private FindIterable<Document> typeAddIterable(int limit){
+        return collection().find(new Document("diff.type","add"))
+                .sort(new Document("creationDate", -1)).limit(limit);
+    }
     public List<Document> getDocuments(int limit) {
         MongoCursor<Document> iterator
-                = latestLimitIterable(limit).iterator();
+                = typeAddIterable(limit).iterator();
         List<Document> list = new ArrayList<>();
         while (iterator.hasNext()) {
             list.add(iterator.next());
