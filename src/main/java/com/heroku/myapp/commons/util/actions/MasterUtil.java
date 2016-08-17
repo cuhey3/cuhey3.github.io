@@ -4,7 +4,6 @@ import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.util.consumers.IronmqUtil;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
-import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +12,7 @@ import org.apache.camel.Predicate;
 import org.apache.camel.builder.RouteBuilder;
 import org.bson.Document;
 import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
+import static java.util.Optional.ofNullable;
 
 public class MasterUtil extends ActionUtil {
 
@@ -86,7 +86,7 @@ public class MasterUtil extends ActionUtil {
         if (optionalFillField.isPresent()) {
             String fillField = optionalFillField.get();
             return DocumentUtil.getData(
-                    Optional.ofNullable(document).orElse(findOrElseThrow()))
+                    ofNullable(document).orElseGet(() -> findOrElseThrow()))
                     .stream().anyMatch((map) -> !map.containsKey(fillField));
         } else {
             return false;

@@ -23,7 +23,7 @@ public class MongoConfig {
         try {
             MongoClientURI ownMongoClientURI = new MongoClientURI(
                     ofNullable(System.getenv("MONGOLAB_URI"))
-                    .orElse(Environments.ENV.get("MONGODB_URI")));
+                    .orElseGet(() -> Environments.ENV.get("MONGODB_URI")));
             try (MongoClient mongoClient = new MongoClient(ownMongoClientURI)) {
                 Map<String, String> settings = mongoClient.
                         getDatabase(ownMongoClientURI.getDatabase())
