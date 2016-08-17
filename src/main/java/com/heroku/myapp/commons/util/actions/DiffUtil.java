@@ -1,8 +1,10 @@
 package com.heroku.myapp.commons.util.actions;
 
+import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.util.consumers.IronmqUtil;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
+import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +13,6 @@ import java.util.stream.Collectors;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.bson.Document;
-import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 
 public class DiffUtil extends ActionUtil {
 
@@ -64,6 +65,7 @@ public class DiffUtil extends ActionUtil {
                         Document updateDocument = new Document(
                                 "$set", new Document("enable", true));
                         this.collection().updateOne(query, updateDocument);
+                        saveToSummary(diff);
                         return true;
                     }
                 }
@@ -91,5 +93,17 @@ public class DiffUtil extends ActionUtil {
         document.append("enable", false);
         this.insertOne(document);
         message().writeObjectId(target.expression() + "_id", document);
+    }
+
+    private void saveToSummary(Document diff) {
+        Kind kind0 = this.kind;
+        diff.remove("enable");
+        diff.append("kind", kind0.expression());
+        this.kind(Kind.summary);
+        try {
+            this.insertOne(diff);
+        } finally {
+            this.kind = kind0;
+        }
     }
 }

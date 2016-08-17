@@ -48,7 +48,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <github.repo.directory>/home/nanashi/proj/cuhey3.github.io/mvn-repo</github.repo.directory>
+        <github.repo.directory>mvn-repo</github.repo.directory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>

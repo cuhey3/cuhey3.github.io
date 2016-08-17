@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 public enum Kind {
 
+    summary(),
     female_seiyu_category_members(commonDiff(), "period=5m&delay=1m"),
     male_seiyu_category_members(commonDiff(), "period=5m&delay=2m"),
     seiyu_category_members(commonDiff()),
