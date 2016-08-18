@@ -2,7 +2,7 @@ package com.heroku.myapp.commons.util.actions;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
-import com.heroku.myapp.commons.util.consumers.IronmqUtil;
+import com.heroku.myapp.commons.util.consumers.ConsumerUtil;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
 import org.apache.camel.builder.RouteBuilder;
 import org.bson.Document;
-import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 import static java.util.Optional.ofNullable;
+import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 
 public class MasterUtil extends ActionUtil {
 
@@ -21,7 +21,7 @@ public class MasterUtil extends ActionUtil {
             try {
                 return new MasterUtil(exchange).checkNotFilled(null);
             } catch (Exception ex) {
-                IronmqUtil.sendError(rb, "isNotFilled", ex);
+                ConsumerUtil.sendError(rb, "isNotFilled", ex);
                 return false;
             }
         };

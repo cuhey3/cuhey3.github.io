@@ -10,8 +10,9 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Expression;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.builder.SimpleBuilder;
 
-public class IronmqUtil {
+public class ConsumerUtil {
 
     private static final String IRONMQ_CLIENT_BEAN_NAME = "myironmq";
 
@@ -65,66 +66,77 @@ public class IronmqUtil {
             Optional<Kind> optionalKind
                     = new QueueMessage(exchange).optionalKind();
             if (optionalKind.isPresent()) {
-                new IronmqUtil().snapshot()
+                new ConsumerUtil().snapshot()
                         .postMessage(exchange, optionalKind.get());
             }
         };
     }
 
-    private String type;
+    private QueueType queueType;
     private Kind kind;
-    private int timeout;
+    private int timeout = 60;
 
-    public IronmqUtil() {
-        this.timeout = 60;
-    }
-
-    public IronmqUtil type(QueueType type) {
-        this.type = type.expression();
-        return this;
-    }
-
-    public IronmqUtil kind(Kind kind) {
+    public ConsumerUtil kind(Kind kind) {
         this.kind = kind;
         return this;
     }
 
-    public IronmqUtil timeout(int timeout) {
+    public ConsumerUtil timeout(int timeout) {
         this.timeout = timeout;
         return this;
     }
 
-    public IronmqUtil snapshot() {
-        this.type = QueueType.SNAPSHOT.expression();
+    public ConsumerUtil timer() {
+        this.queueType = QueueType.TIMER;
         return this;
     }
 
-    public IronmqUtil diff() {
-        this.type = QueueType.DIFF.expression();
+    public ConsumerUtil snapshot() {
+        this.queueType = QueueType.SNAPSHOT;
         return this;
     }
 
-    private IronmqUtil completion() {
-        this.type = QueueType.COMPLETION.expression();
+    public ConsumerUtil diff() {
+        this.queueType = QueueType.DIFF;
+        return this;
+    }
+
+    public ConsumerUtil completion() {
+        this.queueType = QueueType.COMPLETION;
         this.kind = Kind.all;
         return this;
     }
 
-    public IronmqUtil changed() {
-        this.type = QueueType.CHANGED.expression();
+    public ConsumerUtil changed() {
+        this.queueType = QueueType.CHANGED;
         this.kind = Kind.all;
         return this;
     }
 
-    public IronmqUtil exception() {
-        this.type = QueueType.EXCEPTION.expression();
+    public ConsumerUtil changing() {
+        this.queueType = QueueType.CHANGING;
+        this.kind = Kind.all;
         return this;
+    }
+
+    public ConsumerUtil exception() {
+        this.queueType = QueueType.EXCEPTION;
+        this.kind = Kind.in;
+        return this;
+    }
+
+    public String id() {
+        return queueType.expression() + "_" + kind.expression();
+    }
+
+    public SimpleBuilder camelBatchComplete() {
+        return SimpleBuilder.simple("${exchangeProperty.CamelBatchComplete}");
     }
 
     public void postMessage(Exchange exchange, Kind k) throws IOException {
         Client client = exchange.getContext().getRegistry()
                 .lookupByNameAndType(IRONMQ_CLIENT_BEAN_NAME, Client.class);
-        client.queue(this.type + "_" + k.expression())
+        client.queue(this.queueType + "_" + k.expression())
                 .push(k.preMessage());
     }
 
@@ -133,21 +145,21 @@ public class IronmqUtil {
                 + "?client=%s"
                 + "&timeout=%s"
                 + "&maxMessagesPerPoll=100",
-                type + "_" + kind.expression(),
+                queueType + "_" + kind.expression(),
                 IRONMQ_CLIENT_BEAN_NAME, timeout);
     }
 
     public String postUri() {
         return String.format("ironmq:%s?client=%s",
-                type + "_" + kind.expression(),
+                queueType + "_" + kind.expression(),
                 IRONMQ_CLIENT_BEAN_NAME);
     }
 
     public String completionPostUri() {
-        return new IronmqUtil().completion().postUri();
+        return new ConsumerUtil().completion().postUri();
     }
 
     public String completionConsumeUri() {
-        return new IronmqUtil().completion().consumeUri();
+        return new ConsumerUtil().completion().consumeUri();
     }
 }

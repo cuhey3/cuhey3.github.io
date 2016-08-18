@@ -4,7 +4,7 @@ import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.util.actions.DiffUtil;
 import com.heroku.myapp.commons.util.actions.MasterUtil;
 import com.heroku.myapp.commons.util.actions.SnapshotUtil;
-import com.heroku.myapp.commons.util.consumers.IronmqUtil;
+import com.heroku.myapp.commons.util.consumers.ConsumerUtil;
 import java.util.Optional;
 import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
@@ -27,11 +27,11 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
 
     @Override
     public void configure() {
-        from(ironmq().diff().consumeUri())
+        from(route().diff().consumeUri())
                 .routeId(route().id())
                 .filter(route().camelBatchComplete())
                 .filter(comparePredicate())
-                .to(ironmq().completionPostUri());
+                .to(route().completionPostUri());
     }
 
     public Optional<Document> calculateDiff(Document master, Document snapshot) {
@@ -64,7 +64,7 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
                     return false;
                 }
             } catch (Exception e) {
-                IronmqUtil.sendError(this, "comparePredicate", e);
+                ConsumerUtil.sendError(this, "comparePredicate", e);
                 return false;
             }
         };

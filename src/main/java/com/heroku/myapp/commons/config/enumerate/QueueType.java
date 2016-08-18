@@ -4,7 +4,7 @@ import java.util.Locale;
 
 public enum QueueType {
 
-    SNAPSHOT, DIFF, COMPLETION, CHANGED, EXCEPTION;
+    TIMER, SNAPSHOT, DIFF, COMPLETION, CHANGING, CHANGED, EXCEPTION;
 
     private final String expression;
 

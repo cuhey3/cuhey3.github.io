@@ -1,8 +1,8 @@
 package com.heroku.myapp.commons.consumers;
 
 import com.heroku.myapp.commons.util.actions.SnapshotUtil;
-import com.heroku.myapp.commons.util.consumers.IronmqUtil;
 import com.heroku.myapp.commons.util.consumers.QueueMessage;
+import com.heroku.myapp.commons.util.consumers.ConsumerUtil;
 import java.util.Optional;
 import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
@@ -17,16 +17,16 @@ public abstract class SnapshotQueueConsumer extends QueueConsumer {
 
     @Override
     public void configure() {
-        from(ironmq().snapshot().consumeUri())
+        from(route().snapshot().consumeUri())
                 .routeId(route().id())
                 .filter(route().camelBatchComplete())
                 .filter(defaultPredicate())
                 .choice()
                 .when((Exchange exchange)
                         -> new QueueMessage(exchange).isSkipDiff())
-                .to(ironmq().completionPostUri())
+                .to(route().completionPostUri())
                 .otherwise()
-                .to(ironmq().diff().postUri());
+                .to(route().diff().postUri());
     }
 
     protected Predicate defaultPredicate() {
@@ -40,7 +40,7 @@ public abstract class SnapshotQueueConsumer extends QueueConsumer {
                     return false;
                 }
             } catch (Exception e) {
-                IronmqUtil.sendError(this, "defaultPredicate", e);
+                ConsumerUtil.sendError(this, "defaultPredicate", e);
                 return false;
             }
         };
