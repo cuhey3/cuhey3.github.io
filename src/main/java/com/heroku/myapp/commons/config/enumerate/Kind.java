@@ -11,7 +11,10 @@ import java.util.stream.Stream;
 
 public enum Kind {
 
-    summary(),
+    in("noPremessage"),
+    out("noPremessage"),
+    all("noPremessage"),
+    summary("noPremessage"),
     female_seiyu_category_members(commonDiff(), "period=5m&delay=1m"),
     male_seiyu_category_members(commonDiff(), "period=5m&delay=2m"),
     seiyu_category_members(commonDiff()),
@@ -29,7 +32,9 @@ public enum Kind {
     test;
 
     private String timerUri, preMessage, commonDiffKey;
-    private boolean useCommonDiff = false, useDevelop = false;
+    private boolean useCommonDiff = false;
+    private boolean useDevelop = false;
+    private boolean loadPremessage = true;
 
     private Kind(String... token) {
         parseToken(token);
@@ -45,24 +50,30 @@ public enum Kind {
                 this.timerUri = String.format("timer:%s?%s", this.name(), t);
             } else if (t.equals("develop")) {
                 this.useDevelop = true;
+            } else if (t.equals("noPremessage")) {
+                this.loadPremessage = false;
             }
         }
     }
 
     private void setPremessage() {
-        String resourcePath
-                = "../../../../../../message/" + this.name() + ".json";
-        InputStream resourceAsStream
-                = this.getClass().getResourceAsStream(resourcePath);
-        try (BufferedReader buffer = new BufferedReader(
-                new InputStreamReader(resourceAsStream, "UTF-8"))) {
-            preMessage = buffer.lines().collect(Collectors.joining("\n"));
-            System.out.println("loaded " + resourcePath);
-        } catch (Exception ex) {
-            System.out.println("premessage initialization failed..."
-                    + "\nSystem is shutting down.");
-            System.out.println(resourcePath);
-            System.exit(1);
+        if (loadPremessage) {
+            String resourcePath
+                    = "../../../../../../message/" + this.name() + ".json";
+            InputStream resourceAsStream
+                    = this.getClass().getResourceAsStream(resourcePath);
+            try (BufferedReader buffer = new BufferedReader(
+                    new InputStreamReader(resourceAsStream, "UTF-8"))) {
+                preMessage = buffer.lines().collect(Collectors.joining("\n"));
+                System.out.println("loaded " + resourcePath);
+            } catch (Exception ex) {
+                System.out.println("premessage initialization failed..."
+                        + "\nSystem is shutting down.");
+                System.out.println(resourcePath);
+                System.exit(1);
+            }
+        } else {
+            preMessage = "{}";
         }
     }
 

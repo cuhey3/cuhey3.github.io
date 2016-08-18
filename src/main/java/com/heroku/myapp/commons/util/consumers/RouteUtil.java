@@ -6,10 +6,11 @@ import org.apache.camel.builder.SimpleBuilder;
 
 public class RouteUtil {
 
-    private String target, kindString;
+    private String target;
+    private Kind kind;
 
     public RouteUtil kind(Kind kind) {
-        this.kindString = kind.expression();
+        this.kind = kind;
         return this;
     }
 
@@ -30,24 +31,24 @@ public class RouteUtil {
 
     public RouteUtil completion() {
         this.target = "completion";
-        this.kindString = "all";
+        this.kind = Kind.all;
         return this;
     }
 
     public RouteUtil changing() {
         this.target = "changing";
-        this.kindString = "all";
+        this.kind = Kind.all;
         return this;
     }
 
     public RouteUtil exception() {
         this.target = "exception";
-        this.kindString = "in";
+        this.kind = Kind.in;
         return this;
     }
 
     public String id() {
-        return target + "_" + kindString;
+        return target + "_" + kind.expression();
     }
 
     public SimpleBuilder camelBatchComplete() {

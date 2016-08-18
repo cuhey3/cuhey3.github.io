@@ -71,7 +71,8 @@ public class IronmqUtil {
         };
     }
 
-    private String type, kindString;
+    private String type;
+    private Kind kind;
     private int timeout;
 
     public IronmqUtil() {
@@ -84,12 +85,7 @@ public class IronmqUtil {
     }
 
     public IronmqUtil kind(Kind kind) {
-        this.kindString = kind.expression();
-        return this;
-    }
-
-    public IronmqUtil kindString(String kindString) {
-        this.kindString = kindString;
+        this.kind = kind;
         return this;
     }
 
@@ -110,13 +106,13 @@ public class IronmqUtil {
 
     private IronmqUtil completion() {
         this.type = QueueType.COMPLETION.expression();
-        this.kindString = "all";
+        this.kind = Kind.all;
         return this;
     }
 
     public IronmqUtil changed() {
         this.type = QueueType.CHANGED.expression();
-        this.kindString = "all";
+        this.kind = Kind.all;
         return this;
     }
 
@@ -137,12 +133,14 @@ public class IronmqUtil {
                 + "?client=%s"
                 + "&timeout=%s"
                 + "&maxMessagesPerPoll=100",
-                type + "_" + kindString, IRONMQ_CLIENT_BEAN_NAME, timeout);
+                type + "_" + kind.expression(),
+                IRONMQ_CLIENT_BEAN_NAME, timeout);
     }
 
     public String postUri() {
         return String.format("ironmq:%s?client=%s",
-                type + "_" + kindString, IRONMQ_CLIENT_BEAN_NAME);
+                type + "_" + kind.expression(),
+                IRONMQ_CLIENT_BEAN_NAME);
     }
 
     public String completionPostUri() {
