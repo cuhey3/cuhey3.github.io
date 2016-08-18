@@ -28,66 +28,12 @@ public enum Kind {
     google_trends("period=65m&delay=10m"),
     test;
 
+    private String timerUri, preMessage, commonDiffKey;
+    private boolean useCommonDiff = false, useDevelop = false;
+
     private Kind(String... token) {
         parseToken(token);
         setPremessage();
-    }
-
-    private String timerUri, preMessage;
-    private boolean useCommonDiff = false;
-    private String commonDiffKey;
-    private boolean useDevelop = false;
-
-    public String expression() {
-        if (useDevelop) {
-            return this.name() + "_develop";
-        } else {
-            return this.name();
-        }
-    }
-
-    public String timerUri() {
-        return this.timerUri;
-    }
-
-    public String commonDiffKey() {
-        return this.commonDiffKey;
-    }
-
-    public void timerParam(String timerParam) {
-        this.timerUri = String.format("timer:%s?%s", expression(), timerParam);
-    }
-
-    public boolean isUsedCommonDiffRoute() {
-        return this.useCommonDiff;
-    }
-
-    public static Kind findKindByClassName(Object object) {
-        try {
-            String kindCamel = object.getClass().getSimpleName()
-                    .replace("Snapshot", "").replace("Diff", "")
-                    .replace("Consumer", "");
-            String kindSnake
-                    = String.join("_", kindCamel.split("(?=[\\p{Upper}])"))
-                    .toLowerCase(Locale.US);
-            return Kind.valueOf(kindSnake);
-        } catch (Exception ex) {
-            throw new RuntimeException();
-        }
-    }
-
-    public String preMessage() {
-        return this.preMessage;
-    }
-
-    public static Optional<Kind> optionalGetKindFromString(String str) {
-        if (str == null) {
-            return Optional.empty();
-        } else {
-            return Stream.of(Kind.values())
-                    .filter((kind) -> kind.name().equals(str))
-                    .findFirst();
-        }
     }
 
     private void parseToken(String... token) {
@@ -117,6 +63,54 @@ public enum Kind {
                     + "\nSystem is shutting down.");
             System.out.println(resourcePath);
             System.exit(1);
+        }
+    }
+
+    public String expression() {
+        if (useDevelop) {
+            return this.name() + "_develop";
+        } else {
+            return this.name();
+        }
+    }
+
+    public String timerUri() {
+        return this.timerUri;
+    }
+
+    public String commonDiffKey() {
+        return this.commonDiffKey;
+    }
+
+    public void timerParam(String timerParam) {
+        this.timerUri = String.format("timer:%s?%s", expression(), timerParam);
+    }
+
+    public boolean isUsedCommonDiffRoute() {
+        return this.useCommonDiff;
+    }
+
+    public static Optional<Kind> optionalKindFromClassName(Object object) {
+        String kindCamel = object.getClass().getSimpleName()
+                .replace("Snapshot", "").replace("Diff", "")
+                .replace("Consumer", "");
+        String kindSnake
+                = String.join("_", kindCamel.split("(?=[\\p{Upper}])"))
+                .toLowerCase(Locale.US);
+        return optionalKindFromString(kindSnake);
+    }
+
+    public String preMessage() {
+        return this.preMessage;
+    }
+
+    public static Optional<Kind> optionalKindFromString(String str) {
+        if (str == null) {
+            return Optional.empty();
+        } else {
+            return Stream.of(Kind.values())
+                    .filter((kind) -> kind.name().equals(str))
+                    .findFirst();
         }
     }
 }

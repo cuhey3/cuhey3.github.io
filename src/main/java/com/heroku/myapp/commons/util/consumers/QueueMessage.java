@@ -53,7 +53,7 @@ public class QueueMessage {
     public Optional<Kind> optionalKind() {
         Optional<String> optionalKindString = optionalGet("kind", String.class);
         if (optionalKindString.isPresent()) {
-            return Kind.optionalGetKindFromString(optionalKindString.get());
+            return Kind.optionalKindFromString(optionalKindString.get());
         } else {
             return Optional.empty();
         }
@@ -62,7 +62,7 @@ public class QueueMessage {
     public List<Kind> getAffect() {
         List<Kind> result = new ArrayList<>();
         getAffectString().stream().map((kindString)
-                -> Kind.optionalGetKindFromString(kindString))
+                -> Kind.optionalKindFromString(kindString))
                 .filter((optionalKind) -> optionalKind.isPresent())
                 .map((optionalKind) -> optionalKind.get())
                 .forEach(result::add);

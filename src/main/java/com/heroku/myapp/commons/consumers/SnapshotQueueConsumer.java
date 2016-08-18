@@ -12,7 +12,7 @@ public abstract class SnapshotQueueConsumer extends QueueConsumer {
 
     public SnapshotQueueConsumer() {
         route().snapshot();
-        setKindByClassName();
+        setKindFromClassName();
     }
 
     @Override

@@ -30,7 +30,7 @@ public abstract class ActionUtil extends MongoUtil {
     }
 
     public Optional<Document> optionalDocumentFromKindString(String str) {
-        Optional<Kind> optionalKind = Kind.optionalGetKindFromString(str);
+        Optional<Kind> optionalKind = Kind.optionalKindFromString(str);
         if (optionalKind.isPresent()) {
             return kind(optionalKind.get()).optionalLatest();
         } else {

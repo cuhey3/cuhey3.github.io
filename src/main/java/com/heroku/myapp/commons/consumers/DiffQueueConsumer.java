@@ -16,7 +16,7 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
 
     public DiffQueueConsumer() {
         route().diff();
-        setKindByClassName();
+        setKindFromClassName();
     }
 
     public DiffQueueConsumer(Kind kind) {

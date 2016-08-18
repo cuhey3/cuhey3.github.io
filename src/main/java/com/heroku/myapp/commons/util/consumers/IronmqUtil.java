@@ -21,7 +21,7 @@ public class IronmqUtil {
             public <T> T evaluate(Exchange exchange, Class<T> type) {
                 String kindString = exchange.getIn().getBody(String.class);
                 Optional<Kind> optionalKind
-                        = Kind.optionalGetKindFromString(kindString);
+                        = Kind.optionalKindFromString(kindString);
                 if (optionalKind.isPresent()) {
                     exchange.getIn().setBody(optionalKind.get().preMessage());
                     return type.cast(String.format("ironmq:%s?client=%s",
