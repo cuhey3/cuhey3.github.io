@@ -17,24 +17,6 @@ public class QueueConsumerUtil {
 
     private static final String IRONMQ_CLIENT_BEAN_NAME = "myironmq";
 
-    public static Expression affectQueueUri() {
-        return new Expression() {
-            @Override
-            public <T> T evaluate(Exchange exchange, Class<T> type) {
-                String kindString = exchange.getIn().getBody(String.class);
-                Optional<Kind> optionalKind
-                        = Kind.optionalKindFromString(kindString);
-                if (optionalKind.isPresent()) {
-                    exchange.getIn().setBody(optionalKind.get().preMessage());
-                    return type.cast(String.format("ironmq:%s?client=%s",
-                            "snapshot_" + kindString, IRONMQ_CLIENT_BEAN_NAME));
-                } else {
-                    return type.cast("");
-                }
-            }
-        };
-    }
-
     private final QueueConsumer consumer;
     private QueueType queueType;
     private Kind kind;
@@ -45,14 +27,31 @@ public class QueueConsumerUtil {
         kind(Kind.optionalKindFromClassName(queueConsumer).orElse(null));
     }
 
+    public Expression affectQueueUri() {
+        return new Expression() {
+            @Override
+            public <T> T evaluate(Exchange exchange, Class<T> type) {
+                String kindString = exchange.getIn().getBody(String.class);
+                Optional<Kind> optionalKind
+                        = Kind.optionalKindFromString(kindString);
+                if (optionalKind.isPresent()) {
+                    Kind k = optionalKind.get();
+                    exchange.getIn().setBody(k.preMessage());
+                    return type.cast(copy().snapshot().kind(k).ironmqPostUri());
+                } else {
+                    return type.cast("");
+                }
+            }
+        };
+    }
+
     public Processor requestSnapshotProcess() {
         return (Exchange exchange) -> {
             Optional<Kind> optionalKind
                     = new QueueMessage(exchange).optionalKind();
             if (optionalKind.isPresent()) {
                 Kind k = optionalKind.get();
-                new QueueConsumerUtil(consumer)
-                        .snapshot().kind(k).postMessage();
+                copy().snapshot().kind(k).postMessage();
             }
         };
     }
@@ -165,7 +164,7 @@ public class QueueConsumerUtil {
         ironmqClient().queue(id()).push(kind().preMessage());
     }
 
-    public String consumeUri() {
+    public String ironmqConsumeUri() {
         if (queueType != null && kind != null) {
             return String.format("ironmq:%s"
                     + "?client=%s"
@@ -177,7 +176,7 @@ public class QueueConsumerUtil {
         }
     }
 
-    public String postUri() {
+    public String ironmqPostUri() {
         if (queueType != null && kind != null) {
             return String.format(
                     "ironmq:%s?client=%s", id(), IRONMQ_CLIENT_BEAN_NAME);

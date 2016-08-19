@@ -15,19 +15,19 @@ public abstract class SnapshotQueueConsumer extends QueueConsumer {
 
     @Override
     public void configure() {
-        from(util().consumeUri())
+        from(util().ironmqConsumeUri())
                 .routeId(util().id())
                 .filter(util().camelBatchComplete())
-                .filter(defaultPredicate())
+                .filter(doSnapshotPredicate())
                 .choice()
                 .when((Exchange exchange)
                         -> new QueueMessage(exchange).isSkipDiff())
-                .to(util().copy().completion().postUri())
+                .to(util().copy().completion().ironmqPostUri())
                 .otherwise()
-                .to(util().copy().diff().postUri());
+                .to(util().copy().diff().ironmqPostUri());
     }
 
-    protected Predicate defaultPredicate() {
+    protected Predicate doSnapshotPredicate() {
         return (Exchange exchange) -> {
             Optional<Document> snapshot = doSnapshot(exchange);
             try {

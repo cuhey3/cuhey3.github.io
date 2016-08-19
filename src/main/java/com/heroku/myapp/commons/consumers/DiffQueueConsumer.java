@@ -21,16 +21,16 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
 
     @Override
     public void configure() {
-        from(util().consumeUri())
+        from(util().ironmqConsumeUri())
                 .routeId(util().id())
                 .filter(util().camelBatchComplete())
                 .filter(comparePredicate())
-                .to(util().copy().completion().postUri());
+                .to(util().copy().completion().ironmqPostUri());
     }
 
     public Optional<Document> calculateDiff(Document master, Document snapshot) {
-        return DiffUtil.basicDiff(master, snapshot,
-                util().kind().commonDiffKey());
+        return DiffUtil.basicDiff(
+                master, snapshot, util().kind().commonDiffKey());
     }
 
     public Predicate comparePredicate() {
