@@ -1,10 +1,10 @@
 package com.heroku.myapp.commons.util.consumers;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
-import com.heroku.myapp.commons.config.enumerate.QueueType;
 import io.iron.ironmq.Client;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
 import org.apache.camel.Exchange;
 import org.apache.camel.Expression;
@@ -145,13 +145,13 @@ public class ConsumerUtil {
                 + "?client=%s"
                 + "&timeout=%s"
                 + "&maxMessagesPerPoll=100",
-                queueType + "_" + kind.expression(),
+                queueType.expression() + "_" + kind.expression(),
                 IRONMQ_CLIENT_BEAN_NAME, timeout);
     }
 
     public String postUri() {
         return String.format("ironmq:%s?client=%s",
-                queueType + "_" + kind.expression(),
+                queueType.expression() + "_" + kind.expression(),
                 IRONMQ_CLIENT_BEAN_NAME);
     }
 
@@ -162,4 +162,20 @@ public class ConsumerUtil {
     public String completionConsumeUri() {
         return new ConsumerUtil().completion().consumeUri();
     }
+
+    private enum QueueType {
+
+        TIMER, SNAPSHOT, DIFF, COMPLETION, CHANGING, CHANGED, EXCEPTION;
+
+        private final String expression;
+
+        private QueueType() {
+            this.expression = this.name().toLowerCase(Locale.US);
+        }
+
+        public String expression() {
+            return this.expression;
+        }
+    }
+
 }
