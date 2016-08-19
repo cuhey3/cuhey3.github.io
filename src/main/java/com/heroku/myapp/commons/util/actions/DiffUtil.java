@@ -2,17 +2,16 @@ package com.heroku.myapp.commons.util.actions;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
-import com.heroku.myapp.commons.util.consumers.ConsumerUtil;
+import com.heroku.myapp.commons.consumers.QueueConsumer;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
+import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.camel.Exchange;
-import org.apache.camel.builder.RouteBuilder;
 import org.bson.Document;
-import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 
 public class DiffUtil extends ActionUtil {
 
@@ -54,7 +53,7 @@ public class DiffUtil extends ActionUtil {
         target(MongoTarget.DIFF);
     }
 
-    public boolean enableDiff(RouteBuilder rb) {
+    public boolean enableDiff(QueueConsumer consumer) {
         try {
             if (diffIdIsExists()) {
                 Optional<Document> optionalLoadedDocument = loadDocument();
@@ -74,7 +73,7 @@ public class DiffUtil extends ActionUtil {
                 return true;
             }
         } catch (Exception e) {
-            ConsumerUtil.sendError(rb, "enableDiff", e);
+            consumer.util().sendError("enableDiff", e);
             return false;
         }
     }

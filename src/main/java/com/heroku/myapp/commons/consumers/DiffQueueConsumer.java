@@ -4,7 +4,6 @@ import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.util.actions.DiffUtil;
 import com.heroku.myapp.commons.util.actions.MasterUtil;
 import com.heroku.myapp.commons.util.actions.SnapshotUtil;
-import com.heroku.myapp.commons.util.consumers.ConsumerUtil;
 import java.util.Optional;
 import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
@@ -12,30 +11,26 @@ import org.bson.Document;
 
 public abstract class DiffQueueConsumer extends QueueConsumer {
 
-    protected String commonDiffKey;
-
     public DiffQueueConsumer() {
-        route().diff();
-        setKindFromClassName();
+        util().diff();
     }
 
     public DiffQueueConsumer(Kind kind) {
-        route().diff();
-        kind(kind);
-        this.commonDiffKey = kind.commonDiffKey();
+        util().diff().kind(kind);
     }
 
     @Override
     public void configure() {
-        from(route().diff().consumeUri())
-                .routeId(route().id())
-                .filter(route().camelBatchComplete())
+        from(util().consumeUri())
+                .routeId(util().id())
+                .filter(util().camelBatchComplete())
                 .filter(comparePredicate())
-                .to(route().completionPostUri());
+                .to(util().copy().completion().postUri());
     }
 
     public Optional<Document> calculateDiff(Document master, Document snapshot) {
-        return DiffUtil.basicDiff(master, snapshot, commonDiffKey);
+        return DiffUtil.basicDiff(master, snapshot,
+                util().kind().commonDiffKey());
     }
 
     public Predicate comparePredicate() {
@@ -64,7 +59,7 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
                     return false;
                 }
             } catch (Exception e) {
-                ConsumerUtil.sendError(this, "comparePredicate", e);
+                util().sendError("comparePredicate", e);
                 return false;
             }
         };

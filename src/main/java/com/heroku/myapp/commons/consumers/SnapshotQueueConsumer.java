@@ -2,7 +2,6 @@ package com.heroku.myapp.commons.consumers;
 
 import com.heroku.myapp.commons.util.actions.SnapshotUtil;
 import com.heroku.myapp.commons.util.consumers.QueueMessage;
-import com.heroku.myapp.commons.util.consumers.ConsumerUtil;
 import java.util.Optional;
 import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
@@ -11,22 +10,21 @@ import org.bson.Document;
 public abstract class SnapshotQueueConsumer extends QueueConsumer {
 
     public SnapshotQueueConsumer() {
-        route().snapshot();
-        setKindFromClassName();
+        util().snapshot();
     }
 
     @Override
     public void configure() {
-        from(route().snapshot().consumeUri())
-                .routeId(route().id())
-                .filter(route().camelBatchComplete())
+        from(util().consumeUri())
+                .routeId(util().id())
+                .filter(util().camelBatchComplete())
                 .filter(defaultPredicate())
                 .choice()
                 .when((Exchange exchange)
                         -> new QueueMessage(exchange).isSkipDiff())
-                .to(route().completionPostUri())
+                .to(util().copy().completion().postUri())
                 .otherwise()
-                .to(route().diff().postUri());
+                .to(util().copy().diff().postUri());
     }
 
     protected Predicate defaultPredicate() {
@@ -40,7 +38,7 @@ public abstract class SnapshotQueueConsumer extends QueueConsumer {
                     return false;
                 }
             } catch (Exception e) {
-                ConsumerUtil.sendError(this, "defaultPredicate", e);
+                util().sendError("defaultPredicate", e);
                 return false;
             }
         };
