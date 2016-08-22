@@ -2,5 +2,11 @@
     "kind": "female_seiyu_category_members",
     "affect": [
         "seiyu_category_members"
-    ]
+    ],
+    "affects": [
+        "seiyu_category_members"
+    ],
+    "period": "5m",
+    "delay": "1m",
+    "common_diff_key": "title"
 }

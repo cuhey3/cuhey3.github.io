@@ -43,7 +43,7 @@ public class MasterUtil extends ActionUtil {
     }
 
     public boolean toCompleteLogic(RouteBuilder rb) {
-        if (queueMessage().isSkipDiff()) {
+        if (this.optionalKind().get().isSkipDiff()) {
             return true;
         } else {
             Optional<Document> optionalLatest = optionalLatest();
@@ -82,12 +82,18 @@ public class MasterUtil extends ActionUtil {
     }
 
     public boolean checkNotFilled(Document document) {
-        Optional<String> optionalFillField = queueMessage().optionalFillField();
-        if (optionalFillField.isPresent()) {
-            String fillField = optionalFillField.get();
-            return DocumentUtil.getData(
-                    ofNullable(document).orElseGet(() -> findOrElseThrow()))
-                    .stream().anyMatch((map) -> !map.containsKey(fillField));
+        Optional<Kind> optionalKind = this.optionalKind();
+        if (optionalKind.isPresent()) {
+            Optional<String> optionalFillField
+                    = optionalKind.get().optionalFillField();
+            if (optionalFillField.isPresent()) {
+                String fillField = optionalFillField.get();
+                return DocumentUtil.getData(
+                        ofNullable(document).orElseGet(() -> findOrElseThrow()))
+                        .stream().anyMatch((map) -> !map.containsKey(fillField));
+            } else {
+                return false;
+            }
         } else {
             return false;
         }

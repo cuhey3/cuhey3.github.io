@@ -3,5 +3,10 @@
     "affect": [
         "koepota_seiyu",
         "seiyu_has_recentchanges"
+    ],
+    "common_diff_key": "title",
+    "affects": [
+        "koepota_seiyu",
+        "seiyu_has_recentchanges"
     ]
 }
