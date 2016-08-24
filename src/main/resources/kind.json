@@ -1,0 +1,265 @@
+{
+  "amiami_item": {
+    "flag": {
+      "polling": true,
+      "common_diff": false,
+      "affect": true
+    },
+    "options": {
+      "polling": {
+        "period": "60m",
+        "delay": "30m"
+      },
+      "affect": {
+        "affects": [
+          "amiami_original_titles"
+        ]
+      }
+    }
+  },
+  "amiami_original_titles": {
+    "flag": {
+      "polling": false,
+      "common_diff": true,
+      "fill": true,
+      "affect": true
+    },
+    "options": {
+      "common_diff": {
+        "key": "amiami_title"
+      },
+      "fill": {
+        "field": "wiki_titles"
+      },
+      "affect": {
+        "affects": [
+          "amiami_original_titles_all"
+        ]
+      }
+    }
+  },
+  "amiami_original_titles_all": {
+    "flag": {
+      "polling": false,
+      "common_diff": true,
+      "affect": false
+    }
+    ,
+    "options": {
+      "common_diff": {
+        "key": "amiami_title"
+      }
+    }
+  },
+  "female_seiyu_category_members": {
+    "flag": {
+      "polling": true,
+      "common_diff": true,
+      "affect": true
+    }
+    ,
+    "options": {
+      "polling": {
+        "period": "5m",
+        "delay": "1m"
+      },
+      "common_diff": {
+        "key": "title"
+      },
+      "affect": {
+        "affects": [
+          "seiyu_category_members"
+        ]
+      }
+    }
+  },
+  "google_trends": {
+    "flag": {
+      "polling": true,
+      "skip_diff": true,
+      "affect": false
+    }
+    ,
+    "options": {
+      "polling": {
+        "period": "65m",
+        "delay": "10m"
+      },
+      "skip_diff": {}
+    }
+  },
+  "google_trends_seiyu_all": {
+    "flag": {
+      "polling": false,
+      "common_diff": true,
+      "affect": true
+    }
+    ,
+    "options": {
+      "common_diff": {
+        "key": "title"
+      },
+      "affect": {
+        "affects": [
+          "google_trends"
+        ]
+      }
+    }
+  },
+  "koepota_events": {
+    "flag": {
+      "polling": true,
+      "common_diff": true,
+      "affect": true
+    }
+    ,
+    "options": {
+      "polling": {
+        "period": "30m",
+        "delay": "10m"
+      },
+      "common_diff": {
+        "key": "url"
+      },
+      "affect": {
+        "affects": [
+          "koepota_seiyu"
+        ]
+      }
+    }
+  },
+  "koepota_seiyu": {
+    "flag": {
+      "polling": false,
+      "common_diff": true,
+      "affect": false
+    }
+    ,
+    "options": {
+      "common_diff": {
+        "key": "title"
+      },
+      "affect": {
+        "affects": [
+          "koepota_seiyu_all"
+        ]
+      }
+    }
+  },
+  "koepota_seiyu_all": {
+    "flag": {
+      "polling": false,
+      "common_diff": true,
+      "affect": true
+    }
+    ,
+    "options": {
+      "common_diff": {
+        "key": "title"
+      },
+      "affect": {
+        "affects": [
+          "google_trends_seiyu_all"
+        ]
+      }
+    }
+  },
+  "male_seiyu_category_members": {
+    "flag": {
+      "polling": true,
+      "common_diff": true,
+      "affect": true
+    }
+    ,
+    "options": {
+      "polling": {
+        "period": "5m",
+        "delay": "2m"
+      },
+      "common_diff": {
+        "key": "title"
+      },
+      "affect": {
+        "affects": [
+          "seiyu_category_members"
+        ]
+      }
+    }
+  },
+  "seiyu_category_members": {
+    "flag": {
+      "polling": false,
+      "common_diff": true,
+      "affect": true
+    }
+    ,
+    "options": {
+      "common_diff": {
+        "key": "title"
+      },
+      "affect": {
+        "affects": [
+          "seiyu_category_members_include_template"
+        ]
+      }
+    }
+  },
+  "seiyu_category_members_include_template": {
+    "flag": {
+      "polling": false,
+      "common_diff": true,
+      "affect": true
+    }
+    ,
+    "options": {
+      "common_diff": {
+        "key": "title"
+      },
+      "affect": {
+        "affects": [
+          "koepota_seiyu",
+          "seiyu_has_recentchanges"
+        ]
+      }
+    }
+  },
+  "seiyu_has_recentchanges": {
+    "flag": {
+      "polling": false,
+      "common_diff": true,
+      "affect": true
+    }
+    ,
+    "options": {
+      "common_diff": {
+        "key": "title"
+      },
+      "affect": {
+        "affects": [
+          "google_trends_seiyu_all"
+        ]
+      }
+    }
+  },
+  "seiyu_template_include_pages": {
+    "flag": {
+      "polling": true,
+      "common_diff": true,
+      "affect": true
+    },
+    "options": {
+      "polling": {
+        "period": "5m",
+        "delay": "3m"
+      },
+      "common_diff": {
+        "key": "title"
+      },
+      "affect": {
+        "affects": [
+          "seiyu_category_members_include_template"
+        ]
+      }
+    }
+  }
+}

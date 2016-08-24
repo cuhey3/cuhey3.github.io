@@ -2,9 +2,7 @@ package com.heroku.myapp.commons.util.consumers;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import static java.util.Optional.ofNullable;
