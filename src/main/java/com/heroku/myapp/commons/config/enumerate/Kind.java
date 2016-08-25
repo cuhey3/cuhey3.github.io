@@ -19,6 +19,7 @@ public enum Kind {
     out(false),
     all(false),
     summary(false),
+    test(false),
     female_seiyu_category_members,
     male_seiyu_category_members,
     seiyu_category_members,
@@ -32,8 +33,7 @@ public enum Kind {
     amiami_original_titles,
     amiami_original_titles_all,
     google_trends_seiyu_all,
-    google_trends,
-    test(false);
+    google_trends;
 
     private String message;
     private boolean useDevelop = false;
