@@ -1,6 +1,12 @@
 {
     "kind": "seiyu_template_include_pages",
     "affect": [
-      "seiyu_category_members_include_template"
-    ]
+        "seiyu_category_members_include_template"
+    ],
+    "common_diff_key": "title",
+    "affects": [
+        "seiyu_category_members_include_template"
+    ],
+    "period": "5m",
+    "delay": "3m"
 }

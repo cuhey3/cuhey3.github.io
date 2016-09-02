@@ -2,5 +2,11 @@
     "kind": "koepota_events",
     "affect": [
         "koepota_seiyu"
+    ],
+    "common_diff_key": "url",
+    "period": "30m",
+    "delay": "10m",
+    "affects": [
+        "koepota_seiyu"
     ]
 }

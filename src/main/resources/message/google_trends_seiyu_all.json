@@ -1,6 +1,10 @@
 {
     "kind": "google_trends_seiyu_all",
     "affect": [
-      "google_trends"
+        "google_trends"
+    ],
+    "common_diff_key": "title",
+    "affects": [
+        "google_trends"
     ]
 }

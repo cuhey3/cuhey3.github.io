@@ -37,4 +37,8 @@ public abstract class ActionUtil extends MongoUtil {
             return Optional.empty();
         }
     }
+
+    public Optional<Kind> optionalKind() {
+        return Optional.ofNullable(kind);
+    }
 }

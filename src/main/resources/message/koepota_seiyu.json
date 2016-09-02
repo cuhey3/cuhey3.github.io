@@ -1,6 +1,10 @@
 {
     "kind": "koepota_seiyu",
     "affect": [
-      "koepota_seiyu_all"
+        "koepota_seiyu_all"
+    ],
+    "common_diff_key": "title",
+    "affects": [
+        "koepota_seiyu_all"
     ]
 }

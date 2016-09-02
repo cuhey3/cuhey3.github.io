@@ -2,5 +2,9 @@
     "kind": "google_trends",
     "affect": [
     ],
-    "skip_diff": true
+    "skip_diff": true,
+    "affects": [
+    ],
+    "period": "65m",
+    "delay": "10m"
 }

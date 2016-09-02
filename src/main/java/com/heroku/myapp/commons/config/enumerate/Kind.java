@@ -1,80 +1,116 @@
 package com.heroku.myapp.commons.config.enumerate;
 
-import static com.heroku.myapp.commons.util.actions.DiffUtil.commonDiff;
+import com.google.gson.Gson;
+import com.heroku.myapp.commons.util.consumers.QueueConsumerUtil;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum Kind {
 
-    in("noPremessage"),
-    out("noPremessage"),
-    all("noPremessage"),
-    summary("noPremessage"),
-    female_seiyu_category_members(commonDiff(), "period=5m&delay=1m"),
-    male_seiyu_category_members(commonDiff(), "period=5m&delay=2m"),
-    seiyu_category_members(commonDiff()),
-    seiyu_template_include_pages(commonDiff(), "period=5m&delay=3m"),
-    seiyu_category_members_include_template(commonDiff()),
-    koepota_events(commonDiff("url"), "period=30m&delay=10m"),
-    koepota_seiyu(commonDiff()),
-    seiyu_has_recentchanges(commonDiff()),
-    koepota_seiyu_all(commonDiff()),
-    amiami_item("period=60m&delay=30m"),
-    amiami_original_titles(commonDiff("amiami_title")),
-    amiami_original_titles_all(commonDiff("amiami_title")),
-    google_trends_seiyu_all(commonDiff()),
-    google_trends("period=65m&delay=10m"),
-    test;
+    in(false),
+    out(false),
+    all(false),
+    summary(false),
+    test(false),
+    female_seiyu_category_members,
+    male_seiyu_category_members,
+    seiyu_category_members,
+    seiyu_template_include_pages,
+    seiyu_category_members_include_template,
+    koepota_events,
+    koepota_seiyu,
+    seiyu_has_recentchanges,
+    koepota_seiyu_all,
+    amiami_item,
+    amiami_original_titles,
+    amiami_original_titles_all,
+    google_trends_seiyu_all,
+    google_trends;
 
-    private String timerUri, preMessage, commonDiffKey;
-    private boolean useCommonDiff = false;
+    private String message;
     private boolean useDevelop = false;
-    private boolean loadPremessage = true;
+    private static Map<String, Object> kindJsonMap;
+    private final Map<KindOptions, Map<String, Object>> kindOptionsBody
+            = new LinkedHashMap<>();
 
-    private Kind(String... token) {
-        parseToken(token);
-        setPremessage();
+    private Kind() {
+        loadKindJson();
+        loadOptions();
     }
 
-    private void parseToken(String... token) {
-        for (String t : token) {
-            if (t.contains("common_diff_key=")) {
-                this.useCommonDiff = true;
-                this.commonDiffKey = t.replace("common_diff_key=", "");
-            } else if (t.contains("period=")) {
-                this.timerUri = String.format("timer:%s?%s", this.name(), t);
-            } else if (t.equals("develop")) {
-                this.useDevelop = true;
-            } else if (t.equals("noPremessage")) {
-                this.loadPremessage = false;
-            }
+    private Kind(boolean loadOptionFlag) {
+        if (loadOptionFlag) {
+            loadKindJson();
+            loadOptions();
         }
     }
 
-    private void setPremessage() {
-        if (loadPremessage) {
-            String resourcePath
-                    = "../../../../../../message/" + this.name() + ".json";
-            InputStream resourceAsStream
-                    = this.getClass().getResourceAsStream(resourcePath);
-            try (BufferedReader buffer = new BufferedReader(
-                    new InputStreamReader(resourceAsStream, "UTF-8"))) {
-                preMessage = buffer.lines().collect(Collectors.joining("\n"));
-                System.out.println("loaded " + resourcePath);
-            } catch (Exception ex) {
-                System.out.println("premessage initialization failed..."
-                        + "\nSystem is shutting down.");
-                System.out.println(resourcePath);
-                System.exit(1);
-            }
-        } else {
-            preMessage = "{}";
+    private Kind(boolean loadOptionFlag, boolean developFlag) {
+        if (loadOptionFlag) {
+            loadKindJson();
+            loadOptions();
         }
+        if (developFlag) {
+            useDevelop = true;
+        }
+    }
+
+    public boolean isEnable(KindOptions kindOptions) {
+        return kindOptionsBody.containsKey(kindOptions);
+    }
+
+    public boolean optionIsEnable() {
+        return !kindOptionsBody.isEmpty();
+    }
+
+    public Object getRaw(KindOptions kindOptions) {
+        return kindOptions.toObject(this, kindOptionsBody.get(kindOptions));
+    }
+
+    public String get(KindOptions kindOptions) {
+        return String.class.cast(getRaw(kindOptions));
+    }
+
+    public <T> T get(KindOptions kindOptions, Class<T> clazz) {
+        return clazz.cast(getRaw(kindOptions));
+    }
+
+    public boolean getBool(KindOptions kindOptions) {
+        return get(kindOptions, Boolean.class);
+    }
+
+    public List getByList(KindOptions kindOptions) {
+        return get(kindOptions, List.class);
+    }
+
+    public List<Kind> getByKindList(KindOptions kindOptions) {
+        return get(kindOptions, List.class);
+    }
+
+    private void loadOptions() {
+        Map<String, Object> kindMap
+                = (Map<String, Object>) kindJsonMap.get(this.name());
+        Map<String, Boolean> kindFlag
+                = (Map<String, Boolean>) kindMap.get("flag");
+        Map<String, Map<String, Object>> options
+                = (Map<String, Map<String, Object>>) kindMap.get("options");
+        List<KindOptions> collect = kindFlag.entrySet()
+                .stream().filter((entry) -> entry.getValue())
+                .map((entry) -> KindOptions.valueOf(entry.getKey()))
+                .collect(Collectors.toList());
+        collect.stream()
+                .forEach((kindOption) -> {
+                    kindOptionsBody
+                            .put(kindOption, options.get(kindOption.name()));
+                });
     }
 
     public String expression() {
@@ -83,22 +119,6 @@ public enum Kind {
         } else {
             return this.name();
         }
-    }
-
-    public String timerUri() {
-        return this.timerUri;
-    }
-
-    public String commonDiffKey() {
-        return this.commonDiffKey;
-    }
-
-    public void timerParam(String timerParam) {
-        this.timerUri = String.format("timer:%s?%s", expression(), timerParam);
-    }
-
-    public boolean isUsedCommonDiffRoute() {
-        return this.useCommonDiff;
     }
 
     public static Optional<Kind> optionalKindFromClassName(Object object) {
@@ -111,10 +131,6 @@ public enum Kind {
         return optionalKindFromString(kindSnake);
     }
 
-    public String preMessage() {
-        return this.preMessage;
-    }
-
     public static Optional<Kind> optionalKindFromString(String str) {
         if (str == null) {
             return Optional.empty();
@@ -123,5 +139,65 @@ public enum Kind {
                     .filter((kind) -> kind.name().equals(str))
                     .findFirst();
         }
+    }
+
+    public void loadKindJson() {
+        if (kindJsonMap == null) {
+            kindJsonMap = new LinkedHashMap<>();
+            String resourcePath
+                    = "../../../../../../kind.json";
+            InputStream resourceAsStream
+                    = this.getClass().getResourceAsStream(resourcePath);
+            try (BufferedReader buffer = new BufferedReader(
+                    new InputStreamReader(resourceAsStream, "UTF-8"))) {
+                kindJsonMap.putAll(new Gson().fromJson(buffer.lines()
+                        .collect(Collectors.joining("\n")), Map.class));
+            } catch (Exception ex) {
+                System.out.println("kind initialization failed..."
+                        + "\nSystem is shutting down.");
+                System.out.println(resourcePath);
+                System.exit(1);
+            }
+        }
+    }
+
+    public String timerUri() {
+        return this.get(KindOptions.polling);
+    }
+
+    public String commonDiffKey() {
+        return this.get(KindOptions.common_diff);
+    }
+
+    public boolean isSkipDiff() {
+        return this.isEnable(KindOptions.skip_diff)
+                && this.getBool(KindOptions.skip_diff);
+    }
+
+    public String fillField() {
+        return this.get(KindOptions.fill);
+    }
+
+    public List<Kind> affects() {
+        return this.getByKindList(KindOptions.affect);
+    }
+    
+    public List<Kind> alwaysAffects() {
+        return this.getByKindList(KindOptions.always_affect);
+    }
+
+    public String preMessage() {
+        return Optional.ofNullable(message).orElseGet(() -> {
+            Map map = new LinkedHashMap<>();
+            map.put("kind", this.name());
+            return message = new Gson().toJson(map);
+        });
+    }
+
+    public String[] affectQueueUriArray() {
+        List<String> collect = this.affects().stream()
+                .map((k) -> new QueueConsumerUtil(k).snapshot().ironmqPostUri())
+                .collect(Collectors.toList());
+        return collect.toArray(new String[collect.size()]);
     }
 }

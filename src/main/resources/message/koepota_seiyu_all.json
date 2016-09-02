@@ -1,6 +1,10 @@
 {
     "kind": "koepota_seiyu_all",
     "affect": [
-      "google_trends_seiyu_all"
+        "google_trends_seiyu_all"
+    ],
+    "common_diff_key": "title",
+    "affects": [
+        "google_trends_seiyu_all"
     ]
 }

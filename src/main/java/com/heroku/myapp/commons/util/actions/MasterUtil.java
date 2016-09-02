@@ -1,6 +1,7 @@
 package com.heroku.myapp.commons.util.actions;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
+import com.heroku.myapp.commons.config.enumerate.KindOptions;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.consumers.QueueConsumer;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
@@ -43,7 +44,7 @@ public class MasterUtil extends ActionUtil {
     }
 
     public boolean toCompleteLogic(RouteBuilder rb) {
-        if (queueMessage().isSkipDiff()) {
+        if (this.optionalKind().get().isSkipDiff()) {
             return true;
         } else {
             Optional<Document> optionalLatest = optionalLatest();
@@ -82,12 +83,17 @@ public class MasterUtil extends ActionUtil {
     }
 
     public boolean checkNotFilled(Document document) {
-        Optional<String> optionalFillField = queueMessage().optionalFillField();
-        if (optionalFillField.isPresent()) {
-            String fillField = optionalFillField.get();
-            return DocumentUtil.getData(
-                    ofNullable(document).orElseGet(() -> findOrElseThrow()))
-                    .stream().anyMatch((map) -> !map.containsKey(fillField));
+        Optional<Kind> optionalKind = this.optionalKind();
+        if (optionalKind.isPresent()) {
+            Kind k = optionalKind.get();
+            if (k.isEnable(KindOptions.fill)) {
+                String fillField = k.fillField();
+                return DocumentUtil.getData(
+                        ofNullable(document).orElseGet(() -> findOrElseThrow()))
+                        .stream().anyMatch((map) -> !map.containsKey(fillField));
+            } else {
+                return false;
+            }
         } else {
             return false;
         }

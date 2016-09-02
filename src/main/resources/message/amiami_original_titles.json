@@ -1,7 +1,12 @@
 {
     "kind": "amiami_original_titles",
     "affect": [
-      "amiami_original_titles_all"
+        "amiami_original_titles_all"
     ],
-    "fill": "wiki_titles"
+    "fill": "wiki_titles",
+    "affects": [
+        "amiami_original_titles_all"
+    ],
+    "fill_field": "wiki_titles",
+    "common_diff_key": "amiami_title"
 }

@@ -1,6 +1,7 @@
 package com.heroku.myapp.commons.util.consumers;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
+import com.heroku.myapp.commons.config.enumerate.KindOptions;
 import com.heroku.myapp.commons.consumers.QueueConsumer;
 import com.heroku.myapp.commons.exceptions.QueueConsumerUtilNotReadyException;
 import io.iron.ironmq.Client;
@@ -10,6 +11,7 @@ import java.util.Locale;
 import java.util.Optional;
 import org.apache.camel.Exchange;
 import org.apache.camel.Expression;
+import org.apache.camel.Predicate;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.SimpleBuilder;
 
@@ -27,20 +29,40 @@ public class QueueConsumerUtil {
         kind(Kind.optionalKindFromClassName(queueConsumer).orElse(null));
     }
 
+    public QueueConsumerUtil(Kind k) {
+        this.consumer = null;
+        kind(k);
+    }
+
     public Expression affectQueueUri() {
         return new Expression() {
             @Override
             public <T> T evaluate(Exchange exchange, Class<T> type) {
-                String kindString = exchange.getIn().getBody(String.class);
-                Optional<Kind> optionalKind
-                        = Kind.optionalKindFromString(kindString);
-                if (optionalKind.isPresent()) {
-                    Kind k = optionalKind.get();
+                Kind k = exchange.getIn().getBody(Kind.class);
+                if (k != null) {
                     exchange.getIn().setBody(k.preMessage());
                     return type.cast(copy().snapshot().kind(k).ironmqPostUri());
                 } else {
                     return type.cast("");
                 }
+            }
+        };
+    }
+
+    public Predicate loadAffectPredicate() {
+        return (Exchange exchange) -> {
+            QueueMessage message = new QueueMessage(exchange);
+            Optional<Kind> optionalKind = message.optionalKind();
+            if (optionalKind.isPresent()) {
+                Kind k = optionalKind.get();
+                if (k.isEnable(KindOptions.affect)) {
+                    exchange.getIn().setBody(k.affects());
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
             }
         };
     }
