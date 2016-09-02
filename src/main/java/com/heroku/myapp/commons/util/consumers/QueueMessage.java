@@ -57,8 +57,13 @@ public class QueueMessage {
         save(key, DocumentUtil.objectIdHexString(document));
     }
 
-    public void save(String key, String value) {
+    public void save(String key, Object value) {
         map.put(key, value);
         exchange.getIn().setBody(map, String.class);
+    }
+
+    public boolean hasChange(boolean hasChange) {
+        save("changed", hasChange);
+        return true;
     }
 }

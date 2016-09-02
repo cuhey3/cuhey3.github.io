@@ -132,7 +132,8 @@
         "flag": {
             "polling": false,
             "common_diff": true,
-            "affect": true
+            "affect": true,
+            "always_affect": true
         },
         "options": {
             "common_diff": {
@@ -142,6 +143,9 @@
                 "affects": [
                     "koepota_seiyu_all"
                 ]
+            },
+            "always_affect":{
+              "always_affects":[]
             }
         }
     },

@@ -1,7 +1,6 @@
 package com.heroku.myapp.commons.consumers;
 
 import com.heroku.myapp.commons.util.actions.SnapshotUtil;
-import com.heroku.myapp.commons.util.consumers.QueueMessage;
 import java.util.Optional;
 import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;

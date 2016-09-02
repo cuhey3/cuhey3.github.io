@@ -37,6 +37,14 @@ public enum KindOptions {
             return affectsString.stream().map((str) -> Kind.valueOf(str))
                     .collect(Collectors.toList());
         }
+    }, always_affect {
+        @Override
+        public Object toObject(Kind kind, Map<String, Object> optionsBody) {
+            List<String> affectsString
+                    = (List<String>) optionsBody.get("always_affects");
+            return affectsString.stream().map((str) -> Kind.valueOf(str))
+                    .collect(Collectors.toList());
+        }
     };
 
     public abstract Object toObject(Kind kind, Map<String, Object> optionsBody);

@@ -181,6 +181,10 @@ public enum Kind {
     public List<Kind> affects() {
         return this.getByKindList(KindOptions.affect);
     }
+    
+    public List<Kind> alwaysAffects() {
+        return this.getByKindList(KindOptions.always_affect);
+    }
 
     public String preMessage() {
         return Optional.ofNullable(message).orElseGet(() -> {
