@@ -144,8 +144,9 @@
                     "koepota_seiyu_all"
                 ]
             },
-            "always_affect":{
-              "always_affects":[]
+            "always_affect": {
+                "always_affects": [
+                ]
             }
         }
     },
@@ -154,8 +155,7 @@
             "polling": false,
             "common_diff": true,
             "affect": true
-        }
-        ,
+        },
         "options": {
             "common_diff": {
                 "key": "title"
@@ -165,6 +165,16 @@
                     "google_trends_seiyu_all"
                 ]
             }
+        }
+    },
+    "koepota_ranking": {
+        "flag": {
+            "polling": false,
+            "skip_diff": true,
+            "affect": false
+        },
+        "options": {
+            "skip_diff": {}
         }
     },
     "male_seiyu_category_members": {

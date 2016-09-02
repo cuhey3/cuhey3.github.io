@@ -37,7 +37,6 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
     public Predicate comparePredicate() {
         return (Exchange exchange) -> {
             Optional<Document> optSnapshot, optMaster, optDiff;
-            QueueMessage message = new QueueMessage(exchange);
             try {
                 optSnapshot = new SnapshotUtil(exchange).loadDocument();
                 if (!optSnapshot.isPresent()) {
@@ -46,19 +45,19 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
                 MasterUtil masterUtil = new MasterUtil(exchange);
                 optMaster = masterUtil.optionalLatest();
                 if (!optMaster.isPresent()) {
-                    return message.hasChange(true);
+                    return new QueueMessage(exchange).hasChange(true);
                 }
                 Document master = optMaster.get();
                 optDiff = calculateDiff(master, optSnapshot.get());
                 if (optDiff.isPresent()) {
                     new DiffUtil(exchange).updateMessageComparedId(master)
                             .writeDocument(optDiff.get());
-                    return message.hasChange(true);
+                    return new QueueMessage(exchange).hasChange(true);
                 } else if (masterUtil.checkNotFilled(master)) {
                     new DiffUtil(exchange).updateMessageComparedId(master);
-                    return message.hasChange(true);
+                    return new QueueMessage(exchange).hasChange(true);
                 } else {
-                    return message.hasChange(false);
+                    return new QueueMessage(exchange).hasChange(false);
                 }
             } catch (Exception e) {
                 util().sendError("comparePredicate", e);

@@ -29,6 +29,7 @@ public enum Kind {
     koepota_seiyu,
     seiyu_has_recentchanges,
     koepota_seiyu_all,
+    koepota_ranking(false),
     amiami_item,
     amiami_original_titles,
     amiami_original_titles_all,
@@ -181,7 +182,7 @@ public enum Kind {
     public List<Kind> affects() {
         return this.getByKindList(KindOptions.affect);
     }
-    
+
     public List<Kind> alwaysAffects() {
         return this.getByKindList(KindOptions.always_affect);
     }
