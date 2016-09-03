@@ -29,7 +29,7 @@ public enum Kind {
     koepota_seiyu,
     seiyu_has_recentchanges,
     koepota_seiyu_all,
-    koepota_ranking(false),
+    koepota_ranking,
     amiami_item,
     amiami_original_titles,
     amiami_original_titles_all,

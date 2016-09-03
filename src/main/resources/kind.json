@@ -146,6 +146,7 @@
             },
             "always_affect": {
                 "always_affects": [
+                    "koepota_ranking"
                 ]
             }
         }
