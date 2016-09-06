@@ -34,7 +34,8 @@ public enum Kind {
     amiami_original_titles,
     amiami_original_titles_all,
     google_trends_seiyu_all,
-    google_trends;
+    google_trends,
+    seiyu_multi_lang;
 
     private String message;
     private boolean useDevelop = false;

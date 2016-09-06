@@ -250,7 +250,8 @@
             },
             "affect": {
                 "affects": [
-                    "google_trends_seiyu_all"
+                    "google_trends_seiyu_all",
+                    "seiyu_multi_lang"
                 ]
             }
         }
@@ -274,6 +275,16 @@
                     "seiyu_category_members_include_template"
                 ]
             }
+        }
+    },
+    "seiyu_multi_lang": {
+        "flag": {
+            "polling": false,
+            "skip_diff": true,
+            "affect": false
+        },
+        "options": {
+            "skip_diff": {}
         }
     }
 }

@@ -5,6 +5,8 @@ import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.consumers.QueueConsumer;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
 import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
+import com.mongodb.client.MongoCursor;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -104,5 +106,13 @@ public class DiffUtil extends ActionUtil {
         } finally {
             this.kind = kind0;
         }
+    }
+
+    public MongoCursor<Document> findUnmergedDiffIterator(Map<String, Date> mergedDiffMap) {
+        Date date = mergedDiffMap.get(this.kind.expression());
+        return collection()
+                .find(new Document("creationDate", new Document("$gt", date))
+                        .append("enable", true))
+                .sort(new Document("creationDate", 1)).iterator();
     }
 }
