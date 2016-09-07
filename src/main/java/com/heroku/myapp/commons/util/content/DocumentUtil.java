@@ -80,6 +80,21 @@ public final class DocumentUtil {
         return this;
     }
 
+    public DocumentUtil addNewByKey(Document oldDoc, List<Map<String, Object>> newList, final String key) {
+        List<Map<String, Object>> oldList;
+        if (oldDoc == null) {
+            oldList = new ArrayList<>();
+        } else {
+            oldList = getData(oldDoc);
+        }
+        Set oldSet = oldList.stream().map((map) -> map.get(key))
+                .collect(Collectors.toSet());
+        newList.stream().filter((map) -> !oldSet.contains(map.get(key)))
+                .forEach(oldList::add);
+        setData(oldList);
+        return this;
+    }
+
     public DocumentUtil createPrefix(String... keys) {
         document.append("prefix", new LinkedHashMap());
         for (String key : keys) {
@@ -139,5 +154,11 @@ public final class DocumentUtil {
 
     public Optional<Document> nullable() {
         return Optional.ofNullable(document);
+    }
+
+    public Set keySet(String key) {
+        return this.getData().stream()
+                .map((map) -> map.get(key))
+                .collect(Collectors.toSet());
     }
 }
