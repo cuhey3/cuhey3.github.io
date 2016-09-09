@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public enum KindOptions {
+public enum KindOption {
     polling {
         @Override
         public Object toObject(Kind kind, Map<String, Object> optionsBody) {
