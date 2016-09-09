@@ -16,8 +16,7 @@ public enum Environments {
     private Map<String, String> map;
 
     private Environments() {
-        this.path = String.format(
-                "/config/%s.json", this.name().toLowerCase(Locale.US));
+        this.path = "/config/" + this.name().toLowerCase(Locale.US) + ".json";
     }
 
     public String get(String key) {
