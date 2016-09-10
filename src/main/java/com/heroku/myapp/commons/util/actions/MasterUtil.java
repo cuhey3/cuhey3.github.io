@@ -1,7 +1,7 @@
 package com.heroku.myapp.commons.util.actions;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
-import com.heroku.myapp.commons.config.enumerate.KindOptions;
+import com.heroku.myapp.commons.config.enumerate.KindOption;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.consumers.QueueConsumer;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
@@ -86,7 +86,7 @@ public class MasterUtil extends ActionUtil {
         Optional<Kind> optionalKind = this.optionalKind();
         if (optionalKind.isPresent()) {
             Kind k = optionalKind.get();
-            if (k.isEnable(KindOptions.fill)) {
+            if (k.isEnable(KindOption.fill)) {
                 String fillField = k.fillField();
                 return DocumentUtil.getData(
                         ofNullable(document).orElseGet(() -> findOrElseThrow()))

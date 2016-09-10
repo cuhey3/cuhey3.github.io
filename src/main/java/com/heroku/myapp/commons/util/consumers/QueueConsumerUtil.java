@@ -1,7 +1,7 @@
 package com.heroku.myapp.commons.util.consumers;
 
 import com.heroku.myapp.commons.config.enumerate.Kind;
-import com.heroku.myapp.commons.config.enumerate.KindOptions;
+import com.heroku.myapp.commons.config.enumerate.KindOption;
 import com.heroku.myapp.commons.consumers.QueueConsumer;
 import com.heroku.myapp.commons.exceptions.QueueConsumerUtilNotReadyException;
 import io.iron.ironmq.Client;
@@ -55,7 +55,7 @@ public class QueueConsumerUtil {
             Optional<Kind> optionalKind = message.optionalKind();
             if (optionalKind.isPresent()) {
                 Kind k = optionalKind.get();
-                if (k.isEnable(KindOptions.affect)) {
+                if (k.isEnable(KindOption.affect)) {
                     exchange.getIn().setBody(k.affects());
                     return true;
                 } else {

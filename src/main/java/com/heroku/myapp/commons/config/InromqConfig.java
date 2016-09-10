@@ -16,7 +16,6 @@ public class InromqConfig {
                     Environments.IRON.getOr("IRON_MQ_TOKEN", "token"),
                     Cloud.ironAWSUSEast);
         } catch (Exception ex) {
-            ex.printStackTrace();
             System.out.println("ironmq client initialization failed..."
                     + "\nSystem is shutting down.");
             System.exit(1);

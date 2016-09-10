@@ -21,22 +21,15 @@ public class MongoConfig {
 
     public MongoConfig() {
         try {
-            MongoClientURI ownMongoClientURI = new MongoClientURI(
-                    ofNullable(System.getenv("MONGOLAB_URI"))
-                    .orElseGet(() -> Environments.ENV.get("MONGODB_URI")));
-            try (MongoClient mongoClient = new MongoClient(ownMongoClientURI)) {
-                Map<String, String> settings = mongoClient.
-                        getDatabase(ownMongoClientURI.getDatabase())
-                        .getCollection("settings").find().iterator().next()
-                        .get("mongodb", Map.class);
-                settings.entrySet().stream().forEach((entry)
-                        -> MONGO_SETTINGS.put(entry.getKey(),
+            MongoClientURI uri = getOwnMongoClientURI();
+            try (MongoClient client = new MongoClient(uri)) {
+                Map<String, String> mongoUriMap = getMongoUriMap(client, uri);
+                mongoUriMap.entrySet().stream()
+                        .forEach((entry) -> MONGO_SETTINGS.put(entry.getKey(),
                                 new MongoClientURI(entry.getValue())));
-                MONGO_SETTINGS.put(
-                        MongoTarget.DUMMY.expression(), ownMongoClientURI);
+                MONGO_SETTINGS.put(MongoTarget.DUMMY.expression(), uri);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
             System.out.println("mongodb client initialization failed..."
                     + "\nSystem is shutting down.");
             System.exit(1);
@@ -66,5 +59,15 @@ public class MongoConfig {
     @Bean(name = "dummy")
     public MongoClient getMongoClientDummy() {
         return new MongoClient(getMongoClientURI(MongoTarget.DUMMY));
+    }
+
+    private MongoClientURI getOwnMongoClientURI() {
+        return new MongoClientURI(ofNullable(System.getenv("MONGOLAB_URI"))
+                .orElseGet(() -> Environments.ENV.get("MONGODB_URI")));
+    }
+
+    private Map<String, String> getMongoUriMap(MongoClient client, MongoClientURI uri) {
+        return client.getDatabase(uri.getDatabase()).getCollection("settings")
+                .find().iterator().next().get("mongodb", Map.class);
     }
 }
