@@ -18,6 +18,7 @@ public class MediawikiApiRequest {
     private final String apiUrl = "https://ja.wikipedia.org/w/api.php";
     private String apiParam, listName, mapName, continueElementName;
     private final List<String> ignoreFieldNameList = new ArrayList<>();
+    private boolean debugFlag = false;
 
     public MediawikiApiRequest setApiParam(String apiParam) {
         this.apiParam = apiParam;
@@ -47,8 +48,14 @@ public class MediawikiApiRequest {
 
     public List<Map<String, Object>> getResultByMapList() throws IOException {
         String requestUrl = apiUrl + "?" + apiParam;
+        if (debugFlag) {
+            System.out.println("connecting... " + requestUrl);
+        }
         Document get
                 = Jsoup.connect(requestUrl).timeout(Integer.MAX_VALUE).get();
+        if (debugFlag) {
+            System.out.println("connected. " + requestUrl);
+        }
         ArrayList<Map<String, Object>> resultMapList = new ArrayList<>();
         addElementsAsMap(resultMapList, get.select(listName).select(mapName));
         if (continueElementName != null) {
@@ -76,8 +83,14 @@ public class MediawikiApiRequest {
 
     public Set<String> getResultBySet(String attr) throws IOException {
         String requestUrl = apiUrl + "?" + apiParam;
+        if (debugFlag) {
+            System.out.println("connecting... " + requestUrl);
+        }
         Document get
                 = Jsoup.connect(requestUrl).timeout(Integer.MAX_VALUE).get();
+        if (debugFlag) {
+            System.out.println("connected. " + requestUrl);
+        }
         HashSet<String> resultSet = new HashSet<>();
         get.select(listName).select(mapName).stream()
                 .map((el) -> el.attr(attr)).forEach(resultSet::add);
@@ -116,5 +129,10 @@ public class MediawikiApiRequest {
                     });
             return m;
         }).forEach(addingList::add);
+    }
+
+    public MediawikiApiRequest debug() {
+        debugFlag = true;
+        return this;
     }
 }
