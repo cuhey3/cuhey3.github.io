@@ -1,0 +1,224 @@
+{
+    "prefix": "Category:",
+    "categories": {
+        "各年のアニメ": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "%s",
+                        "args": [
+                            "recent_years"
+                        ]
+                    }
+                ]
+            }
+        },
+        "各年のコンピュータゲーム": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "%s",
+                        "args": [
+                            "recent_years"
+                        ]
+                    }
+                ],
+                "exclude": [
+                    {
+                        "pattern": "%sのアダルトゲーム",
+                        "args": [
+                            "years"
+                        ]
+                    },
+                    {
+                        "pattern": "%sのファミ通クロスレビュープラチナ殿堂入りソフト",
+                        "args": [
+                            "years"
+                        ]
+                    },
+                    {
+                        "pattern": "%sの機種別ゲーム",
+                        "args": [
+                            "years"
+                        ]
+                    }
+                ]
+            }
+        },
+        "各年の映画": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "%s",
+                        "args": [
+                            "recent_years"
+                        ]
+                    }
+                ],
+                "exclude": [
+                    {
+                        "pattern": "%sの映画賞",
+                        "args": [
+                            "years"
+                        ]
+                    },
+                    {
+                        "pattern": "%sのアニメ映画",
+                        "args": [
+                            "years"
+                        ]
+                    }
+                ]
+            }
+        },
+        "各年のテレビドラマ": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "%s",
+                        "args": [
+                            "recent_years"
+                        ]
+                    }
+                ]
+            }
+        },
+        "各年の日本のテレビ番組": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "%s",
+                        "args": [
+                            "recent_years"
+                        ]
+                    }
+                ]
+            }
+        },
+        "各年の日本のラジオ番組": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "%s",
+                        "args": [
+                            "recent_years"
+                        ]
+                    }
+                ]
+            }
+        },
+        "マスコット": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "マスコット"
+                    }
+                ],
+                "exclude": [
+                    {
+                        "pattern": "モチーフ別のマスコット"
+                    }
+                ]
+            }
+        },
+        "擬人化": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "擬人化"
+                    }
+                ]
+            }
+        },
+        "声優": {
+            "filter": {
+                "exclude": [
+                    {
+                        "pattern": "日本の声優のカテゴリ"
+                    },
+                    {
+                        "pattern": "声優のシングル"
+                    },
+                    {
+                        "pattern": "声優ユニットのシングル"
+                    },
+                    {
+                        "pattern": "声優のアルバム"
+                    },
+                    {
+                        "pattern": "各国の声優"
+                    },
+                    {
+                        "pattern": "男性声優"
+                    },
+                    {
+                        "pattern": "女性声優"
+                    },
+                    {
+                        "pattern": "声優のテンプレート"
+                    },
+                    {
+                        "pattern": "注意がある記事 \\(声優\\)"
+                    },
+                    {
+                        "pattern": "声優関連のスタブ項目"
+                    },
+                    {
+                        "pattern": "アニメ・ゲーム情報番組"
+                    }
+                ],
+                "no_continue": [
+                    "声優ユニット",
+                    "声優プロダクション",
+                    "声優関連の学校",
+                    "声優の映像作品",
+                    "アニラジ"
+                ]
+            }
+        },
+        "日本のWebアニメ": {
+        },
+        "アニメ・ゲーム情報番組": {
+            "filter": {
+                "no_continue": [
+                    "アニメ・ゲーム情報番組"
+                ]
+            }
+        },
+        "声優バラエティ番組": {},
+        "漫画に関するテレビ番組": {},
+        "ドラマCD": {
+            "filter": {
+                "no_continue": [
+                    "ドラマCD"
+                ]
+            }
+        },
+        "継続中の作品": {},
+        "アニメ作品のディスコグラフィ": {},
+        "ゲーム作品のディスコグラフィ": {},
+        "ソーシャルゲーム": {
+            "filter": {
+                "no_continue": [
+                    "ソーシャルゲーム"
+                ]
+            }
+        },
+        "インターネット配信のアニラジ": {
+            "filter": {
+                "no_continue": [
+                    "インターネット配信のアニラジ"
+                ]
+            }
+        },
+        "文化放送A&Gゾーン": {},
+        "1314_V-STATION": {
+            "filter": {
+                "no_continue": [
+                    "1314_V-STATION"
+                ]
+            }
+        },
+        "アニメソング番組": {}
+    }
+}

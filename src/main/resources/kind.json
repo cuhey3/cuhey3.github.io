@@ -290,5 +290,27 @@
                 ]
             }
         }
+    },
+    "categories_related_seiyu": {
+        "flag": {
+            "polling": true,
+            "common_diff": true,
+            "affect": false
+        }
+        ,
+        "options": {
+            "polling": {
+                "period": "1h",
+                "delay": "5m"
+            },
+            "common_diff": {
+                "key": "title"
+            },
+            "affect": {
+                "affects": [
+                    "pages_related_seiyu"
+                ]
+            }
+        }
     }
 }
