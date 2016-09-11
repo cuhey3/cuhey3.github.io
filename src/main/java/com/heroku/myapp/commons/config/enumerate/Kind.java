@@ -35,7 +35,8 @@ public enum Kind {
     google_trends_seiyu_all,
     google_trends,
     seiyu_multi_lang,
-    categories_related_seiyu;
+    categories_related_seiyu,
+    pages_related_seiyu;
 
     private String message;
     private boolean useDevelop = false;
