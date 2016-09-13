@@ -317,9 +317,9 @@
         "flag": {
             "polling": true,
             "common_diff": true,
-            "affect": false
-        }
-        ,
+            "affect": false,
+            "always_affect": true
+        },
         "options": {
             "polling": {
                 "period": "10m",
@@ -328,8 +328,8 @@
             "common_diff": {
                 "key": "title"
             },
-            "affect": {
-                "affects": [
+            "always_affect": {
+                "always_affects": [
                     "recentchanges_of_seiyu"
                 ]
             }
