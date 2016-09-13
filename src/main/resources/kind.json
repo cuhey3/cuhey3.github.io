@@ -330,9 +330,19 @@
             },
             "affect": {
                 "affects": [
-                    "pages_related_seiyu"
+                    "recentchanges_of_seiyu"
                 ]
             }
+        }
+    },"recentchanges_of_seiyu": {
+        "flag": {
+            "polling": false,
+            "common_diff": false,
+            "affect": false,
+            "skip_diff": true
+        },
+        "options": {
+            "skip_diff": {}
         }
     }
 }
