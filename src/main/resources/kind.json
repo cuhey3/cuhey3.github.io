@@ -338,11 +338,9 @@
         "flag": {
             "polling": false,
             "common_diff": false,
-            "affect": false,
-            "skip_diff": true
+            "affect": false
         },
         "options": {
-            "skip_diff": {}
         }
     }
 }
