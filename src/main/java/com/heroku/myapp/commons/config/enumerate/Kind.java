@@ -44,13 +44,16 @@ public enum Kind {
     private static Map<String, Object> kindJsonMap;
     private final Map<KindOption, Map<String, Object>> kindOptionMap
             = new LinkedHashMap<>();
+    private final boolean isShowCompletion;
 
     private Kind() {
+        isShowCompletion = true;
         loadKindJson();
         loadOptions();
     }
 
     private Kind(boolean loadOptionFlag) {
+        isShowCompletion = loadOptionFlag;
         if (loadOptionFlag) {
             loadKindJson();
             loadOptions();
@@ -58,6 +61,7 @@ public enum Kind {
     }
 
     private Kind(boolean loadOptionFlag, boolean developFlag) {
+        isShowCompletion = loadOptionFlag;
         if (loadOptionFlag) {
             loadKindJson();
             loadOptions();
@@ -188,5 +192,9 @@ public enum Kind {
             map.put("kind", this.name());
             return message = new Gson().toJson(map);
         });
+    }
+
+    public boolean isShowCompletion() {
+        return isShowCompletion;
     }
 }
