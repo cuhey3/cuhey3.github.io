@@ -133,6 +133,11 @@ public final class DocumentUtil {
                 .orElseThrow(() -> new DataNotFoundException());
     }
 
+    public List<Map<String, Object>> getDiff() {
+        return Optional.ofNullable(document.get("diff", List.class))
+                .orElseThrow(() -> new DataNotFoundException());
+    }
+
     public DocumentUtil setData(List list) {
         document.append("data", list);
         return this;

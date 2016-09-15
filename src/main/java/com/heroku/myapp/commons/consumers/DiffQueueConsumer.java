@@ -51,7 +51,7 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
                 optDiff = calculateDiff(master, optSnapshot.get());
                 if (optDiff.isPresent()) {
                     new DiffUtil(exchange).updateMessageComparedId(master)
-                            .writeDocument(optDiff.get());
+                            .writeDocumentWhenDiffIsNotEmpty(optDiff.get());
                     return new QueueMessage(exchange).hasChange(true);
                 } else if (masterUtil.checkNotFilled(master)) {
                     new DiffUtil(exchange).updateMessageComparedId(master);

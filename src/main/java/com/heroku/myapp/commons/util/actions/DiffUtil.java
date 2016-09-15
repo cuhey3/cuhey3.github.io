@@ -96,6 +96,12 @@ public class DiffUtil extends ActionUtil {
         queueMessage().writeObjectId(target.expression() + "_id", document);
     }
 
+    public void writeDocumentWhenDiffIsNotEmpty(Document document) {
+        if (!new DocumentUtil().setDocument(document).getDiff().isEmpty()) {
+            writeDocument(document);
+        }
+    }
+
     private void saveToSummary(Document diff) {
         Kind kind0 = this.kind;
         diff.remove("enable");
