@@ -102,7 +102,7 @@ public class MongoUtil {
     }
     public List<Document> getDocuments(int limit) {
         MongoCursor<Document> iterator
-                = typeAddIterable(limit).iterator();
+                = latestLimitIterable(limit).iterator();
         List<Document> list = new ArrayList<>();
         while (iterator.hasNext()) {
             list.add(iterator.next());
