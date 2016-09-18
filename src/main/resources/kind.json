@@ -82,8 +82,8 @@
         ,
         "options": {
             "polling": {
-                "period": "65m",
-                "delay": "10m"
+                "period": "5m",
+                "delay": "2m"
             },
             "skip_diff": {}
         }
@@ -334,7 +334,8 @@
                 ]
             }
         }
-    },"recentchanges_of_seiyu": {
+    },
+    "recentchanges_of_seiyu": {
         "flag": {
             "polling": false,
             "common_diff": false,
