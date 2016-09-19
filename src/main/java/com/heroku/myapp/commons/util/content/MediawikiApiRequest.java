@@ -120,6 +120,9 @@ public class MediawikiApiRequest {
 
     public void addElementsAsMap(List addingList, Elements elements) {
         elements.stream().map((element) -> {
+            if (element.text() != null && element.text().length() > 0) {
+                element.attr("text", element.text());
+            }
             Map<String, String> m = new HashMap<>();
             StreamSupport.stream(element.attributes().spliterator(), false)
                     .filter((entry) -> ignoreFieldNameList.isEmpty()

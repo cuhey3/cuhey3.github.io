@@ -82,8 +82,8 @@
         ,
         "options": {
             "polling": {
-                "period": "5m",
-                "delay": "2m"
+                "period": "30m",
+                "delay": "10m"
             },
             "skip_diff": {}
         }
