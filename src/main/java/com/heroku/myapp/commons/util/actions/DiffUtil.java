@@ -162,7 +162,7 @@ public class DiffUtil extends ActionUtil {
 
     public void writeDocuments(Document snapshot, Document diff) {
         String snapshotId = DocumentUtil.objectIdHexString(snapshot);
-        List<Document> collect = new DocumentUtil(diff).getData().stream()
+        List<Document> collect = new DocumentUtil(diff).getDiff().stream()
                 .map((map) -> {
                     List<Map<String, Object>> list = new ArrayList<>();
                     list.add(map);
