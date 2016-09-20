@@ -34,21 +34,6 @@ public class QueueConsumerUtil {
         kind(k);
     }
 
-    public Expression affectQueueUri() {
-        return new Expression() {
-            @Override
-            public <T> T evaluate(Exchange exchange, Class<T> type) {
-                Kind k = exchange.getIn().getBody(Kind.class);
-                if (k != null) {
-                    exchange.getIn().setBody(k.preMessage());
-                    return type.cast(copy().snapshot().kind(k).ironmqPostUri());
-                } else {
-                    return type.cast("");
-                }
-            }
-        };
-    }
-
     public Predicate loadAffectPredicate() {
         return (Exchange exchange) -> {
             QueueMessage message = new QueueMessage(exchange);

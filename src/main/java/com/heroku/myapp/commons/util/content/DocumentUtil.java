@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -55,12 +54,9 @@ public final class DocumentUtil {
     }
 
     public DocumentUtil productByKey(Document sieved, Document filter, final String key) {
-        Set<Object> filterSet = getData(filter).stream()
-                .map((map) -> map.get(key))
-                .collect(Collectors.toSet());
-        List<Map<String, Object>> collect = getData(sieved).stream()
-                .filter((map) -> filterSet.contains(map.get(key)))
-                .collect(Collectors.toList());
+        Set filterSet = new MapListUtil(filter).attrSet(key);
+        List<Map<String, Object>> collect
+                = new MapListUtil(sieved).intersectionList(key, filterSet);
         setData(collect);
         return this;
     }
@@ -76,9 +72,8 @@ public final class DocumentUtil {
         } else {
             oldList = getData(oldDoc);
         }
-        Set oldSet = oldList.stream().map((map) -> map.get(key))
-                .collect(Collectors.toSet());
-        getData(newDoc).stream().filter((map) -> !oldSet.contains(map.get(key)))
+        Set oldSet = new MapListUtil(oldList).attrSet(key);
+        new MapListUtil(newDoc).intersection(key, oldSet, false)
                 .forEach(oldList::add);
         setData(oldList);
         return this;
@@ -91,9 +86,8 @@ public final class DocumentUtil {
         } else {
             oldList = getData(oldDoc);
         }
-        Set oldSet = oldList.stream().map((map) -> map.get(key))
-                .collect(Collectors.toSet());
-        newList.stream().filter((map) -> !oldSet.contains(map.get(key)))
+        Set oldSet = new MapListUtil(oldList).attrSet(key);
+        new MapListUtil(newList).intersection(key, oldSet, false)
                 .forEach(oldList::add);
         setData(oldList);
         return this;
@@ -163,11 +157,5 @@ public final class DocumentUtil {
 
     public Optional<Document> nullable() {
         return Optional.ofNullable(document);
-    }
-
-    public Set keySet(String key) {
-        return this.getData().stream()
-                .map((map) -> map.get(key))
-                .collect(Collectors.toSet());
     }
 }
