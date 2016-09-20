@@ -172,7 +172,9 @@ public class DiffUtil extends ActionUtil {
                     return document;
                 })
                 .collect(Collectors.toList());
-        this.insertMany(collect);
-        queueMessage().writeObjectId("diff_by", snapshot);
+        if (!collect.isEmpty()) {
+            this.insertMany(collect);
+            queueMessage().writeObjectId("diff_by", snapshot);
+        }
     }
 }
