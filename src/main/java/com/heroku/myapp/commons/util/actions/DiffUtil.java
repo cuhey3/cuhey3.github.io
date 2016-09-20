@@ -166,7 +166,7 @@ public class DiffUtil extends ActionUtil {
                 .map((map) -> {
                     List<Map<String, Object>> list = new ArrayList<>();
                     list.add(map);
-                    Document document = new DocumentUtil(list).getDocument();
+                    Document document = new DocumentUtil().setDiff(list).getDocument();
                     document.append("diff_by", snapshotId);
                     document.append("enable", false);
                     return document;
