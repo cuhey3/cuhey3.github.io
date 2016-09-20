@@ -13,8 +13,7 @@ public class MediawikiApiRequestBuilder {
     private Action action = Action.QUERY;
     private List list;
     private Namespace[] namespaces;
-    private String title;
-    private String otherParameter;
+    private String title, otherParameter;
     private int limit = 500;
 
     public MediawikiApiRequestBuilder() {
@@ -31,7 +30,7 @@ public class MediawikiApiRequestBuilder {
         return this;
     }
 
-    public MediawikiApiRequestBuilder namespace(Namespace[] namespaces) {
+    public MediawikiApiRequestBuilder namespaces(Namespace[] namespaces) {
         this.namespaces = namespaces;
         return this;
     }
@@ -47,6 +46,11 @@ public class MediawikiApiRequestBuilder {
         } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException();
         }
+        return this;
+    }
+
+    public MediawikiApiRequestBuilder otherParameter(String otherParameter) {
+        this.otherParameter = otherParameter;
         return this;
     }
 
@@ -91,9 +95,12 @@ public class MediawikiApiRequestBuilder {
     }
 
     public enum List {
-        CATEGORYMEMBERS("cm", "list"), RECENTCHANGES("rc", "list"), BACKLINKS("bl", "list"), LINKS("pl", "prop");
-        final String prefix;
-        final String type;
+        CATEGORYMEMBERS("cm", "list"),
+        RECENTCHANGES("rc", "list"),
+        BACKLINKS("bl", "list"),
+        LINKS("pl", "prop");
+
+        final String prefix, type;
 
         private List(String prefix, String type) {
             this.prefix = prefix;

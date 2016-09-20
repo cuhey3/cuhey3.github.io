@@ -28,7 +28,7 @@ public final class DocumentUtil {
     }
 
     private static void restorePrefixSpecific(Document document, String key, String prefix) {
-        DocumentUtil util = new DocumentUtil().setDocument(document);
+        DocumentUtil util = new DocumentUtil(document);
         List<Map<String, Object>> list = util.getData();
         list.stream().forEach((map) -> map.put(key, prefix + map.get(key)));
         util.setData(list);
@@ -43,6 +43,10 @@ public final class DocumentUtil {
 
     public DocumentUtil() {
         this.document = new Document();
+    }
+
+    public DocumentUtil(Document document) {
+        this.document = document;
     }
 
     public DocumentUtil(List list) {

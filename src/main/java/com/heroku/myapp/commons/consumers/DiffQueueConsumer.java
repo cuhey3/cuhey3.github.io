@@ -48,10 +48,11 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
                     return new QueueMessage(exchange).hasChange(true);
                 }
                 Document master = optMaster.get();
-                optDiff = calculateDiff(master, optSnapshot.get());
+                Document snapshot = optSnapshot.get();
+                optDiff = calculateDiff(master, snapshot);
                 if (optDiff.isPresent()) {
-                    new DiffUtil(exchange).updateMessageComparedId(master)
-                            .writeDocumentWhenDiffIsNotEmpty(optDiff.get());
+                    toDoWhenDiffIsPresent(
+                            optDiff.get(), exchange, master, snapshot);
                     return new QueueMessage(exchange).hasChange(true);
                 } else if (masterUtil.checkNotFilled(master)) {
                     new DiffUtil(exchange).updateMessageComparedId(master);
@@ -64,5 +65,10 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
                 return false;
             }
         };
+    }
+
+    public void toDoWhenDiffIsPresent(Document diff, Exchange exchange, Document master, Document snapshot) {
+        new DiffUtil(exchange).updateMessageComparedId(master)
+                .writeDocumentWhenDiffIsNotEmpty(diff);
     }
 }

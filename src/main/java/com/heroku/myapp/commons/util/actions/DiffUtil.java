@@ -6,6 +6,7 @@ import com.heroku.myapp.commons.consumers.QueueConsumer;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
 import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 import com.mongodb.client.MongoCursor;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,39 @@ public class DiffUtil extends ActionUtil {
                     }
                 }
                 return false;
+            } else if (diffByIsExists()) {
+                String diffBy = queueMessage().optionalGet("diff_by").get();
+                Document filter = new Document("diff_by", diffBy);
+                MongoCursor<Document> iterator = collection().find(filter).iterator();
+                boolean isEnable = false;
+                while (iterator.hasNext()) {
+                    isEnable = isEnable || iterator.next().get("enable", Boolean.class);
+                    if (isEnable) {
+                        break;
+                    }
+                }
+                if (isEnable) {
+                    return false;
+                } else {
+                    collection().updateMany(filter, new Document("$set",
+                            new Document("enable", true)));
+                    iterator = collection().find(filter).iterator();
+                    isEnable = true;
+                    List<Document> documents = new ArrayList<>();
+                    while (iterator.hasNext()) {
+                        Document next = iterator.next();
+                        documents.add(next);
+                        isEnable = isEnable && next.get("enable", Boolean.class);
+                        if (!isEnable) {
+                            break;
+                        }
+                    }
+                    if (isEnable) {
+                        documents.stream()
+                                .forEach((document) -> saveToSummary(document));
+                    }
+                }
+                return isEnable;
             } else {
                 return true;
             }
@@ -89,6 +123,10 @@ public class DiffUtil extends ActionUtil {
         return queueMessage().optionalGet("diff_id").isPresent();
     }
 
+    public boolean diffByIsExists() {
+        return queueMessage().optionalGet("diff_by").isPresent();
+    }
+
     @Override
     public void writeDocument(Document document) {
         document.append("enable", false);
@@ -97,7 +135,7 @@ public class DiffUtil extends ActionUtil {
     }
 
     public void writeDocumentWhenDiffIsNotEmpty(Document document) {
-        if (!new DocumentUtil().setDocument(document).getDiff().isEmpty()) {
+        if (!new DocumentUtil(document).getDiff().isEmpty()) {
             writeDocument(document);
         }
     }
@@ -120,5 +158,21 @@ public class DiffUtil extends ActionUtil {
                 .find(new Document("creationDate", new Document("$gt", date))
                         .append("enable", true))
                 .sort(new Document("creationDate", 1)).iterator();
+    }
+
+    public void writeDocuments(Document snapshot, Document diff) {
+        String snapshotId = DocumentUtil.objectIdHexString(snapshot);
+        List<Document> collect = new DocumentUtil(diff).getData().stream()
+                .map((map) -> {
+                    List<Map<String, Object>> list = new ArrayList<>();
+                    list.add(map);
+                    Document document = new DocumentUtil(list).getDocument();
+                    document.append("diff_by", snapshotId);
+                    document.append("enable", false);
+                    return document;
+                })
+                .collect(Collectors.toList());
+        this.insertMany(collect);
+        queueMessage().writeObjectId("diff_by", snapshot);
     }
 }

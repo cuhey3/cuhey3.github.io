@@ -46,6 +46,19 @@ public class MediawikiApiRequest {
         return this;
     }
 
+    public Document getDocument() throws IOException {
+        String requestUrl = apiUrl + "?" + apiParam;
+        if (debugFlag) {
+            System.out.println("connecting... " + requestUrl);
+        }
+        Document get
+                = Jsoup.connect(requestUrl).timeout(Integer.MAX_VALUE).get();
+        if (debugFlag) {
+            System.out.println("connected. " + requestUrl);
+        }
+        return get;
+    }
+
     public List<Map<String, Object>> getResultByMapList() throws IOException {
         String requestUrl = apiUrl + "?" + apiParam;
         if (debugFlag) {
