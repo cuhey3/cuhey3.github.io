@@ -16,11 +16,11 @@ public class MapList extends ArrayList<Map<String, Object>> {
     }
 
     public MapList(Document document) {
-        super(new DocumentUtil(document).getData());
+        super(document.get("data", List.class));
     }
 
-    public MapList(List<Map<String, Object>> mapList) {
-        super(mapList);
+    public MapList(List list) {
+        super(list);
     }
 
     public Set attrSet(String attr) {
@@ -32,8 +32,8 @@ public class MapList extends ArrayList<Map<String, Object>> {
         return this.stream().filter(filter);
     }
 
-    public List<Map<String, Object>> filteredList(Predicate<Map<String, Object>> filter) {
-        return this.filtered(filter).collect(Collectors.toList());
+    public MapList filteredList(Predicate<Map<String, Object>> filter) {
+        return new MapList(this.filtered(filter).collect(Collectors.toList()));
     }
 
     public Stream<Map<String, Object>> intersection(String key, Set set, boolean flag) {
@@ -45,30 +45,31 @@ public class MapList extends ArrayList<Map<String, Object>> {
         return MapList.this.intersection(key, set, true);
     }
 
-    public List<Map<String, Object>> intersectionList(String key, Set set) {
+    public MapList intersectionList(String key, Set set) {
         return this.intersectionList(key, set, true);
     }
 
-    public List<Map<String, Object>> intersectionList(String key, Set set, boolean flag) {
-        return this.intersection(key, set, flag).collect(Collectors.toList());
+    public MapList intersectionList(String key, Set set, boolean flag) {
+        return new MapList(this.intersection(key, set, flag)
+                .collect(Collectors.toList()));
     }
 
     public <T> Stream<T> attrStream(String attr, Class<T> clazz) {
         return this.stream().map((map) -> clazz.cast(map.get(attr)));
     }
 
-    public List<Map<String, Object>> productByKey(MapList filter, final String key) {
+    public MapList productByKey(MapList filter, final String key) {
         Set filterSet = filter.attrSet(key);
         return this.intersectionList(key, filterSet);
     }
 
-    public List<Map<String, Object>> productByTitle(MapList filter) {
+    public MapList productByTitle(MapList filter) {
         return this.productByKey(filter, "title");
     }
 
-    public List<Map<String, Object>> addNewByKey(MapList newUtil, final String key) {
-        List<Map<String, Object>> result = new ArrayList<>(this);
-        Set oldSet = this.attrSet(key);
+    public MapList addNewByKey(MapList newUtil, final String key) {
+        MapList result = new MapList(this);
+        Set oldSet = result.attrSet(key);
         newUtil.intersection(key, oldSet, false)
                 .forEach(result::add);
         return result;

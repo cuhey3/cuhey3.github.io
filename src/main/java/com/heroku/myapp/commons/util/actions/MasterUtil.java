@@ -5,11 +5,8 @@ import com.heroku.myapp.commons.config.enumerate.KindOption;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.consumers.QueueConsumer;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
-import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
-import java.util.ArrayList;
-import java.util.List;
+import com.heroku.myapp.commons.util.content.MapList;
 import java.util.Optional;
-import static java.util.Optional.ofNullable;
 import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
 import org.apache.camel.builder.RouteBuilder;
@@ -70,27 +67,14 @@ public class MasterUtil extends ActionUtil {
         }
     }
 
-    public Optional<Document> latestJoinAll(Kind kind1, Kind kind2) {
-        Kind kind0 = this.kind;
-        try {
-            List result = new ArrayList<>();
-            result.addAll(getData(findOrElseThrow(kind1)));
-            result.addAll(getData(findOrElseThrow(kind2)));
-            return new DocumentUtil(result).nullable();
-        } finally {
-            kind(kind0);
-        }
-    }
-
     public boolean checkNotFilled(Document document) {
         Optional<Kind> optionalKind = this.optionalKind();
         if (optionalKind.isPresent()) {
             Kind k = optionalKind.get();
             if (k.isEnable(KindOption.fill)) {
                 String fillField = k.fillField();
-                return DocumentUtil.getData(
-                        ofNullable(document).orElseGet(() -> findOrElseThrow()))
-                        .stream().anyMatch((map) -> !map.containsKey(fillField));
+                return new MapList(document).stream()
+                        .anyMatch((map) -> !map.containsKey(fillField));
             } else {
                 return false;
             }

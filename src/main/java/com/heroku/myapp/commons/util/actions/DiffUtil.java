@@ -4,7 +4,6 @@ import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.consumers.QueueConsumer;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
-import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
 import com.heroku.myapp.commons.util.content.MapList;
 import com.mongodb.client.MongoCursor;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.camel.Exchange;
 import org.bson.Document;
@@ -28,17 +26,13 @@ public class DiffUtil extends ActionUtil {
     }
 
     public static Optional<Document> basicDiff(Document master, Document snapshot, String key) {
-        List<Map<String, Object>> prev, next, collect;
-        prev = getData(master);
-        next = getData(snapshot);
+        MapList prev, next, collect;
+        prev = new MapList(master);
+        next = new MapList(snapshot);
         prev.forEach((map) -> map.put("type", "remove"));
         next.forEach((map) -> map.put("type", "add"));
-        Set prevTitleSet = new MapList(prev).attrSet(key);
-        Set nextTitleSet = new MapList(next).attrSet(key);
-        collect = new MapList(prev)
-                .intersectionList(key, nextTitleSet, false);
-        new MapList(next).intersection(key, prevTitleSet, false)
-                .forEach(collect::add);
+        collect = prev.intersectionList(key, next.attrSet(key), false);
+        next.intersection(key, prev.attrSet(key), false).forEach(collect::add);
         if (collect.size() > 0) {
             return new DocumentUtil().setDiff(collect).nullable();
         } else {
@@ -159,7 +153,7 @@ public class DiffUtil extends ActionUtil {
         String snapshotId = DocumentUtil.objectIdHexString(snapshot);
         List<Document> collect = new DocumentUtil(diff).getDiff().stream()
                 .map((map) -> {
-                    List<Map<String, Object>> list = new ArrayList<>();
+                    MapList list = new MapList();
                     list.add(map);
                     Document document = new DocumentUtil().setDiff(list).getDocument();
                     document.append("diff_by", snapshotId);

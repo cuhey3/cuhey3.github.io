@@ -1,12 +1,10 @@
 package com.heroku.myapp.commons.util.content;
 
 import com.heroku.myapp.commons.exceptions.DataNotFoundException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -18,27 +16,20 @@ public final class DocumentUtil {
 
     public static Document restorePrefix(Document document) {
         Map<String, String> prefixs = document.get("prefix", Map.class);
+        MapList mapList = new MapList(document);
         if (prefixs != null) {
             prefixs.entrySet().stream().forEach((entry)
                     -> restorePrefixSpecific(
-                            document, entry.getKey(), entry.getValue()));
+                            mapList, entry.getKey(), entry.getValue()));
         }
-        return document;
+        return new DocumentUtil(mapList).getDocument();
     }
 
-    private static void restorePrefixSpecific(Document document, String key, String prefix) {
-        DocumentUtil util = new DocumentUtil(document);
-        List<Map<String, Object>> list = util.getData();
-        list.stream().forEach((map) -> map.put(key, prefix + map.get(key)));
-        util.setData(list);
+    private static void restorePrefixSpecific(MapList mapList, String key, String prefix) {
+        mapList.stream().forEach((map) -> map.put(key, prefix + map.get(key)));
     }
 
-    public static List<Map<String, Object>> getData(Document document) {
-        return Optional.ofNullable(document.get("data", List.class))
-                .orElseThrow(() -> new DataNotFoundException());
-    }
-
-    private Document document;
+    private final Document document;
 
     public DocumentUtil() {
         this.document = new Document();
@@ -50,35 +41,7 @@ public final class DocumentUtil {
 
     public DocumentUtil(List list) {
         this.document = new Document();
-        setData(list);
-    }
-
-    public DocumentUtil addNewByKey(Document oldDoc, Document newDoc, final String key) {
-        List<Map<String, Object>> oldList;
-        if (oldDoc == null) {
-            oldList = new ArrayList<>();
-        } else {
-            oldList = getData(oldDoc);
-        }
-        Set oldSet = new MapList(oldList).attrSet(key);
-        new MapList(newDoc).intersection(key, oldSet, false)
-                .forEach(oldList::add);
-        setData(oldList);
-        return this;
-    }
-
-    public DocumentUtil addNewByKey(Document oldDoc, List<Map<String, Object>> newList, final String key) {
-        List<Map<String, Object>> oldList;
-        if (oldDoc == null) {
-            oldList = new ArrayList<>();
-        } else {
-            oldList = getData(oldDoc);
-        }
-        Set oldSet = new MapList(oldList).attrSet(key);
-        new MapList(newList).intersection(key, oldSet, false)
-                .forEach(oldList::add);
-        setData(oldList);
-        return this;
+        document.append("data", list);
     }
 
     public DocumentUtil createPrefix(String... keys) {
@@ -90,7 +53,7 @@ public final class DocumentUtil {
     }
 
     private void createPrefixSpecific(String key) {
-        List<Map<String, Object>> list = getData(document);
+        MapList list = new MapList(document);
         String firstValue = (String) list.get(0).get(key);
         int len = firstValue.length();
         String prefix = null;
@@ -114,19 +77,9 @@ public final class DocumentUtil {
         }
     }
 
-    public List<Map<String, Object>> getData() {
-        return Optional.ofNullable(document.get("data", List.class))
-                .orElseThrow(() -> new DataNotFoundException());
-    }
-
-    public List<Map<String, Object>> getDiff() {
-        return Optional.ofNullable(document.get("diff", List.class))
-                .orElseThrow(() -> new DataNotFoundException());
-    }
-
-    public DocumentUtil setData(List list) {
-        document.append("data", list);
-        return this;
+    public MapList getDiff() {
+        return new MapList(Optional.ofNullable(document.get("diff", List.class))
+                .orElseThrow(() -> new DataNotFoundException()));
     }
 
     public DocumentUtil setDiff(List list) {
@@ -136,11 +89,6 @@ public final class DocumentUtil {
 
     public Document getDocument() {
         return this.document;
-    }
-
-    public DocumentUtil setDocument(Document document) {
-        this.document = document;
-        return this;
     }
 
     public Optional<Document> nullable() {

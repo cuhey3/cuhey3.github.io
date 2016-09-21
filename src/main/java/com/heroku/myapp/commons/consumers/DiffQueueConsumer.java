@@ -42,8 +42,8 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
                 if (!optSnapshot.isPresent()) {
                     return false;
                 }
-                MasterUtil masterUtil = new MasterUtil(exchange);
-                optMaster = masterUtil.optionalLatest();
+                MasterUtil util = new MasterUtil(exchange);
+                optMaster = util.optionalLatest();
                 if (!optMaster.isPresent()) {
                     return new QueueMessage(exchange).hasChange(true);
                 }
@@ -54,7 +54,7 @@ public abstract class DiffQueueConsumer extends QueueConsumer {
                     toDoWhenDiffIsPresent(
                             optDiff.get(), exchange, master, snapshot);
                     return new QueueMessage(exchange).hasChange(true);
-                } else if (masterUtil.checkNotFilled(master)) {
+                } else if (util.checkNotFilled(master)) {
                     new DiffUtil(exchange).updateMessageComparedId(master);
                     return new QueueMessage(exchange).hasChange(true);
                 } else {

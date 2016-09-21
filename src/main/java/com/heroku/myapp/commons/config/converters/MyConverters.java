@@ -1,7 +1,9 @@
 package com.heroku.myapp.commons.config.converters;
 
 import com.google.gson.Gson;
+import com.heroku.myapp.commons.util.content.MapList;
 import io.iron.ironmq.Client;
+import java.util.List;
 import java.util.Map;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Converter;
@@ -29,5 +31,10 @@ public class MyConverters implements TypeConverters {
     @Converter
     public String mapToGsonString(Map map) {
         return new Gson().toJson(map);
+    }
+
+    @Converter
+    public MapList listToMapList(List list) {
+        return new MapList(list);
     }
 }
