@@ -53,18 +53,6 @@ public final class DocumentUtil {
         setData(list);
     }
 
-    public DocumentUtil productByKey(Document sieved, Document filter, final String key) {
-        Set filterSet = new MapListUtil(filter).attrSet(key);
-        List<Map<String, Object>> collect
-                = new MapListUtil(sieved).intersectionList(key, filterSet);
-        setData(collect);
-        return this;
-    }
-
-    public DocumentUtil productByTitle(Document sieved, Document filter) {
-        return productByKey(sieved, filter, "title");
-    }
-
     public DocumentUtil addNewByKey(Document oldDoc, Document newDoc, final String key) {
         List<Map<String, Object>> oldList;
         if (oldDoc == null) {
@@ -72,8 +60,8 @@ public final class DocumentUtil {
         } else {
             oldList = getData(oldDoc);
         }
-        Set oldSet = new MapListUtil(oldList).attrSet(key);
-        new MapListUtil(newDoc).intersection(key, oldSet, false)
+        Set oldSet = new MapList(oldList).attrSet(key);
+        new MapList(newDoc).intersection(key, oldSet, false)
                 .forEach(oldList::add);
         setData(oldList);
         return this;
@@ -86,8 +74,8 @@ public final class DocumentUtil {
         } else {
             oldList = getData(oldDoc);
         }
-        Set oldSet = new MapListUtil(oldList).attrSet(key);
-        new MapListUtil(newList).intersection(key, oldSet, false)
+        Set oldSet = new MapList(oldList).attrSet(key);
+        new MapList(newList).intersection(key, oldSet, false)
                 .forEach(oldList::add);
         setData(oldList);
         return this;

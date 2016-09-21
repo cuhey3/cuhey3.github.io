@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 import org.apache.camel.Exchange;
-import org.apache.camel.Expression;
 import org.apache.camel.Predicate;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.SimpleBuilder;

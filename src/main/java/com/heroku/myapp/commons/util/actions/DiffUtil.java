@@ -5,7 +5,7 @@ import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.consumers.QueueConsumer;
 import com.heroku.myapp.commons.util.content.DocumentUtil;
 import static com.heroku.myapp.commons.util.content.DocumentUtil.getData;
-import com.heroku.myapp.commons.util.content.MapListUtil;
+import com.heroku.myapp.commons.util.content.MapList;
 import com.mongodb.client.MongoCursor;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,11 +33,11 @@ public class DiffUtil extends ActionUtil {
         next = getData(snapshot);
         prev.forEach((map) -> map.put("type", "remove"));
         next.forEach((map) -> map.put("type", "add"));
-        Set prevTitleSet = new MapListUtil(prev).attrSet(key);
-        Set nextTitleSet = new MapListUtil(next).attrSet(key);
-        collect = new MapListUtil(prev)
+        Set prevTitleSet = new MapList(prev).attrSet(key);
+        Set nextTitleSet = new MapList(next).attrSet(key);
+        collect = new MapList(prev)
                 .intersectionList(key, nextTitleSet, false);
-        new MapListUtil(next).intersection(key, prevTitleSet, false)
+        new MapList(next).intersection(key, prevTitleSet, false)
                 .forEach(collect::add);
         if (collect.size() > 0) {
             return new DocumentUtil().setDiff(collect).nullable();
