@@ -95,16 +95,16 @@ public class GoogleTrendsParsingUtil {
                 .findFirst().orElse("9999");
     }
 
-    public List<Map<String, Object>> createSuccessResults() {
-        return bodyNotContainingScale.keySet().stream()
+    public MapList createSuccessResults() {
+        return new MapList(bodyNotContainingScale.keySet().stream()
                 .map((name) -> createSuccessResult(name))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
-    public List<Map<String, Object>> createFailedResults() {
-        return overNames().stream()
+    public MapList createFailedResults() {
+        return new MapList(overNames().stream()
                 .map((name) -> createFailedResult(name))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     private Map<String, Object> createSuccessResult(String name) {

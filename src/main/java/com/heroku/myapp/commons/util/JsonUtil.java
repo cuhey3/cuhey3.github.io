@@ -1,6 +1,6 @@
 package com.heroku.myapp.commons.util;
 
-import java.util.ArrayList;
+import com.heroku.myapp.commons.util.content.MapList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +44,11 @@ public class JsonUtil {
         }
     }
 
-    public Optional<List> list() {
-        if (obj.isPresent()) {
-            return Optional.ofNullable((List) obj.get());
+    public Optional<MapList> mapList() {
+        if (obj.isPresent() && obj.get() instanceof List) {
+            return Optional.ofNullable(new MapList((List) obj.get()));
         } else {
-            return Optional.ofNullable(new ArrayList<>());
+            return Optional.ofNullable(new MapList());
         }
     }
 }

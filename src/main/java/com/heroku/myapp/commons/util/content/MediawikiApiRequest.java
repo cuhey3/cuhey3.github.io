@@ -59,7 +59,7 @@ public class MediawikiApiRequest {
         return get;
     }
 
-    public List<Map<String, Object>> getResultByMapList() throws IOException {
+    public MapList getResultByMapList() throws IOException {
         String requestUrl = apiUrl + "?" + apiParam;
         if (debugFlag) {
             System.out.println("connecting... " + requestUrl);
@@ -69,7 +69,7 @@ public class MediawikiApiRequest {
         if (debugFlag) {
             System.out.println("connected. " + requestUrl);
         }
-        ArrayList<Map<String, Object>> resultMapList = new ArrayList<>();
+        MapList resultMapList = new MapList();
         addElementsAsMap(resultMapList, get.select(listName).select(mapName));
         if (continueElementName != null) {
             while (true) {
