@@ -51,4 +51,12 @@ public class JsonUtil {
             return Optional.ofNullable(new MapList());
         }
     }
+
+    public Optional<List> list() {
+        if (obj.isPresent()) {
+            return Optional.ofNullable((List) obj.get());
+        } else {
+            return Optional.ofNullable(new MapList());
+        }
+    }
 }
