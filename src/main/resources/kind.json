@@ -317,7 +317,7 @@
         "flag": {
             "polling": true,
             "common_diff": true,
-            "affect": false,
+            "affect": true,
             "always_affect": true
         },
         "options": {
@@ -330,7 +330,11 @@
             },
             "always_affect": {
                 "always_affects": [
-                    "recentchanges_of_seiyu",
+                    "recentchanges_of_seiyu"
+                ]
+            },
+            "affect": {
+                "affects": [
                     "pages_mutual_sound_director"
                 ]
             }
