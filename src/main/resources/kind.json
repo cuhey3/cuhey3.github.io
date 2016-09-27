@@ -353,11 +353,28 @@
         "flag": {
             "polling": false,
             "common_diff": true,
-            "affect": false
+            "affect": false,
+            "always_affect": true
         },
         "options": {
             "common_diff": {
                 "key": "title"
+            },
+            "always_affect": {
+                "always_affects": [
+                    "sound_director_statistics"
+                ]
+            }
+        }
+    },
+    "sound_director_statistics": {
+        "flag": {
+            "polling": false,
+            "skip_diff": true,
+            "affect": false
+        },
+        "options": {
+            "skip_diff": {
             }
         }
     }
