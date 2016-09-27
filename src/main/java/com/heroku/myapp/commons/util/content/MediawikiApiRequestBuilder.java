@@ -98,17 +98,24 @@ public class MediawikiApiRequestBuilder {
         CATEGORYMEMBERS("cm", "list"),
         RECENTCHANGES("rc", "list"),
         BACKLINKS("bl", "list"),
-        LINKS("pl", "prop");
+        LINKS("pl", "prop", "wikitext");
 
-        final String prefix, type;
+        final String prefix, type, additional;
 
         private List(String prefix, String type) {
             this.prefix = prefix;
             this.type = type;
+            this.additional = "";
+        }
+
+        private List(String prefix, String type, String additional) {
+            this.prefix = prefix;
+            this.type = type;
+            this.additional = "|" + additional;
         }
 
         private String paramExpression() {
-            return "&" + this.type + "=" + this.name().toLowerCase(Locale.US);
+            return "&" + this.type + "=" + this.name().toLowerCase(Locale.US) + additional;
         }
     }
 

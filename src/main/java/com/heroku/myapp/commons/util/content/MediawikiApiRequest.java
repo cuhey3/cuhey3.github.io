@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,7 +17,7 @@ import org.jsoup.select.Elements;
 public class MediawikiApiRequest {
 
     private final String apiUrl = "https://ja.wikipedia.org/w/api.php";
-    private String apiParam, listName, mapName, continueElementName;
+    private String apiParam, listName, mapName, continueElementName, wikitext;
     private final List<String> ignoreFieldNameList = new ArrayList<>();
     private boolean debugFlag = false;
 
@@ -69,6 +70,10 @@ public class MediawikiApiRequest {
         if (debugFlag) {
             System.out.println("connected. " + requestUrl);
         }
+        Elements select = get.select("wikitext");
+        if (!select.isEmpty()) {
+            wikitext = select.first().text().replace("_", " ");
+        }
         MapList resultMapList = new MapList();
         addElementsAsMap(resultMapList, get.select(listName).select(mapName));
         if (continueElementName != null) {
@@ -91,7 +96,12 @@ public class MediawikiApiRequest {
                 }
             }
         }
-        return resultMapList;
+        if (wikitext != null) {
+            return new MapList(resultMapList.stream().filter((map) -> wikitext.contains((String) map.get("text")))
+                    .collect(Collectors.toList()));
+        } else {
+            return resultMapList;
+        }
     }
 
     public Set<String> getResultBySet(String attr) throws IOException {
