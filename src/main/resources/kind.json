@@ -330,7 +330,8 @@
             },
             "always_affect": {
                 "always_affects": [
-                    "recentchanges_of_seiyu"
+                    "recentchanges_of_seiyu",
+                    "pages_mutual_sound_director"
                 ]
             }
         }
@@ -342,6 +343,18 @@
             "affect": false
         },
         "options": {
+        }
+    },
+    "pages_mutual_sound_director": {
+        "flag": {
+            "polling": false,
+            "common_diff": true,
+            "affect": false
+        },
+        "options": {
+            "common_diff": {
+                "key": "title"
+            }
         }
     }
 }
