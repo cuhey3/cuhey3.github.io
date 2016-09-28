@@ -1,0 +1,89 @@
+{
+    "prefix": "Category:",
+    "categories": {
+        "各年のアニメ": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "%s",
+                        "args": [
+                            "years"
+                        ]
+                    }
+                ]
+            }
+        },
+        "各年のコンピュータゲーム": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "%s",
+                        "args": [
+                            "years"
+                        ]
+                    }
+                ],
+                "exclude": [
+                    {
+                        "pattern": "%sのアダルトゲーム",
+                        "args": [
+                            "years"
+                        ]
+                    },
+                    {
+                        "pattern": "%sのファミ通クロスレビュープラチナ殿堂入りソフト",
+                        "args": [
+                            "years"
+                        ]
+                    },
+                    {
+                        "pattern": "%sの機種別ゲーム",
+                        "args": [
+                            "years"
+                        ]
+                    }
+                ]
+            }
+        },
+        "各年の映画": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "%s",
+                        "args": [
+                            "years"
+                        ]
+                    }
+                ],
+                "exclude": [
+                    {
+                        "pattern": "%sの映画賞",
+                        "args": [
+                            "years"
+                        ]
+                    },
+                    {
+                        "pattern": "%sのアニメ映画",
+                        "args": [
+                            "years"
+                        ]
+                    }
+                ]
+            }
+        },
+        "各年のテレビドラマ": {
+            "filter": {
+                "include": [
+                    {
+                        "pattern": "%s",
+                        "args": [
+                            "years"
+                        ]
+                    }
+                ]
+            }
+        },
+        "日本のWebアニメ": {
+        }
+    }
+}

@@ -39,7 +39,8 @@ public enum Kind {
     pages_related_seiyu,
     recentchanges_of_seiyu,
     pages_mutual_sound_director,
-    sound_director_statistics;
+    sound_director_statistics,
+    categories_related_sound_director;
 
     private String message;
     private boolean useDevelop = false;

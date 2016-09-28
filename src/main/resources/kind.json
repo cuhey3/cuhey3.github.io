@@ -295,13 +295,12 @@
         "flag": {
             "polling": true,
             "common_diff": true,
-            "affect": false
-        }
-        ,
+            "affect": true
+        },
         "options": {
             "polling": {
                 "period": "1h",
-                "delay": "5m"
+                "delay": "15m"
             },
             "common_diff": {
                 "key": "title"
@@ -375,6 +374,22 @@
         },
         "options": {
             "skip_diff": {
+            }
+        }
+    },
+    "categories_related_sound_director": {
+        "flag": {
+            "polling": true,
+            "common_diff": true,
+            "affect": false
+        },
+        "options": {
+            "polling": {
+                "period": "1h",
+                "delay": "20m"
+            },
+            "common_diff": {
+                "key": "title"
             }
         }
     }
