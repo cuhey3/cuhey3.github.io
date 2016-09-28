@@ -316,7 +316,7 @@
         "flag": {
             "polling": true,
             "common_diff": true,
-            "affect": true,
+            "affect": false,
             "always_affect": true
         },
         "options": {
@@ -330,11 +330,6 @@
             "always_affect": {
                 "always_affects": [
                     "recentchanges_of_seiyu"
-                ]
-            },
-            "affect": {
-                "affects": [
-                    "pages_mutual_sound_director"
                 ]
             }
         }
@@ -381,7 +376,7 @@
         "flag": {
             "polling": true,
             "common_diff": true,
-            "affect": false
+            "affect": true
         },
         "options": {
             "polling": {
@@ -390,6 +385,32 @@
             },
             "common_diff": {
                 "key": "title"
+            },
+            "affect": {
+                "affects": [
+                    "pages_related_sound_director"
+                ]
+            }
+        }
+    },
+    "pages_related_sound_director": {
+        "flag": {
+            "polling": true,
+            "common_diff": true,
+            "affect": true
+        },
+        "options": {
+            "polling": {
+                "period": "30m",
+                "delay": "10m"
+            },
+            "common_diff": {
+                "key": "title"
+            },
+            "affect": {
+                "affects": [
+                    "pages_mutual_sound_director"
+                ]
             }
         }
     }
