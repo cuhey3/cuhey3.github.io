@@ -169,6 +169,8 @@ class DigStatus {
     }
 
     private void init(JsonUtil jsonRoot) {
+        this.completionFlags = new LinkedHashMap<>();
+        this.categoryParents = new LinkedHashMap<>();
         jsonRoot.map().get().keySet().forEach((key)
                 -> completionFlags.put(prefix + key, Boolean.FALSE));
         jsonRoot.map().get().keySet().forEach((key)
