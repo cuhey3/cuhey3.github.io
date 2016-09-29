@@ -10,11 +10,11 @@ import org.apache.camel.Processor;
 import org.bson.Document;
 
 public abstract class SnapshotQueueConsumer extends QueueConsumer {
-    
+
     public SnapshotQueueConsumer() {
         util().snapshot();
     }
-    
+
     @Override
     public void configure() {
         from(util().ironmqConsumeUri())
@@ -28,7 +28,7 @@ public abstract class SnapshotQueueConsumer extends QueueConsumer {
                 .otherwise()
                 .to(util().copy().diff().ironmqPostUri());
     }
-    
+
     protected Predicate doSnapshotPredicate() {
         return (Exchange exchange) -> {
             Optional<Document> snapshot = doSnapshot(exchange);
@@ -45,14 +45,14 @@ public abstract class SnapshotQueueConsumer extends QueueConsumer {
             }
         };
     }
-    
+
     protected abstract Optional<Document> doSnapshot(Exchange exchange);
-    
+
     protected Processor fillDefaultMessage() {
         return (Exchange exchange) -> {
-            String body = exchange.getIn().getBody(String.class);
-            if (body == null || body.isEmpty()) {
-                Map map = new LinkedHashMap<>();
+            Map map = Optional.ofNullable(exchange.getIn().getBody(Map.class))
+                    .orElseGet(() -> new LinkedHashMap<>());
+            if (!map.containsKey("kind")) {
                 map.put("kind", util().kind().expression());
                 exchange.getIn().setBody(map, String.class);
             }
