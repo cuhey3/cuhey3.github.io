@@ -1,6 +1,7 @@
 package com.heroku.myapp.commons.util.content;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -73,5 +74,18 @@ public class MapList extends ArrayList<Map<String, Object>> {
         newUtil.intersection(key, oldSet, false)
                 .forEach(result::add);
         return result;
+    }
+
+    public MapList replace(Map<String, Object> map, final String identifier) {
+        Iterator<Map<String, Object>> iterator = this.iterator();
+        Object keyValue = map.get(identifier);
+        while (iterator.hasNext()) {
+            if (keyValue.equals(iterator.next().get(identifier))) {
+                iterator.remove();
+                break;
+            }
+        }
+        this.add(map);
+        return this;
     }
 }
