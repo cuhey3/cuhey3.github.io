@@ -40,8 +40,9 @@ public abstract class SnapshotCategoryAggregationConsumer extends SnapshotQueueC
             status.completionFlags().keySet().parallelStream()
                     .filter((key) -> !status.completionFlags().get(key))
                     .flatMap(dig(status))
-                    .forEach((map) -> {
-                        String title = (String) map.get("title");
+                    .map((map)->(String)map.get(("title")))
+                    .distinct()
+                    .forEach((title) -> {
                         if (!status.completionFlags().containsKey(title)) {
                             status.completionFlags().put(title, Boolean.FALSE);
                         }
