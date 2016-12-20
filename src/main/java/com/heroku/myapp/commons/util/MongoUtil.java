@@ -1,6 +1,5 @@
 package com.heroku.myapp.commons.util;
 
-import com.heroku.myapp.commons.config.MongoConfig;
 import com.heroku.myapp.commons.config.enumerate.Kind;
 import com.heroku.myapp.commons.config.enumerate.MongoTarget;
 import com.heroku.myapp.commons.exceptions.DocumentNotFoundException;
@@ -68,7 +67,7 @@ public class MongoUtil {
 
     private MongoDatabase database(MongoTarget t) {
         return registry.lookupByNameAndType(t.expression(), MongoClient.class)
-                .getDatabase(MongoConfig.getMongoClientURI(t).getDatabase());
+                .getDatabase(t.mongoClientURI().getDatabase());
     }
 
     public MongoDatabase database() {

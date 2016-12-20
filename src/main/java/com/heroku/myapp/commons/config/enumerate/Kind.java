@@ -1,6 +1,7 @@
 package com.heroku.myapp.commons.config.enumerate;
 
 import com.google.gson.Gson;
+import com.heroku.myapp.commons.util.AppUtil;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -94,10 +95,9 @@ public enum Kind {
                 kindJsonMap.putAll(new Gson().fromJson(buffer.lines()
                         .collect(Collectors.joining("\n")), Map.class));
             } catch (Exception ex) {
-                System.out.println("kind initialization failed..."
-                        + "\nSystem is shutting down.");
-                System.out.println(resourcePath);
-                System.exit(1);
+                String mes = ">>>" + resourcePath
+                        + "¥nkind initialization failed...";
+                AppUtil.shuttingDownConsumer().accept(mes);
             }
         }
     }
