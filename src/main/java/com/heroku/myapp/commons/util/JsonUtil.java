@@ -5,58 +5,40 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import static java.util.Optional.ofNullable;
+import static java.util.Optional.empty;
 
 public class JsonUtil {
 
-    Optional<Object> obj;
+    private final Optional<Object> obj;
 
-    public JsonUtil(Object object) {
-        obj = Optional.ofNullable(object);
+    public JsonUtil(Object obj) {
+        this.obj = ofNullable(obj);
     }
 
     public JsonUtil() {
-        obj = Optional.empty();
-    }
-
-    public JsonUtil get(String key) {
-        Optional<Map> map = this.map();
-        if (map.isPresent()) {
-            return new JsonUtil(map.get().get(key));
-        } else {
-            return new JsonUtil();
-        }
-    }
-
-    public JsonUtil get(int i) {
-        Optional<Map> map = this.map();
-        if (map.isPresent()) {
-            return new JsonUtil(map.get().get(i));
-        } else {
-            return new JsonUtil();
-        }
+        this.obj = empty();
     }
 
     public Optional<Map> map() {
-        if (obj.isPresent()) {
-            return Optional.ofNullable((Map) obj.get());
-        } else {
-            return Optional.ofNullable(new LinkedHashMap<>());
-        }
-    }
-
-    public Optional<MapList> mapList() {
-        if (obj.isPresent() && obj.get() instanceof List) {
-            return Optional.ofNullable(new MapList((List) obj.get()));
-        } else {
-            return Optional.ofNullable(new MapList());
-        }
+        return collection(Map.class, new LinkedHashMap<>());
     }
 
     public Optional<List> list() {
-        if (obj.isPresent()) {
-            return Optional.ofNullable((List) obj.get());
-        } else {
-            return Optional.ofNullable(new MapList());
-        }
+        return collection(List.class, new MapList());
+    }
+
+    public Optional<MapList> mapList() {
+        return collection(MapList.class, new MapList());
+    }
+
+    public JsonUtil of(String key) {
+        return this.map().isPresent()
+                ? new JsonUtil(this.map().get().get(key)) : new JsonUtil();
+    }
+
+    public <T> Optional<T> collection(Class<T> clazz, T elseObj) {
+        return ofNullable(obj.isPresent() && clazz.isInstance(obj.get())
+                ? clazz.cast(obj.get()) : elseObj);
     }
 }

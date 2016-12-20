@@ -127,7 +127,7 @@ public enum Kind {
     }
 
     public Object getRaw(KindOption kindOptions) {
-        return kindOptions.toObject(this, kindOptionMap.get(kindOptions));
+        return kindOptions.toObjFunc.apply(this, kindOptionMap.get(kindOptions));
     }
 
     public boolean getBool(KindOption kindOptions) {

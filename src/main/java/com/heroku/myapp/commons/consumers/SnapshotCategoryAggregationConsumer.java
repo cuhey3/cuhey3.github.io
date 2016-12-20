@@ -62,8 +62,8 @@ public abstract class SnapshotCategoryAggregationConsumer extends SnapshotQueueC
     }
 
     private boolean isNoContinue(DigStatus status, String key) {
-        return jsonRoot.get(status.categoryParents().get(key))
-                .get("filter").get("no_continue").list().get().stream()
+        return jsonRoot.of(status.categoryParents().get(key))
+                .of("filter").of("no_continue").list().get().stream()
                 .anyMatch((str) -> key.equals(prefix + str));
     }
 
@@ -84,7 +84,7 @@ public abstract class SnapshotCategoryAggregationConsumer extends SnapshotQueueC
     }
 
     private List<Pattern> patterns(String parent, String type) {
-        return jsonRoot.get(parent).get("filter").get(type).mapList().get()
+        return jsonRoot.of(parent).of("filter").of(type).mapList().get()
                 .stream().map(mapToPattern()).collect(Collectors.toList());
     }
 
