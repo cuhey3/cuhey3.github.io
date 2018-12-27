@@ -63,3 +63,15 @@ filter:
   filter:
     - range: [1, 10]
     - is: [$item % 2, 1]
+
+fetch:
+  asyncSequence:
+    - await:
+        fetch:
+          - format:
+            - 'https://ja.wikipedia.org/w/api.php?action=query&list=backlinks&bltitle=%s&format=json&bllimit=500&origin=*'
+            - encodeURI: ゆるゆり
+          - json
+    - map:
+      - $seq.query.backlinks
+      - $item.title
