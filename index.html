@@ -1,1 +1,108 @@
-My Github pages - Cuhey3
+<html>
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.12.0/js-yaml.js"></script>
+  <script src="../lib/dsl-core.js"></script>
+  <style>
+    #wrapper {
+      min-width: 1000px;
+    }
+
+    #samples {
+      width: 10rem;
+      float: left;
+    }
+
+    #inputs {
+      float: left;
+    }
+
+    textarea {
+      font-size: 1.5rem;
+      font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="wrapper">
+    <div id="samples">
+      samples:<br>
+    </div>
+    <div id="inputs">
+      dsl(yaml):<br>
+      <textarea id="yamlInput" rows="10" cols="50">
+main:
+- sequence:
+  - []
+  - for:
+    - [i, 0, 10]
+    - for:
+      - [j, 0, 10]
+      - for:
+        - [k, 0, 10]
+        - for:
+          - [l, 0, 10]
+          - do: ['$seq.push', [$i, $j, $k, $l]]
+  - filter:
+    - $seq
+    - and:
+      - $item[0] < $item[1]
+      - $item[1] < $item[2]
+      - $item[2] < $item[3]
+  - print: $seq
+  </textarea>
+      <br>
+      <button id="evaluate-button">evaluate</button>
+      <button id="clear-input">clear input</button>
+      <button id="clear-console">clear console</button>
+      <br> result(json):
+      <br>
+      <textarea id="dslResult" cols="50"></textarea><br> this object(json):
+      <br>
+      <textarea id="dslThisObject" cols="50"></textarea>
+    </div>
+  </div>
+  <script>
+    /* global jsyaml, mydsl, fetch */
+    (async function() {
+      const { Argument } = mydsl;
+      const response = await fetch('./samples.yml');
+      const text = await response.text();
+      const yamlObject = await jsyaml.safeLoad(text);
+      const [yamlInput, samples, dslResult, dslThisObject] = [
+        'yamlInput', 'samples', 'dslResult', 'dslThisObject'
+      ].map(function(id) {
+        return document.getElementById(id);
+      });
+      Object.keys(yamlObject).forEach(function(key) {
+        const aTag = document.createElement('a');
+        aTag.textContent = key;
+        aTag.setAttribute('href', '#');
+        aTag.onclick = function() {
+          yamlInput.value = jsyaml.safeDump(
+            yamlObject[key], { condenseFlow: true });
+        };
+        samples.appendChild(aTag);
+        samples.appendChild(document.createElement('br'));
+      });
+
+      document.getElementById('evaluate-button').onclick = function() {
+        const yamlParsed = jsyaml.safeLoad(yamlInput.value);
+        const thisObject = {};
+        const result = new Argument(yamlParsed.main ||
+          yamlParsed).evaluate(thisObject);
+        dslResult.value = JSON.stringify(result);
+        dslThisObject.value = JSON.stringify(thisObject);
+      };
+      document.getElementById('clear-input').onclick = function() {
+        yamlInput.value = '';
+        dslResult.value = '';
+        dslThisObject.value = '';
+      };
+      document.getElementById('clear-console').onclick = console.clear;
+    })();
+  </script>
+</body>
+
+</html>
