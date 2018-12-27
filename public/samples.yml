@@ -1,0 +1,65 @@
+set/get:
+  execute:
+    - $foo: bar
+    - $foo
+
+nested set/get:
+  execute:
+    - $foo: {}
+    - $foo.bar: {}
+    - $foo.bar.woo: pon
+    - $foo.bar.woo
+
+array set/get:
+  execute:
+    - $foo: []
+    - $foo[0]: bar
+    - $foo[1]: wao
+    - ['$foo[0]', '$foo[1]']
+
+sequence:
+  sequence:
+    - 1
+    - $seq + 1
+    - $seq * 2
+
+do function 1:
+  do:
+    - [a, b, c]
+    - join
+    - '---'
+
+do function 2:
+  do: [abcde, substr, -2]
+
+format:
+  format:
+    - Hi, %s-san, %s
+    - cuhey3
+    - how are you?
+
+condition:
+  execute:
+    - $random:
+        do: Math.random
+    - when:
+        - $random >= 0.5
+        - execute:
+          - $result: large
+          - $message: You are lucky!
+        - true
+        - $result: small
+    - [$random, $result, $message]
+
+range:
+  range: [1, 10]
+
+map:
+  map:
+    - range: [1, 5]
+    - $item * 3
+
+filter:
+  filter:
+    - range: [1, 10]
+    - is: [$item % 2, 1]
