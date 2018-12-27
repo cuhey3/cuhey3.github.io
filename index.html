@@ -2,7 +2,7 @@
 
 <head>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.12.0/js-yaml.js"></script>
-  <script src="../lib/dsl-core.js"></script>
+  <script src="./lib/dsl-core.js"></script>
   <style>
     #wrapper {
       min-width: 1000px;
@@ -67,7 +67,7 @@ main:
     /* global jsyaml, mydsl, fetch */
     (async function() {
       const { Argument } = mydsl;
-      const response = await fetch('./samples.yml');
+      const response = await fetch('./public/samples.yml');
       const text = await response.text();
       const yamlObject = await jsyaml.safeLoad(text);
       const [yamlInput, samples, dslResult, dslThisObject] = [
