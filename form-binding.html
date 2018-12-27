@@ -1,0 +1,121 @@
+<html>
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.12.0/js-yaml.js"></script>
+  <script src="../lib/dsl-core.js"></script>
+  <script src="../lib/dsl-client.js"></script>
+  <style>
+    #wrapper {
+      min-width: 1000px;
+    }
+    #samples {
+      width: 10rem;
+      float: left;
+    }
+    #inputs {
+      float: left;
+    }
+    textarea {
+      font-size: 1.5rem;
+      font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
+    }
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th,
+    td {
+      padding: 0.2rem;
+      min-width: 15rem;
+    }
+    .error-class {
+      background-color: #f2dede;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>form binding example</h2>
+  <table>
+    <tr>
+      <th>simple binding</th>
+      <td>
+        <textarea type="text" dsl-to="$e1_text: ~value"></textarea>
+      </td>
+      <td>
+        <p dsl-from="~text: $e1_text"></p>
+      </td>
+    </tr>
+    <tr>
+      <th>radio button</th>
+      <td>
+        <input type="radio" name="e2_radio" value="yes" dsl-to="when: [~checked, { $e2_radio: ~value }]">yes
+        <input type="radio" name="e2_radio" value="no" dsl-to="when: [~checked, { $e2_radio: ~value }]">no
+      </td>
+      <td>
+        <p dsl-from="~text: $e2_radio"></p>
+      </td>
+    </tr>
+    <tr>
+      <th>radio button(and)</th>
+      <td>
+        input1: <input type="radio" name="e3_radio1" dsl-to="$e3_radio1: ~checked">true
+        <input type="radio" name="e3_radio1">false
+        <br> input2: <input type="radio" name="e3_radio2" dsl-to="$e3_radio2: ~checked">true
+        <input type="radio" name="e3_radio2">false
+      </td>
+      <td>
+        <p dsl-from="~text: {when: [{and: [$e3_radio1, $e3_radio2]}, 'true', true, 'false']}"></p>
+      </td>
+    </tr>
+    <tr>
+      <th>radio button(or)</th>
+      <td>
+        input1: <input type="radio" name="e4_radio1" dsl-to="$e4_radio1: ~checked">true
+        <input type="radio" name="e4_radio1">false
+        <br> input2: <input type="radio" name="e4_radio2" dsl-to="$e4_radio2: ~checked">true
+        <input type="radio" name="e4_radio2">false
+      </td>
+      <td>
+        <p dsl-from="~text: {when: [{or: [$e4_radio1, $e4_radio2]}, 'true', true, 'false']}"></p>
+      </td>
+    </tr>
+    <tr>
+      <th>date binding</th>
+      <td>
+      </td>
+      <td>
+        <p dsl-from="~text: { new: Date }"></p>
+      </td>
+    </tr>
+    <tr>
+      <th>validation</th>
+      <td>
+        <input type="text" dsl-to="[{ $e6_input: ~value }, { $e6_input_isValid: { isNumber: $e6_input } } ]" dsl-from="~validation: [$e6_input_isValid, 'error-class']"></input>
+      </td>
+      <td dsl-from="~validation: [$e6_input_isValid, 'error-class', 'Number only']">
+      </td>
+    </tr>
+  </table>
+  <a href="/">back</a>
+  <script>
+    /* global Argument, jsyaml */
+    function bind() {
+      const dis = {};
+      document.querySelectorAll('[dsl-to]').forEach(function(element) {
+        dis.element = element;
+        new Argument(jsyaml.safeLoad(element.getAttribute('dsl-to'))).evaluate(dis);
+      });
+      document.querySelectorAll('[dsl-from]').forEach(function(element) {
+        dis.element = element;
+        new Argument(jsyaml.safeLoad(element.getAttribute('dsl-from'))).evaluate(dis);
+      });
+      requestAnimationFrame(bind);
+    }
+    bind();
+  </script>
+</body>
+
+</html>
