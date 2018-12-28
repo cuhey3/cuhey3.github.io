@@ -7,11 +7,18 @@
   <style>
     #wrapper {
       display: grid;
-      grid-template-columns: 200px 200px 200px;
+      grid-template-columns: 10rem 50rem;
+      margin-left: 0.5rem;
     }
-
+    #pages {
+      margin-top: 1rem;
+    }
+    #menu a {
+      margin-left: 0.5rem;
+    }
     textarea {
-      font-size: 1.5rem;
+      width: 45rem;
+      font-size: 1rem;
       font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
     }
   </style>
@@ -32,7 +39,7 @@
 
     <div id="inputs">
       dsl(yaml):<br>
-      <textarea id="yamlInput" rows="10" cols="50">
+      <textarea id="yamlInput" rows="15">
 main:
 - sequence:
   - []
@@ -59,16 +66,16 @@ main:
       <button id="clear-console">clear console</button>
       <br> result(json):
       <br>
-      <textarea id="dslResult" cols="50"></textarea><br> this object(json):
+      <textarea id="dslResult" rows="4"></textarea><br> container object(json):
       <br>
-      <textarea id="dslThisObject" cols="50"></textarea>
+      <textarea id="dslThisObject" rows="4"></textarea>
     </div>
   </div>
   <script>
     /* global jsyaml, mydsl, fetch */
     (async function() {
       const { Argument } = mydsl;
-      const response = await fetch('./public/samples.yml');
+      const response = await fetch('./samples.yml');
       const text = await response.text();
       const yamlObject = await jsyaml.safeLoad(text);
       const [yamlInput, samples, dslResult, dslThisObject] = [
@@ -76,18 +83,19 @@ main:
       ].map(function(id) {
         return document.getElementById(id);
       });
-      Object.keys(yamlObject).forEach(function(key) {
+      Object.keys(yamlObject).forEach(function(key, index) {
         const aTag = document.createElement('a');
         aTag.textContent = key;
-        aTag.setAttribute('href', '#');
+        aTag.setAttribute('href', '#' + ++index);
         aTag.onclick = function() {
           yamlInput.value = jsyaml.safeDump(
             yamlObject[key], { condenseFlow: true });
+          dslResult.value = '';
+          dslThisObject.value = '';
         };
         samples.appendChild(aTag);
         samples.appendChild(document.createElement('br'));
       });
-
       document.getElementById('evaluate-button').onclick = async function() {
         const yamlParsed = jsyaml.safeLoad(yamlInput.value);
         const thisObject = {};
