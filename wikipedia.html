@@ -1,0 +1,157 @@
+<html>
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.12.0/js-yaml.js"></script>
+  <script src="../lib/dsl-core.js"></script>
+  <script src="../lib/dsl-client.js"></script>
+  <style>
+    #wrapper {
+      min-width: 1000px;
+    }
+
+    #samples {
+      width: 10rem;
+      float: left;
+    }
+
+    #inputs {
+      float: left;
+    }
+
+    textarea {
+      margin-left: 0.5rem;
+      margin-right: 0;
+      font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+    th {
+      padding: 0.2rem;
+      min-width: 7rem;
+    }
+
+    td {
+      font-size: 0.7rem;
+      padding: 0.2rem;
+      min-width: 30rem;
+      max-width: 30rem;
+    }
+
+    .result {
+      font-size: 0.5rem;
+      height: 3.5rem;
+    }
+
+    .input {
+      height: 6rem;
+    }
+
+    textarea {
+      width: 97%;
+      margin-bottom: 0.3rem;
+    }
+
+    .error-class {
+      background-color: #f2dede;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>wikipedia mashup example</h2>
+  <table>
+    <tr>
+      <th rowspan="2">request</td>
+        <td class="input">$request1:<textarea rows="8" id="input1">
+fetch:
+- format:
+  - 'https://ja.wikipedia.org/w/api.php?action=query&list=backlinks&bltitle=%s&format=json&bllimit=500&origin=*'
+  - encodeURI: ゆるゆり
+- json</textarea><br><input type="button" value="evaluate" id="evaluate1"></td>
+        <td class="input">$request2:<textarea rows="8" id="input2">
+fetch:
+- format:
+  - 'https://ja.wikipedia.org/w/api.php?action=query&list=backlinks&bltitle=%s&format=json&bllimit=500&origin=*'
+  - encodeURI: ばらかもん
+- json</textarea><br><input type="button" value="evaluate" id="evaluate2"></td>
+    </tr>
+    <tr>
+      <td class="result" id="result1"></td>
+      <td class="result" id="result2"></td>
+    </tr>
+    <tr>
+      <th rowspan="2">transform</td>
+        <td class="input">$transform1:<textarea rows="4" id="input3">
+map:
+- $request1.query.backlinks
+- $item.title</textarea><br><input type="button" value="evaluate" id="evaluate3"></td>
+        <td class="input">$transform2:<textarea rows="4" id="input4">
+map:
+- $request2.query.backlinks
+- $item.title</textarea><br><input type="button" value="evaluate" id="evaluate4"></td>
+    </tr>
+    <tr>
+      <td class="result" id="result3"></td>
+      <td class="result" id="result4"></td>
+    </tr>
+    <tr>
+      <th rowspan="2">mashup</td>
+        <td class="input" colspan="2"><textarea rows="4" id="input5">
+filter:
+- $transform2
+- in: [$item, $transform1]</textarea><br><input type="button" value="evaluate" id="evaluate5"></td>
+    </tr>
+    <tr>
+      <td class="result" colspan="2" id="result5"></td>
+    </tr>
+  </table>
+  <a href="/">back</a>
+  <script>
+    /* global Argument, jsyaml */
+    const containers = {
+      container1: {},
+      container2: {},
+      container3: {},
+      container4: {},
+      container5: {}
+    };
+
+    const containerFromToMap = {
+      container1: ['container3', 'request1'],
+      container2: ['container4', 'request2'],
+      container3: ['container5', 'transform1'],
+      container4: ['container5', 'transform2'],
+    };
+    [1, 2, 3, 4, 5].forEach(function(index) {
+      const [evaluate, input, result] = ['evaluate', 'input', 'result'].map(function(name) {
+        return document.getElementById(name + index);
+      });
+      evaluate.onclick = async function() {
+        const container = containers['container' + index];
+        result.textContent = '';
+        const resultValue = await new Argument(jsyaml.safeLoad(input.value)).evaluate(container);
+        if (containerFromToMap['container' + index]) {
+          containers[containerFromToMap['container' + index][0]][containerFromToMap['container' + index][1]] = resultValue;
+        }
+        const json = JSON.stringify(resultValue);
+        if (index !== 5) {
+          result.textContent =
+            JSON.stringify(resultValue).substr(0, 270) +
+            (json.length > 270 ? ' ...' : '');
+        }
+        else {
+          result.textContent =
+            JSON.stringify(resultValue);
+        }
+      };
+    });
+  </script>
+</body>
+
+</html>
