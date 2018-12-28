@@ -32,6 +32,17 @@ do function 1:
 do function 2:
   do: [abcde, substr, -2]
 
+create function:
+  execute:
+    - $greetingFunc:
+        function:
+          - [name, greeting]
+          - format:
+            - 'Hi, %s-san, %s'
+            - $name
+            - $greeting
+    - do: [$greetingFunc, cuhey3, long time no see]
+
 format:
   format:
     - Hi, %s-san, %s
