@@ -34,6 +34,8 @@
       <div id="pages">
         sample pages:<br>
         <a href="form-binding.html">form binding</a>
+        <br>
+        <a href="wikipedia.html">wikipedia mashup</a>
       </div>
     </div>
 
@@ -75,7 +77,7 @@ main:
     /* global jsyaml, mydsl, fetch */
     (async function() {
       const { Argument } = mydsl;
-      const response = await fetch('./samples.yml');
+      const response = await fetch('./public/samples.yml');
       const text = await response.text();
       const yamlObject = await jsyaml.safeLoad(text);
       const [yamlInput, samples, dslResult, dslThisObject] = [
