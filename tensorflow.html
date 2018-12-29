@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!-- saved from url=(0041)https://tushuhei.github.io/tfjs-tutorial/ -->
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <style>
+    body {
+      background: #eee;
+    }
+    #input-canvas {
+      border: solid 1px #999;
+    }
+    .circle {
+      border: solid 1px green;
+    }
+    .cross {
+      border: solid 1px red;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.12.0/js-yaml.js"></script>
+  <script src="../lib/dsl-core.js"></script>
+  <script src="../lib/dsl-client.js"></script>
+</head>
+
+<body>
+  <h1>○× classifier</h1>
+  inspired by <a href="https://tushuhei.github.io/tfjs-tutorial/">https://tushuhei.github.io/tfjs-tutorial/</a>
+  <h2>Feed some data.</h2>
+  <canvas width="256" height="256" id="input-canvas"></canvas>
+  <div>
+    <button id="addData1">This is ○</button>
+    <button id="addData2">This is ✕</button>
+    <button id="clear">Clear</button>
+    <button id="train">Train the model</button>
+    <button id="predict">Predict</button>
+    <button id="save">Save</button>
+  </div>
+  <div id="data"></div>
+  <a href="/">back</a>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.3/dist/tf.min.js"></script>
+  <script>
+    /* global tf, fetch, jsyaml, addGlobalObject, Argument */
+    (async function() {
+      addGlobalObject({ tf });
+      const response = await fetch('/public/tf.yml');
+      const text = await response.text();
+      const json = await jsyaml.safeLoad(text);
+      const imageSize = 32;
+      const offset = 255 / 2;
+      let predictionModel = null;
+      const inputCanvas = new Argument(json.inputCanvas).evaluate({ imageSize });
+      document.getElementById("train").onclick = async function train() {
+        predictionModel
+          = await new Argument(json.train).evaluate({ imageSize, offset });
+      };
+      document.getElementById("predict").onclick = async function predict() {
+        await new Argument(json.predict)
+          .evaluate({ predictionModel, imageSize, offset, inputCanvas });
+      };
+      document.getElementById("save").onclick = async function predict() {
+        await new Argument(json.save).evaluate({ predictionModel });
+      };
+    })();
+  </script>
+</body>
+
+</html>
