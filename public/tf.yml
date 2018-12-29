@@ -1,0 +1,205 @@
+# canvas
+
+inputCanvas:
+  # expect [$imageSize]
+  sequence:
+    - $inputCanvas:
+        do: [document.getElementById, 'input-canvas']
+    - $inputContext:
+        do: [$inputCanvas.getContext, '2d']
+    - $isDrawing: { value: false }
+    - $inputCanvas.onmousedown:
+        function:
+        - [e]
+        - sequence:
+          - $isDrawing.value: true
+          - do:
+            - $inputContext.moveTo
+            - $e.clientX - $inputCanvas.offsetLeft
+            - $e.clientY - $inputCanvas.offsetTop
+    - $inputCanvas.onmousemove:
+        function:
+        - [e]
+        - when:
+          - $isDrawing.value
+          - sequence:
+            - do:
+              - $inputContext.lineTo
+              - $e.clientX - $inputCanvas.offsetLeft
+              - $e.clientY - $inputCanvas.offsetTop
+            - do: $inputContext.stroke
+    - $inputCanvas.onmouseup:
+        function:
+        - []
+        - $isDrawing.value: false
+    - $initCanvas:
+        function:
+        - []
+        - sequence:
+          - do:
+            - $inputContext.clearRect
+            - 0
+            - 0
+            - $inputCanvas.width
+            - $inputCanvas.height
+          - $inputContext.fillStyle: '#fff'
+          - do:
+            - $inputContext.fillRect
+            - 0
+            - 0
+            - $inputCanvas.width
+            - $inputCanvas.height
+          - do: $inputContext.beginPath
+          - $inputContext.lineWidth: 10
+    - do: [document.getElementById, 'clear']
+    - $seq.onclick: $initCanvas
+    - do: $initCanvas
+    - $data:
+        do: [document.getElementById, 'data']
+    - $addData:
+        function:
+        - [label]
+        - sequence:
+          - $c:
+              do: [document.createElement, 'canvas']
+          - $c.className: $label
+          - $c.width: $imageSize
+          - $c.height: $imageSize
+          - $ctx:
+              do: [$c.getContext, '2d']
+          - do:
+            - $ctx.drawImage
+            - $inputCanvas
+            - 0
+            - 0
+            - $inputCanvas.width
+            - $inputCanvas.height
+            - 0
+            - 0
+            - $imageSize
+            - $imageSize
+          - do: [$data.appendChild, $c]
+          - do: $initCanvas
+    - do: [document.getElementById, 'addData1']
+    - $seq.onclick:
+        function:
+          - []
+          - do: [$addData, 'circle']
+    - do: [document.getElementById, 'addData2']
+    - $seq.onclick:
+        function:
+          - []
+          - do: [$addData, 'cross']
+    - $inputCanvas
+
+# tensorflow
+train:
+  asyncSequence:
+    # buildModel start
+    - $model: { do: ['tf.sequential'] }
+    - map:
+      -
+        - do:
+          - tf.layers.conv2d
+          - inputShape: [$imageSize, $imageSize, 1]
+            kernelSize: 3
+            filters: 16
+            activation: 'relu'
+        - do:
+          - tf.layers.maxPooling2d
+          - { poolSize: 2, strides: 2 }
+        - do:
+          - tf.layers.conv2d
+          - { kernelSize: 3, filters: 32, activation: 'relu' }
+        - do:
+          - tf.layers.maxPooling2d
+          - { poolSize: 2, strides: 2 }
+        - do:
+          - tf.layers.flatten
+          - {}
+        - do:
+          - tf.layers.dense
+          - { units: $imageSize, activation: 'relu' }
+        - do:
+          - tf.layers.dense
+          - { units: 1, activation: 'sigmoid' }
+      - do: ['$model.add', $item]
+    # buildModel end
+
+    # train start
+    - do: ['$model.compile', { loss: 'meanSquaredError', optimizer: 'adam' }]
+    - $inputs: []
+    - $labels: []
+    - forEach:
+      - selectAll: [document , '#data canvas']
+      - sequence:
+        - chain:
+          - tf
+          - ['fromPixels', $item, 1]
+          - ['toFloat']
+          - ['sub', $offset]
+          - ['div', $offset]
+        - do: ['$inputs.push', $seq]
+        - if: [is: ['$item.className', 'circle'], 1, 0]
+        - do: ['$labels.push', $seq]
+    - $inputs: { do: ['tf.stack', $inputs] }
+    - $labels: { do: ['tf.stack', $labels] }
+    - print: training start
+    - await:
+        do: ['$model.fit', $inputs, $labels, { epochs: 20, verbose: true }]
+    - $model
+    # train end
+
+predict:
+  - sequence:
+    - when:
+      - is: [$predictionModel, null]
+      - sequence:
+        - alert: 'Please train the model first.'
+        - exit:
+    - do:
+      - 'tf.tidy'
+      - function:
+        - []
+        - sequence:
+          - do: [document.createElement, 'canvas']
+          - '$seq.width': $imageSize
+          - '$seq.height': $imageSize
+          - $c: $seq
+          - do: ['$c.getContext', '2d']
+          - do:
+            - '$seq.drawImage'
+            - $inputCanvas
+            - 0
+            - 0
+            - '$inputCanvas.width'
+            - '$inputCanvas.height'
+            - 0
+            - 0
+            - $imageSize
+            - $imageSize
+          - chain:
+            - tf
+            - ['fromPixels', $c, 1]
+            - ['toFloat']
+            - ['sub', $offset]
+            - ['div', $offset]
+          - do: ['tf.expandDims', $seq, 0]
+          - do: ['$predictionModel.predict', $seq]
+          - do: '$seq.dataSync'
+          - when:
+            - '$seq[0] > 0.5'
+            - alert: 'This is ○'
+            - true
+            - alert: 'This is ✕'
+          - do: [$c, 'remove']
+
+save:
+  asyncSequence:
+    - when:
+      - is: [$predictionModel, null]
+      - sequence:
+        - alert: 'Please train the model first.'
+        - exit:
+    - await:
+        do: [$predictionModel.save, 'downloads://mymodel']
