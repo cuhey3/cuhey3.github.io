@@ -1,0 +1,169 @@
+main:
+  sequence:
+  - $svg:
+      createElementNS:
+        - 'http://www.w3.org/2000/svg'
+        - 'svg'
+        - viewBox: "0 0 155 63"
+          style: "background-color: #eee"
+        - document.body
+  - $subscribers: []
+  - $elements: []
+  - $matrix: []
+  - $animationFlag: { value: false }
+  - for:
+    - [x, 0, 50]
+    - sequence:
+      - '$matrix[$x]': []
+      - '$elements[$x]': []
+      - '$subscribers[$x]': []
+      - for:
+        - [y, 0, 20]
+        - sequence:
+          - '$matrix[$x][$y]': false
+          - '$subscribers[$x][$y]': []
+          - $x * 3
+          - $xPos: $seq + 1
+          - $y * 3
+          - $yPos: $seq + 1
+          - createElementNS:
+            - 'http://www.w3.org/2000/svg'
+            - 'rect'
+            - 'x': $xPos
+              'y': $yPos
+              'width': 2.8
+              'height': 2.8
+              'fill': 'white'
+            - $svg
+          - '$elements[$x][$y]': $seq
+          - $seq.onclick:
+              function:
+                - []
+                - sequence:
+                  - $color:
+                      if: ['$matrix[$x][$y]', 'white', 'black']
+                  - do: [this.setAttribute, 'fill', $color]
+                  - '$matrix[$x][$y]':
+                      not: '$matrix[$x][$y]'
+                - [x, y]
+  - $draw:
+      function:
+      - []
+      - sequence:
+        - for:
+          - [x, 0, 50]
+          - for:
+            - [y, 0, 20]
+            - when:
+              - '$matrix[$x][$y]'
+              - sequence:
+                - forEach:
+                  -
+                    - '$subscribers[$x - 1][$y - 1]'
+                    - '$subscribers[$x - 1][$y]'
+                    - '$subscribers[$x - 1][$y + 1]'
+                    - '$subscribers[$x][$y - 1]'
+                    - '$subscribers[$x][$y + 1]'
+                    - '$subscribers[$x + 1][$y - 1]'
+                    - '$subscribers[$x + 1][$y]'
+                    - '$subscribers[$x + 1][$y + 1]'
+                  - do: [$item.push, 1]
+        - for:
+          - [x, 0, 50]
+          - for:
+            - [y, 0, 20]
+            - sequence:
+              - $subscribeCount: '$subscribers[$x][$y].length'
+              - when:
+                - '$matrix[$x][$y]'
+                - when:
+                  - and:
+                    - not: [$subscribeCount, 2]
+                    - not: [$subscribeCount, 3]
+                  - sequence:
+                    - '$matrix[$x][$y]': false
+                    - do: ['$elements[$x][$y].setAttribute', 'fill', 'white']
+                - is: [$subscribeCount, 3]
+                - sequence:
+                  - '$matrix[$x][$y]': true
+                  - do: ['$elements[$x][$y].setAttribute', 'fill', 'black']
+              - '$subscribers[$x][$y]': []
+        - when:
+          - $animationFlag.value
+          - do: [window.requestAnimationFrame, $draw]
+  - $toggleButton:
+      createElement:
+      - input
+      - type: button
+        value: "start"
+      - document.body
+  - $toggleButton.onclick:
+      function:
+      - []
+      - sequence:
+        - $animationFlag.value:
+            not: $animationFlag.value
+        - when:
+          - $animationFlag.value
+          - sequence:
+            - $toggleButton.value: 'stop'
+            - do: [window.requestAnimationFrame, $draw]
+          - true
+          - $toggleButton.value: 'start'
+  - $clearButton:
+      createElement:
+      - input
+      - type: button
+        value: clear
+      - document.body
+  - $clearButton.onclick:
+      function:
+      - []
+      - sequence:
+        - for:
+          - [x, 0, 50]
+          - for:
+            - [y, 0, 20]
+            - sequence:
+              - when:
+                - '$matrix[$x][$y]'
+                - sequence:
+                  - '$matrix[$x][$y]': false
+                  - do: ['$elements[$x][$y].setAttribute', 'fill', 'white']
+  - $randomButton:
+      createElement:
+      - input
+      - type: button
+        value: random
+      - document.body
+  - $randomName: [blinker, glider, toad, acorn, r-pentomino]
+  - random: $randomName.length
+  - $seq - 1
+  - $randomCursor: $seq
+  - print: $randomCursor
+  - $randomButton.value: '$randomName[$randomCursor]'
+  - $randomShape:
+    - [[0, 0], [0, 1], [0, 2]]
+    - [[0, 0], [0, 1], [0, 2], [1, 0], [2, 1]]
+    - [[0, 0], [0, 1], [0, 2], [1, 1], [1, 2], [1, 3]]
+    - [[0, 1], [1, 3], [2, 0], [2, 1], [2, 4], [2, 5], [2, 6]]
+    - [[0, 1], [0, 2], [1, 0], [1, 1], [2, 1]]
+  - $randomButton.onclick:
+      function:
+      - []
+      - sequence:
+        - random: 50 - 20
+        - $seq + 10
+        - $xStart: $seq
+        - random: 20 - 10
+        - $seq + 5
+        - $yStart: $seq
+        - forEach:
+          - '$randomShape[$randomCursor]'
+          - sequence:
+            - '$matrix[$xStart + $item.0][$yStart + $item.1]': true
+            - do: ['$elements[$xStart + $item.0][$yStart + $item.1].setAttribute', 'fill', 'black']
+        - random: $randomName.length
+        - $seq - 1
+        - $randomCursor: $seq
+        - $randomButton.value: '$randomName[$randomCursor]'
