@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>three.js webgl - geometry - cube</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <style>
+    #viewSrcButton {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      padding: 8px;
+      color: #fff;
+      background-color: #555;
+      opacity: 0.7;
+    }
+
+    #backButton {
+      position: fixed;
+      bottom: 40px;
+      left: 40px;
+      padding: 8px;
+      color: #fff;
+      background-color: #555;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+  <a id="viewSrcButton" target="_blank" style="" href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_geometry_cube.html" title="View original source">View original source</a>
+  <a id="backButton" style="" href="/" title="back">back</a>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.12.0/js-yaml.js"></script>
+  <script src="../lib/dsl-core.js"></script>
+  <script src="../lib/dsl-client.js"></script>
+  <script>
+    /* global Argument, jsyaml, fetch, THREE, addGlobalObject */
+    (async function() {
+      addGlobalObject({ THREE });
+      const response = await fetch('/public/webgl_cube.yml');
+      const text = await response.text();
+      const json = await jsyaml.safeLoad(text);
+      new Argument(json.main).evaluate({});
+    })();
+  </script>
+</body>
+
+</html>
