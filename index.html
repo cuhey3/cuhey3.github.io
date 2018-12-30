@@ -41,6 +41,8 @@
         <a href="wikipedia.html">wikipedia mashup</a>
         <br>
         <a href="tensorflow.html">tensorflow demo</a>
+        <br>
+        <a href="lifegame.html">svg lifegame</a>
       </div>
     </div>
 
@@ -82,9 +84,10 @@ main:
     /* global jsyaml, mydsl, fetch */
     (async function() {
       const { Argument } = mydsl;
-      const response = await fetch('./public/samples.yml');
+      const response = await fetch('/public/samples.yml');
       const text = await response.text();
       const yamlObject = await jsyaml.safeLoad(text);
+      console.log(yamlObject);
       const [yamlInput, samples, dslResult, dslThisObject] = [
         'yamlInput', 'samples', 'dslResult', 'dslThisObject'
       ].map(function(id) {
