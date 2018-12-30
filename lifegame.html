@@ -1,0 +1,23 @@
+<html>
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.12.0/js-yaml.js"></script>
+  <script src="../lib/dsl-core.js"></script>
+  <script src="../lib/dsl-client.js"></script>
+</head>
+
+<body>
+  <h2>svg lifegame</h2>
+  <span>Please click on some cells and start.</span>
+  <script>
+    /* global fetch, jsyaml, Argument */
+    (async function() {
+      const response = await fetch('/public/lifegame.yml');
+      const text = await response.text();
+      const json = await jsyaml.safeLoad(text);
+      return new Argument(json.main).evaluate({});
+    })();
+  </script>
+</body>
+
+</html>
