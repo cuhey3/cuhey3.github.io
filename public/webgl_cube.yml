@@ -1,0 +1,66 @@
+main:
+  sequence:
+    - $camera:
+        new:
+          - THREE.PerspectiveCamera
+          - 70
+          - window.innerWidth / window.innerHeight
+          - 1
+          - 1000
+    - $camera.position.z: 400
+    - $scene:
+        new: THREE.Scene
+    - $textureLoader:
+        new: THREE.TextureLoader
+    - $texture:
+        do: [$textureLoader, load, '/public/crate.gif']
+    - $geometry:
+        new:
+        - THREE.BoxBufferGeometry
+        - 200
+        - 200
+        - 200
+    - {}
+    - $seq.map: $texture
+    - $material:
+        new: [THREE.MeshBasicMaterial, $seq]
+    - $mesh:
+        new:
+        - THREE.Mesh
+        - $geometry
+        - $material
+    - do: [$scene.add, $mesh]
+    - $renderer:
+        new:
+        - THREE.WebGLRenderer
+        - { antialias: true }
+    - do: [$renderer.setPixelRatio, window.devicePixelRatio]
+    - do:
+      - $renderer.setSize
+      - window.innerWidth
+      - window.innerHeight
+    - do: [document.body.appendChild, $renderer.domElement]
+    - $onWindowResizeFunc:
+        function:
+        - []
+        - sequence:
+          - $camera.aspect: window.innerWidth / window.innerHeight
+          - do: $camera.updateProjectionMatrix
+          - do:
+            - $renderer.setSize
+            - window.innerWidth
+            - window.innerHeight
+    - do:
+      - window.addEventListener
+      - 'resize'
+      - $onWindowResizeFunc
+      - false
+    - $animate:
+        function:
+        - []
+        - sequence:
+          - do: [window.requestAnimationFrame, $animate]
+          - $mesh.rotation.x: $mesh.rotation.x + 0.005
+          - $mesh.rotation.y: $mesh.rotation.y + 0.01
+          - do: [$renderer.render, $scene, $camera]
+    - do: $animate
