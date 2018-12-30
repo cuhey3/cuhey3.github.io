@@ -167,3 +167,12 @@ main:
         - $seq - 1
         - $randomCursor: $seq
         - $randomButton.value: '$randomName[$randomCursor]'
+  - createElement:
+    - br
+    - {}
+    - document.body
+  - createElement:
+    - a
+    - href: '/'
+      text: back
+    - document.body
