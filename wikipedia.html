@@ -71,8 +71,8 @@
         <td class="input">$request1:<textarea rows="8" id="input1">
 fetch:
 - format:
-  - 'https://ja.wikipedia.org/w/api.php?action=query&list=backlinks&bltitle=%s&format=json&bllimit=500&origin=*'
-  - encodeURI: ゆるゆり
+  - 'https://ja.wikipedia.org/w/api.php?action=parse&prop=links&&page=%s&format=json&origin=*'
+  - encodeURI: 大久保瑠美
 - json</textarea><br><input type="button" value="evaluate" id="evaluate1"></td>
         <td class="input">$request2:<textarea rows="8" id="input2">
 fetch:
@@ -89,8 +89,8 @@ fetch:
       <th rowspan="2">transform</td>
         <td class="input">$transform1:<textarea rows="4" id="input3">
 map:
-- $request1.query.backlinks
-- $item.title</textarea><br><input type="button" value="evaluate" id="evaluate3"></td>
+- '$request1.parse.links'
+- '$item.*'</textarea><br><input type="button" value="evaluate" id="evaluate3"></td>
         <td class="input">$transform2:<textarea rows="4" id="input4">
 map:
 - $request2.query.backlinks
