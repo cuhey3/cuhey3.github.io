@@ -9,12 +9,15 @@
     body {
       background: #eee;
     }
+
     #input-canvas {
       border: solid 1px #999;
     }
+
     .circle {
       border: solid 1px green;
     }
+
     .cross {
       border: solid 1px red;
     }
@@ -47,21 +50,27 @@
       const response = await fetch('/public/tf.yml');
       const text = await response.text();
       const json = await jsyaml.safeLoad(text);
+
       const imageSize = 32;
       const offset = 255 / 2;
       let predictionModel = null;
+
       const inputCanvas = new Argument(json.inputCanvas).evaluate({ imageSize });
+
       document.getElementById("train").onclick = async function train() {
         predictionModel
           = await new Argument(json.train).evaluate({ imageSize, offset });
       };
+
       document.getElementById("predict").onclick = async function predict() {
         await new Argument(json.predict)
           .evaluate({ predictionModel, imageSize, offset, inputCanvas });
       };
+
       document.getElementById("save").onclick = async function predict() {
         await new Argument(json.save).evaluate({ predictionModel });
       };
+
     })();
   </script>
 </body>
