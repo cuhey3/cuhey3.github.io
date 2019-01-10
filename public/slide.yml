@@ -1,0 +1,511 @@
+templates:
+  titleOnlyTemplate: &titleOnlyTemplate
+    title:
+      stroke-width: 0.5
+      stroke: black
+      centerY:
+        offset: 0
+        height: 90
+      centerX: true
+      startX: 10
+      startY: 0
+      newlineScale: 1.2
+      font-size: 16
+  largeTitleTemplate: &largeTitleTemplate
+    title:
+      stroke-width: 0.5
+      stroke: black
+      centerY:
+        offset: 0
+        height: 80
+      centerX: true
+      startX: 10
+      startY: 0
+      newlineScale: 1.2
+      font-size: 16
+    content:
+      centerY:
+        offset: 15
+        height: 80
+      centerX: true
+      newlineScale: 1.5
+      font-size: 5
+
+  footerTemplate: &footerTemplate
+    title:
+      startX: 160
+      startY: 0
+      centerY:
+        offset: 90
+        height: 10
+      font-size: 4
+    content:
+      startX: 10
+      startY: 0
+      centerY:
+        offset: 90
+        height: 10
+      font-size: 4
+    line:
+      - x1: 0
+        y1: 90
+        x2: 200
+        y2: 90
+        stroke: black
+        stroke-width: 0.3
+    # rect:
+    #   - x: 0
+    #     y: 90
+    #     width: 200
+    #     height: 10
+    #     fill: white
+
+  defaultTemplate: &defaultTemplate
+    title:
+      stroke-width: 0.3
+      stroke: black
+      centerY:
+        offset: 0
+        height: 15
+      startX: 10
+      startY: 0
+      font-size: 8
+    content:
+      startX: 10
+      startY: 25
+      newlineScale: 1.5
+      font-size: 5
+    line:
+      - x1: 0
+        y1: 15
+        x2: 200
+        y2: 15
+        stroke: black
+        stroke-width: 0.3
+
+slides: &slides
+  - template: *titleOnlyTemplate
+    title:
+      - YAMLで
+      - JSを動かそう
+    content:
+      -
+        - aaaa
+      -
+        - リンク
+        - link:
+          - aaa
+          - 'http://www.google.co.jp'
+        - ですよ
+
+  - template: *defaultTemplate
+    title:
+      - What's YAML?
+    content:
+      -
+        - ・テキストデータ形式の一種
+      -
+        - space: 5
+      -
+        - ・JSON⇔JavaScript Object変換のように、
+      -
+        - 　YAML⇔JavaScript Object変換ができる
+      -
+        - space: 5
+      -
+        - ・外部ライブラリとして
+        - link:
+          - js-yaml
+          - 'https://www.npmjs.com/package/js-yaml'
+        - を使っています
+        - link:
+          - (demo)
+          - 'http://nodeca.github.io/js-yaml/'
+  - template: *defaultTemplate
+    title:
+      - JSを動かす？
+    content:
+      -
+        - ・Run JS?
+      -
+        - 　・それはインタプリタの仕事では？
+      -
+        - space: 3
+        - ⇒ JavaScriptコードをテキスト(YAML)で置き換える、
+      -
+        - 　 くらいの意味で使ってます。
+  - template: *defaultTemplate
+    title:
+      - コードをテキストで置き換える？
+    content:
+      -
+        - ・ルールに基づいてテキストを解釈させて、
+      -
+        - 　対応する関数を呼び出すことで、置き換えたと言うことができる
+      -
+        - space: 2
+      -
+        - 　⇒ コードがなくなるわけではない
+      -
+        - space: 6
+      -
+        - ・どうやって置き換える？
+      -
+        - space: 2
+      -
+        - 　⇒  ルール（構文）を決めて、それを解釈するコードを実装する。
+
+  - template: *defaultTemplate
+    title:
+      - 完全な構文（ASTの場合）
+    content:
+      -
+        - AST
+        - link:
+          - (解説ブログ)
+          - 'https://efcl.info/2016/03/06/ast-first-step/'
+      -
+        - space: 5
+      -
+        - 　・パーサとジェネレータによって、コードとテキストを相互に変換できる。
+      -
+        - 　・コードに変換した後はオーバーヘッドなし。
+      -
+        - 　・構文として完全であるがゆえに冗長。
+      -
+        - 　・基本的に人が書くものではない（はず）。
+
+  - template: *defaultTemplate
+    title:
+      - 不完全な構文（自分の場合）
+    content:
+      -
+        - mydsl(仮)
+        - link:
+          - (デモ)
+          - 'https://cuhey3.github.io'
+      -
+        - space: 5
+      -
+        - 　・プログラム上で構文テキストを読み込み、解釈しながら逐次実行する。
+      -
+        - 　・変数評価を繰り返し行うのでオーバーヘッドがある。
+      -
+        - 　・構文として常に不完全。
+      -
+        - 　　⇒ ほしい機能を、自分で使いやすいように追加していく。
+      -
+        - 　・コードの代替を目的として、人間が書く。
+
+
+  - template: *largeTitleTemplate
+    title:
+      - 早速デモ
+    content:
+      - link: 'https://cuhey3.github.io'
+
+  - template: *defaultTemplate
+    title:
+      - DSL設計の要点 1/2
+    content:
+      - bold: Argument
+      - space: 2
+      - 1. DSLのクラスとしては唯一、Argumentのみが存在する。
+      - 2. Argumentは、evaluateメソッドを呼ぶことで評価され、値を返す。
+      - 3. DSL関数は、任意の数のArgumentを受け取り、また任意に評価をする。
+      - 4. Argumentには、別のDSL関数の呼び出しを含めることができる。
+
+  - template: *defaultTemplate
+    title:
+      - DSL設計の要点 2/2
+    content:
+      - bold: 'this Container (this変数コンテナ)'
+      - space: 2
+      - 1. Argumentを評価する際には、変数の集合をオブジェクトの形で渡す。
+      - 2. 全てのDSL関数内部では、thisがコンテナオブジェクトを指し示す。
+      - 3. たとえばset関数であれば、thisに対してキーと値を設定する。
+      - space:
+      - DSLは、基本的にこれだけの設計で実装されています。
+
+  - template: *defaultTemplate
+    title:
+      - DSL関数の実装を見てみよう
+    content:
+      - bold: 'this Container (this変数コンテナ)'
+      - space: 2
+      - 1. Argumentを評価する際には、変数の集合をオブジェクトの形で渡す。
+      - 2. 全てのDSL関数内部では、thisがコンテナオブジェクトを指し示す。
+      - 3. たとえばset関数であれば、thisに対してキーと値を設定する。
+      - space:
+      - DSLはこれだけの設計で実装されています。
+
+  - template: *defaultTemplate
+    title:
+      - DSLコア関数の一覧 1/3
+    content:
+      -
+        - 変数操作・制御文
+      -
+        - space: -1
+      -
+        - '　'
+        - bold: 'get'
+        - "\u00A0/\u00A0"
+        - bold: 'set'
+        - "\u00A0 / d(default) /\u00A0"
+        - bold: 'when'
+        - "\u00A0/\u00A0"
+        - bold: 'if'
+        - "\u00A0/ for / repeat"
+      -
+        - space: 2.5
+      -
+        - '数値計算: Mathメソッドも使用可能'
+      -
+        - space: -1
+      -
+        - '　四則演算オペレータ('
+        - bold: '+, -, *, /'
+        - "\u00A0と %) / parseInt / random / minMax"
+      -
+        - space: 2.5
+      -
+        - '文字列・正規表現: Stringメソッドも使用可能'
+      -
+        - space: -1
+      -
+        - '　'
+        - bold: 'format'
+        - "\u00A0/ encodeURI / re"
+      -
+        - space: 2.5
+      -
+        - 条件判定
+      -
+        - space: -1
+      -
+        -  '　'
+        - bold: is
+        - "\u00A0/\u00A0"
+        - bold: not
+        - "\u00A0/ and / or / compare / isEmpty / in / isNumber"
+
+  - template: *defaultTemplate
+    title:
+      - DSLコア関数の一覧 2/3
+    content:
+      -
+        - 関数生成・関数実行
+      -
+        - space: -1
+      -
+        - '　'
+        - bold: function
+        - "\u00A0/\u00A0"
+        - bold: 'do'
+        - '(method)'
+      -
+        - space: 2
+      -
+        - 順次実行・メソッドチェーン
+      -
+        - space: -1
+      -
+        - '　execute'
+        - "\u00A0/\u00A0"
+        - bold: sequence
+        - "\u00A0/\u00A0"
+        - 'exit / chain'
+      -
+        - space: 2
+      -
+         - '順次実行(非同期)'
+      -
+         - space: -1
+      -
+        - '　asyncExecute'
+        - "\u00A0/\u00A0"
+        - bold: asyncSequence
+        - "\u00A0/\u00A0"
+        - bold: 'await(awaitAll)'
+        - "\u00A0/\u00A0"
+        - wait
+      -
+        - space: 2
+      -
+        - 'map/reduce'
+      -
+        - space: -1
+      -
+        - '　'
+        - bold: map
+        - "\u00A0/\u00A0"
+        - bold: filter
+        - "\u00A0/\u00A0"
+        - 'every / some'
+        - "\u00A0/\u00A0"
+        - bold: forEach
+        - "\u00A0/\u00A0"
+        - 'reduce'
+
+  - template: *defaultTemplate
+    title:
+      - DSLコア関数の一覧 3/3
+    content:
+      -
+        - コンストラクタ実行・クラス定義
+      -
+        - space: -1
+      -
+        - '　'
+        - bold: new
+        - "\u00A0/\u00A0"
+        - 'class / prototype'
+      -
+        - space: 2
+      -
+        - メッセージング
+      -
+        - space: -1
+      -
+        - '　queue / publish / subscribe'
+      -
+        - space: 2
+      -
+        - 'テスト・開発'
+      -
+        - space: -1
+      -
+        - '　'
+        - bold: testsuite
+        - "\u00A0/\u00A0"
+        - bold: testcase
+        - "\u00A0/\u00A0"
+        - bold: print
+        - "\u00A0/\u00A0"
+        - 'performance'
+      -
+        - space: 2
+      -
+        - その他
+      -
+        - space: -1
+      -
+        - '　now / counter / merge / keys / diff / range / undefined'
+      -
+        - space: 2
+
+  - template: *titleOnlyTemplate
+    title:
+      - ところで、これ…
+
+  - template: *titleOnlyTemplate
+    title:
+      - 何の意味があるの？
+
+  - template: *titleOnlyTemplate
+    title:
+      - わからない
+
+  - template: *titleOnlyTemplate
+    title:
+      - 意味はありそうだけど
+      - わからない
+
+
+  - template: *defaultTemplate
+    title:
+      - デメリット
+    content:
+      -
+        - ・パフォーマンスが落ちる
+      -
+        - '　・アニメーション系だとフレームレートが大体半分'
+      -
+        - '　・変数評価時に文字列操作が入るから遅い'
+      -
+        - '　・他にボトルネックがある通信系は問題ない'
+      -
+        - space: 3
+      -
+        - ・YAML書いててちょいちょいハマる（自分で作ったのに）
+      -
+        - space: 3
+      -
+        - ・プロトタイプは生JSで書きたい
+
+  - template: *defaultTemplate
+    title:
+      - メリット？
+    content:
+      -
+        - ・可読性とメンテナンス性が上がる
+      -
+        - '　・特に変数は依存性が明確になる'
+      -
+        - space: 3
+      -
+        - ・テストは書きやすい
+      -
+        - space: 3
+      -
+        - ・人のコードを写経するときにYAMLに書き換えると楽しい
+      -
+        - space: 3
+      -
+        - ・うまく適用できそうなところがある
+      -
+        - '　・IFTTT Webhooks の requestBody に DSLを書く、とか'
+      -
+        - '　・APIマッシュアップをクライアントでやる、とか'
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: ご清聴ありがとうございました
+        font-size: 8
+        stroke-width: 0.3
+
+main:
+  sequence:
+    - presentation:
+        svg:
+          do: [document.querySelector, 'svg']
+        slides: *slides
+        from-dsl:
+          "~transform: { format: ['translate(%s, 0)', multiply: ['$animatedIndex - ~index', -200]] }"
+        footer:
+          template: *footerTemplate
+          title:
+            -
+              - しうへい
+              - link:
+                - '@cuhey3'
+                - 'https://twitter.com/cuhey3'
+          content:
+            -
+              - まぼろしのJS勉強会#7
+    - $leftTurn:
+        createElementNS:
+          - 'http://www.w3.org/2000/svg'
+          - 'polygon'
+          - points: "25,20 2,50 25,80"
+            class: arrow
+          - $svg
+    - $rightTurn:
+        createElementNS:
+        - 'http://www.w3.org/2000/svg'
+        - 'polygon'
+        - points: "175,20 198,50 175,80"
+          class: arrow
+        - $svg
+    - defineKeyEvent: ['right', 'keydown', 'key', 'ArrowRight']
+    - defineKeyEvent: ['left', 'keydown', 'key', 'ArrowLeft']
+    - defineClickEvent: ['left', $leftTurn]
+    - defineClickEvent: ['right', $rightTurn]
+    - defineSwipeEvent: ['left', 'x', +30]
+    - defineSwipeEvent: ['right', 'x', -30]
+    - defineAnimation: ['right', 'animatedIndex', 1, 350, 0, '$existSlideLength - 1']
+    - defineAnimation: ['left', 'animatedIndex', -1, 350, 0, '$existSlideLength - 1']
+    - startAnimation:
+      - events:
+      - animatedIndex: 19
