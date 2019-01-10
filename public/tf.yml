@@ -155,7 +155,9 @@ predict:
     - when:
       - is: [$predictionModel, null]
       - sequence:
-        - alert: 'Please train the model first.'
+        - do:
+          - window.alert
+          - 'Please train the model first.'
         - exit:
     - do:
       - 'tf.tidy'
@@ -189,9 +191,13 @@ predict:
           - do: '$seq.dataSync'
           - when:
             - '$seq[0] > 0.5'
-            - alert: 'This is ○'
+            - do:
+              - window.alert
+              - 'This is ○'
             - true
-            - alert: 'This is ✕'
+            - do:
+              - window.alert
+              - 'This is ✕'
           - do: [$c, 'remove']
 
 save:
@@ -199,7 +205,9 @@ save:
     - when:
       - is: [$predictionModel, null]
       - sequence:
-        - alert: 'Please train the model first.'
+        - do:
+          - window.alert
+          - 'Please train the model first.'
         - exit:
     - await:
         do: [$predictionModel.save, 'downloads://mymodel']
