@@ -88,15 +88,6 @@ slides: &slides
     title:
       - YAMLで
       - JSを動かそう
-    content:
-      -
-        - aaaa
-      -
-        - リンク
-        - link:
-          - aaa
-          - 'http://www.google.co.jp'
-        - ですよ
 
   - template: *defaultTemplate
     title:
@@ -477,13 +468,13 @@ main:
           template: *footerTemplate
           title:
             -
-              - しうへい
-              - link:
-                - '@cuhey3'
-                - 'https://twitter.com/cuhey3'
+              - "\u00A0" #しうへい
+              #- link:
+              #  - '@cuhey3'
+              #  - 'https://twitter.com/cuhey3'
           content:
             -
-              - まぼろしのJS勉強会#7
+              - "\u00A0" #まぼろしのJS勉強会#7
     - $leftTurn:
         createElementNS:
           - 'http://www.w3.org/2000/svg'
