@@ -86,3 +86,357 @@ fetch:
     - map:
       - $seq.query.backlinks
       - $item.title
+
+testing:
+  - testsuite:
+    - 'get test'
+    - $: {foo: bar, bar: wao, boo: {woo: {soo: yoo}}}
+
+    - testcase:
+      - get: foo
+      - foo
+
+    - testcase:
+      - get: $foo
+      - bar
+
+    - testcase:
+      - $foo
+      - bar
+
+    - testcase:
+      - get: [$, foo]
+      - bar
+
+    - testcase:
+      - get:
+        - foo:
+            bar:
+              wao: 555
+        - foo
+        - bar
+        - wao
+      - 555
+
+    - testcase:
+      - '$boo.woo.soo'
+      - yoo
+
+  - testsuite:
+    - 'set test'
+
+    - testcase:
+      - sequence:
+        - set: [$aaa, bbb]
+        - $aaa
+      - bbb
+
+    - testcase:
+      - sequence:
+        - $ccc: ddd
+        - $ccc
+      - ddd
+
+    - testcase:
+      - sequence:
+        - $foo: {}
+        - $foo.bar: wao
+        - get: [$foo, bar]
+      - wao
+
+  - testsuite:
+    - 'format test'
+
+    - testcase:
+      - format:
+        - '%sbar%s'
+        - foo
+        - wao
+      - foobarwao
+
+    - testcase:
+      - format:
+        - '%sbar%s%s'
+        - foo
+        - wao
+      - foobarwao%s
+
+    - testcase:
+      - format:
+        - '%sbar'
+        - foo
+        - wao
+      - foobar
+
+  - testsuite:
+    - 'calc test'
+    - $: {foo: 9, bar: 3}
+
+    - testcase:
+      - '$foo + $bar'
+      - 12
+
+    - testcase:
+      - '$foo - $bar'
+      - 6
+
+    - testcase:
+      - '$foo * $bar'
+      - 27
+
+    - testcase:
+      - '$foo / $bar'
+      - 3
+
+  - testsuite:
+    - sequence:
+      - $foo: 1
+      - $bar: 2
+      - 'compare test'
+
+    - testcase:
+      - '1 < 2'
+      - true
+
+    - testcase:
+      - '1 > 2'
+      - false
+
+    - testcase:
+      - '1 <= 2'
+      - true
+
+    - testcase:
+      - '1 >= 2'
+      - false
+
+    - testcase:
+      - '$foo < $bar'
+      - true
+
+    - testcase:
+      - '$foo > $bar'
+      - false
+
+    - testcase:
+      - '$foo <= $bar'
+      - true
+
+    - testcase:
+      - '$foo >= $bar'
+      - false
+
+  - testsuite:
+    - sequence:
+      - $foo: 2
+      - repeat:
+        - 3
+        - $foo: '$foo * 2'
+      - 'repeat test'
+
+    - testcase:
+      - $foo
+      - 16
+
+  - testsuite:
+    - sequence:
+      - $foo:
+          bar: '123456'
+      - 'method test'
+
+    - testcase:
+      - method:
+        - abcde
+        - substr
+        - -2
+      - de
+
+    - testcase:
+      - method:
+        - $foo
+        - bar
+        - substr
+        - -2
+      - '56'
+
+  - testsuite:
+    - function test
+
+    - testcase:
+      - method:
+        - function:
+          - [foo, bar]
+          - sequence:
+            - '$foo + $bar'
+        - 1
+        - 2
+      - 3
+
+  - testsuite:
+    - filter test
+
+    - testcase:
+      - sequence:
+        - filter:
+          - [true, true, false, false, true]
+          - not: $item
+        - '$seq.length'
+      - 2
+
+  - testsuite:
+    - every test
+
+    - testcase:
+      - every:
+        - [aaa, bbb, ccc, ddd, eee]
+        - is: [$item.length, 3]
+      - true
+
+    - testcase:
+      - every:
+        - [aaaa, bbb, ccc, ddd, eee]
+        - is: [$item.length, 3]
+      - false
+
+  - testsuite:
+    - parseInt test
+
+    - testcase:
+      - parseInt: '555'
+      - 555
+
+  - testsuite:
+    - sequence:
+      - $foo:
+        - [1, 2]
+        - [2, 3]
+        - [3, 4]
+      - reduce test
+
+    - testcase:
+      - sequence:
+        - reduce:
+          - $foo
+          - res
+          - curr
+          - []
+          - do: ['$res.concat', $curr]
+        - do: ['$seq.join', '']
+      - '122334'
+
+  - testsuite:
+    - sequence:
+      - $foo: [1, 2, 3]
+      - map test
+
+    - testcase:
+      - sequence:
+        - map:
+          - $foo
+          - '$item + 2'
+        - do: ['$seq.join', '']
+      - '345'
+
+  - testsuite:
+    - sequence:
+      - $start: 1
+      - $end: 5
+      - for test
+
+    - testcase:
+      - sequence:
+        - for:
+          - [i, $start, $end]
+          - for:
+            - [j, $start, $end]
+            - print: [$i, $j]
+      - for test
+
+    - testcase:
+      - sequence:
+        - for:
+          - i
+          - $start
+          - $end
+          - for:
+            - j
+            - $start
+            - $end
+            - print: [$i, $j]
+            - $j + 2
+      - for test
+
+    - testcase:
+      - for:
+        - [i, 0, 10, $i + 2]
+        - print: [$foo, $i]
+      - $foo
+
+  - testsuite:
+    - sequence:
+      - $foo: [100,200,300,400,500]
+      - $bar: 2
+      - array test
+
+    - testcase:
+      - $foo[$bar]
+      - 300
+
+  - testsuite:
+    - sequence:
+      - $nekoGreeting: nyaa
+      - $GooClass:
+          class:
+            - 'Goo'
+            - [greeting]
+            - prototype:
+              - 'sayHello'
+              - function:
+                - [repeatNo]
+                - repeat:
+                  - $.repeatNo
+                  - print: ['this is prototype', this.greeting, $nekoGreeting]
+
+      - $GooInstance1:
+          new: [$GooClass, konichiwa]
+      - $GooInstance2:
+          new: [$GooClass, yahoo]
+      - class test
+
+    - testcase:
+      - sequence:
+        - do: [$GooInstance1.sayHello, 2]
+        - $nekoGreeting: 'overwrited nekoGreeting'
+        - $GooInstance1.greeting: 'greeting overwrited'
+        - do: [$GooInstance1.sayHello, 2]
+        - do: [$GooInstance2.sayHello, 3]
+        - is: [$GooInstance1.greeting, $GooInstance2.greeting]
+      - false
+
+    - testcase:
+      - 'this.aaa'
+      - undefined:
+
+  - testsuite:
+    - 'Math test'
+
+    - testcase:
+      - sequence:
+        - do: Math.random
+        - do: [Math.ceil, $seq]
+      - 1
+
+  - testsuite:
+    - 'isNumber test'
+
+    - testcase:
+      - isNumber: 111
+      - true
+
+    - testcase:
+      - isNumber: aaa
+      - false
+
+    - testcase:
+      - isNumber:
+      - true
