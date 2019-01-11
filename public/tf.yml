@@ -193,11 +193,11 @@ predict:
             - '$seq[0] > 0.5'
             - do:
               - window.alert
-              - 'This is ○'
+              - 'This is 1'
             - true
             - do:
               - window.alert
-              - 'This is ✕'
+              - 'This is 2'
           - do: [$c, 'remove']
 
 save:
