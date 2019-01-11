@@ -463,10 +463,10 @@ slides: &slides
       - 果たして「ちゃんと書くJS」か？
     content:
       - ・「ちゃんと書く」といえばスクラッチ（※個人の意見です）
-      - ・スクラッチの助けにはなるかも？
-      - ・ライブラリとは相性悪くないです
-      -   ・tensorflow.js, three.jsのサンプルあり
-      - space: 2
+      - '　・スクラッチの助けにはなるかも？'
+      - '　・ライブラリとは相性悪くないです'
+      - '  ・tensorflow.js, three.jsのサンプルあり'
+      - space: 3
       - ・フレームワークは元々DSLを持っていることが多いので微妙
 
   - template: *titleOnlyTemplate
