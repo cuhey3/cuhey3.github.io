@@ -130,13 +130,13 @@ slides: &slides
       - コードをテキストで置き換える？
     content:
       -
-        - ・ルールに基づいてテキストを解釈させて、
+        - ・一定のルールに基づいてテキストを解釈させて、
       -
-        - 　対応する関数を呼び出すことで、置き換えたと言うことができる
+        - 　対応する関数を実行することで、置き換えたと言うことができる
       -
         - space: 2
       -
-        - 　⇒ コードがなくなるわけではない
+        - 　⇒ コードをなくするわけではない
       -
         - space: 6
       -
@@ -158,13 +158,13 @@ slides: &slides
       -
         - space: 5
       -
-        - 　・パーサとジェネレータによって、コードとテキストを相互に変換できる。
+        - 　・コードとJSONテキストを相互に変換することができる。
       -
         - 　・コードに変換した後はオーバーヘッドなし。
       -
         - 　・構文として完全であるがゆえに冗長。
       -
-        - 　・基本的に人が書くものではない（はず）。
+        - 　・基本的に、人が一から書くものではない（はず）。
 
   - template: *defaultTemplate
     title:
@@ -172,9 +172,6 @@ slides: &slides
     content:
       -
         - mydsl(仮)
-        - link:
-          - (デモ)
-          - 'https://cuhey3.github.io'
       -
         - space: 5
       -
@@ -185,6 +182,8 @@ slides: &slides
         - 　・構文として常に不完全。
       -
         - 　　⇒ ほしい機能を、自分で使いやすいように追加していく。
+      -
+        - space: 2
       -
         - 　・コードの代替を目的として、人間が書く。
 
@@ -197,38 +196,47 @@ slides: &slides
 
   - template: *defaultTemplate
     title:
-      - DSL設計の要点 1/2
+      - DSL設計の要点 1/3
     content:
       - bold: Argument
       - space: 2
       - 1. DSLのクラスとしては唯一、Argumentのみが存在する。
-      - 2. Argumentは、evaluateメソッドを呼ぶことで評価され、値を返す。
-      - 3. DSL関数は、任意の数のArgumentを受け取り、また任意に評価をする。
-      - 4. Argumentには、別のDSL関数の呼び出しを含めることができる。
+      - 2. Argumentは、未評価のJavaScriptオブジェクトをラップしている。
+      - 3. evaluateメソッドを呼ぶことで評価を行い、値を返す。
+      - 4. Argumentは、ネストをすることが可能。
+      - space: -1
+      - text: ネストされたArgument
+        font-size: 3
+      - space: -1
+      - image:
+        - '/public/nested_argument.png'
+        - 20
 
   - template: *defaultTemplate
     title:
-      - DSL設計の要点 2/2
+      - DSL設計の要点 2/3
+    content:
+      - bold: 'DSL関数'
+      - space: 2
+      - 1. DSL関数は、任意の数のArgumentを受け取る。
+      - 2. Argumentを評価するタイミングは、DSL関数の実装に委ねられている。
+      - space: -1
+      - text: print関数の実装
+        font-size: 3
+      - space: -1
+      - image:
+        - '/public/dsl-function-image.png'
+        - 35
+
+  - template: *defaultTemplate
+    title:
+      - DSL設計の要点 3/3
     content:
       - bold: 'this Container (this変数コンテナ)'
       - space: 2
       - 1. Argumentを評価する際には、変数の集合をオブジェクトの形で渡す。
       - 2. 全てのDSL関数内部では、thisがコンテナオブジェクトを指し示す。
       - 3. たとえばset関数であれば、thisに対してキーと値を設定する。
-      - space:
-      - DSLは、基本的にこれだけの設計で実装されています。
-
-  - template: *defaultTemplate
-    title:
-      - DSL関数の実装を見てみよう
-    content:
-      - bold: 'this Container (this変数コンテナ)'
-      - space: 2
-      - 1. Argumentを評価する際には、変数の集合をオブジェクトの形で渡す。
-      - 2. 全てのDSL関数内部では、thisがコンテナオブジェクトを指し示す。
-      - 3. たとえばset関数であれば、thisに対してキーと値を設定する。
-      - space:
-      - DSLはこれだけの設計で実装されています。
 
   - template: *defaultTemplate
     title:
@@ -419,11 +427,11 @@ slides: &slides
       -
         - space: 3
       -
-        - ・YAML書いててちょいちょいハマる（自分で作ったのに）
+        - ・YAML書いててちょいちょいハマる（自分で作ったのに…）
       -
         - space: 3
       -
-        - ・プロトタイプは生JSで書きたい
+        - ・プロトタイプは生JSで書いた方が間違いなく早い
 
   - template: *defaultTemplate
     title:
@@ -440,7 +448,7 @@ slides: &slides
       -
         - space: 3
       -
-        - ・人のコードを写経するときにYAMLに書き換えると楽しい
+        - ・人のコードを写経するとき、YAMLに書き換えると楽しい
       -
         - space: 3
       -
@@ -450,11 +458,37 @@ slides: &slides
       -
         - '　・APIマッシュアップをクライアントでやる、とか'
 
+  - template: *defaultTemplate
+    title:
+      - 果たして「ちゃんと書くJS」か？
+    content:
+      - ・「ちゃんと書く」といえばスクラッチ（※個人の意見です）
+      - ・スクラッチの助けにはなるかも？
+      - ・ライブラリとは相性悪くないです
+      -   ・tensorflow.js, three.jsのサンプルあり
+      - space: 2
+      - ・フレームワークは元々DSLを持っていることが多いので微妙
+
   - template: *titleOnlyTemplate
     title:
       - text: ご清聴ありがとうございました
         font-size: 8
         stroke-width: 0.3
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: おまけ
+
+  - template: *largeTitleTemplate
+    title:
+      - text: このスライドもYAMLで書きました！
+        font-size: 8
+        stroke-width: 0.3
+    content:
+      - link:
+          - GitHubで見る
+          - 'https://github.com/Cuhey3/cuhey3.github.io/blob/master/public/slide.yml'
+
 
 main:
   sequence:
@@ -468,13 +502,13 @@ main:
           template: *footerTemplate
           title:
             -
-              - "\u00A0" #しうへい
-              #- link:
-              #  - '@cuhey3'
-              #  - 'https://twitter.com/cuhey3'
+              - しうへい
+              - link:
+                - '@cuhey3'
+                - 'https://twitter.com/cuhey3'
           content:
             -
-              - "\u00A0" #まぼろしのJS勉強会#7
+              - まぼろしのJS勉強会#7
     - $leftTurn:
         createElementNS:
           - 'http://www.w3.org/2000/svg'
@@ -499,4 +533,4 @@ main:
     - defineAnimation: ['left', 'animatedIndex', -1, 350, 0, '$existSlideLength - 1']
     - startAnimation:
       - events:
-      - animatedIndex: 19
+      - animatedIndex: 0
