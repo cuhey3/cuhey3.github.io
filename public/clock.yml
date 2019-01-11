@@ -1,0 +1,204 @@
+main:
+  #expect: [$r]
+  sequence:
+    - $svg:
+        do: [document.querySelector, 'svg']
+    - $startX: 10
+    - $startY: 10
+    - $r: 20
+    - $startTime:
+        do:
+          - now:
+          - getTime
+    - createElementNS:
+      - 'http://www.w3.org/2000/svg'
+      - 'circle'
+      - cx: $startX + $r
+        cy: $startY + $r
+        r: $r
+        fill: '#dee3ea'
+        stroke: '#8f949b'
+        stroke-width: 0.1
+      - $svg
+    - createElementNS:
+      - 'http://www.w3.org/2000/svg'
+      - 'circle'
+      - cx: $startX + $r
+        cy: $startY + $r
+        r: $r * 0.92
+        fill: '#dce4ef'
+        stroke: '#8f949b'
+        stroke-width: 0.1
+      - $svg
+    - for:
+      - [i, 0, 60]
+      - createElementNS:
+        - 'http://www.w3.org/2000/svg'
+        - 'circle'
+        - cx: $startX + $r
+          cy:
+            sequence:
+            - $r * 0.16
+            - $startY + $seq
+          r: 0.3
+          fill: '#9aa2ad'
+          transform:
+            format:
+              - 'rotate(%s, %s, %s)'
+              - $i * 6
+              - $startX + $r
+              - $startY + $r
+        - $svg
+    - createElementNS:
+      - 'http://www.w3.org/2000/svg'
+      - 'circle'
+      - cx: $startX + $r
+        cy: $startY + $r
+        r: $r * 0.06
+        fill: '#333'
+      - $svg
+    - for:
+      - [i, 0, 12]
+      - createElementNS:
+        - 'http://www.w3.org/2000/svg'
+        - 'line'
+        - x1: $startX + $r
+          y1:
+            sequence:
+            - $r * 0.16
+            - $startY + $seq
+          x2: $startX + $r
+          y2:
+            sequence:
+            - $r * 0.26
+            - $startY + $seq
+          stroke: '#787e87'
+          stroke-width: 0.5
+          transform:
+            format:
+              - 'rotate(%s, %s, %s)'
+              - $i * 30
+              - $startX + $r
+              - $startY + $r
+        - $svg
+    - createElementNS:
+      - 'http://www.w3.org/2000/svg'
+      - 'line'
+      - x1: $startX + $r
+        y1: $startY + $r
+        x2: $startX + $r
+        y2:
+          sequence:
+          - 0.36 * $r
+          - $startY + $seq
+        stroke: '#333'
+        stroke-width: 0.5
+        from-dsl:
+          '~transform':
+            format:
+              - 'rotate(%s, %s, %s)'
+              - sequence:
+                - do:
+                  - new: Date
+                  - getTime
+                - $seq / 3600000
+                - $seq % 12
+                - $seq + 9
+                - $seq * 30
+              - $startX + $r
+              - $startY + $r
+      - $svg
+    - createElementNS:
+      - 'http://www.w3.org/2000/svg'
+      - 'line'
+      - x1: $startX + $r
+        y1: $startY + $r
+        x2: $startX + $r
+        y2:
+          sequence:
+          - 0.28 * $r
+          - $startY + $seq
+        stroke: '#333'
+        stroke-width: 0.3
+        from-dsl:
+          '~transform':
+            format:
+              - 'rotate(%s, %s, %s)'
+              - sequence:
+                  - do:
+                    - new: Date
+                    - getTime
+                  - $seq / 60000
+                  - $seq % 60
+                  - $seq * 6
+              - $startX + $r
+              - $startY + $r
+      - $svg
+    - createElementNS:
+      - 'http://www.w3.org/2000/svg'
+      - 'line'
+      - x1: $startX + $r
+        y1: $startY + $r
+        x2: $startX + $r
+        y2:
+          sequence:
+          - 0.2 * $r
+          - $startY + $seq
+        stroke: '#333'
+        stroke-width: 0.1
+        from-dsl:
+          '~transform':
+            format:
+              - 'rotate(%s, %s, %s)'
+              - sequence:
+                  - do:
+                    - new: Date
+                    - getTime
+                  - $seq / 1000
+                  - $seq % 60
+                  - do:
+                    - Math.floor
+                    - $seq
+                  - $seq * 6
+              - $startX + $r
+              - $startY + $r
+      - $svg
+    - createElementNS:
+      - 'http://www.w3.org/2000/svg'
+      - 'line'
+      - x1: $startX + $r
+        y1: $startY + $r
+        x2: $startX + $r
+        y2:
+          sequence:
+          - 0.2 * $r
+          - $startY + $seq
+        stroke: 'red'
+        stroke-width: 0.5
+        from-dsl:
+          '~transform':
+            format:
+              - 'rotate(%s, %s, %s)'
+              - sequence:
+                  - $nowTime - $startTime
+                  - $seq / 1000
+                  - $seq * 0.6
+              - $startX + $r
+              - $startY + $r
+      - $svg
+    - $draw:
+        function:
+          - []
+          - sequence:
+            - $nowTime:
+                do:
+                - now:
+                - getTime
+            - updateFromDsl:
+                nowTime: $nowTime
+                r: $r
+                startX: $startX
+                startY: $startY
+                startTime: $startTime
+            - do: [window.requestAnimationFrame, $draw]
+    - do: $draw
