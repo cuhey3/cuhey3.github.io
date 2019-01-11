@@ -4,7 +4,7 @@ main:
       createElementNS:
         - 'http://www.w3.org/2000/svg'
         - 'svg'
-        - viewBox: "0 0 155 63"
+        - viewBox: "0 0 160 63"
           style: "background-color: #eee"
         - document.body
   - $subscribers: []
