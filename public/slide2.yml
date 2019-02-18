@@ -148,25 +148,6 @@ slides: &slides
 
   - template: *defaultTemplate
     title:
-      - Go版mydslを作る動機
-    content:
-      -
-        - "・YAMLを、そのまま違う言語でも動かせたらすごい！クロス言語だ。"
-      -
-        - space: 5
-      -
-        - "・静的型チェックのある言語でも、実装できることを確かめたかった。"
-      -
-        - space: 5
-      -
-        - "・どうせやるなら、自分が全然知らない言語 ⇒ Goでしょ。"
-      -
-        - space: 2
-      -
-        - "　・スクレイピングの絡みでchannel周りにも興味があった。"
-
-  - template: *defaultTemplate
-    title:
       - mydslについて見てほしい機能（山盛り）
     content:
       -
@@ -195,6 +176,25 @@ slides: &slides
         - space: 1
       -
         - "7. 一時変数を減らすように、sequenceという構文を持っています"
+
+  - template: *defaultTemplate
+    title:
+      - Go版mydslを作る動機
+    content:
+      -
+        - "・YAMLを、そのまま違う言語でも動かせたらすごい！クロス言語だ。"
+      -
+        - space: 5
+      -
+        - "・静的型チェックのある言語でも、実装できることを確かめたかった。"
+      -
+        - space: 5
+      -
+        - "・どうせやるなら、自分が全然知らない言語 ⇒ Goでしょ。"
+      -
+        - space: 2
+      -
+        - "　・スクレイピングの絡みでchannel周りにも興味があった。"
 
   - template: *defaultTemplate
     title:
