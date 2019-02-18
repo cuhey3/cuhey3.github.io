@@ -240,6 +240,36 @@ slides: &slides
 
   - template: *defaultTemplate
     title:
+      - デモ作成にあたって追加したDSL関数
+    content:
+      -
+        - ・mongoGet / mongoInsert / mongoReplace
+      -
+        - space: 2
+      -
+        - ・processStart / processKill / processes
+      -
+        - space: 2
+      -
+        - ・handler / send / render / redirect
+      -
+        - space: 2
+      -
+        - ・wsHandler / wsWrite
+      -
+        - space: 2
+      -
+        - ・timer / publish / subscribe / channelList
+      -
+        - space: 5
+      -
+        - text: YAML上での使われ方を
+        - link:
+            - 見る
+            - https://github.com/Cuhey3/cuhey3.github.io/blob/master/public/go_demo.yml
+
+  - template: *defaultTemplate
+    title:
       - Go版mydslを作る上で苦労したところ
     content:
       -
