@@ -1,0 +1,220 @@
+main:
+  - $router:
+      do: chi.NewRouter
+
+  - wsHandler:
+    - "/echo"
+    - sequence:
+      - print: $message
+      - when:
+        - is:
+          - $message.open
+          - true
+        - sequence:
+          - $channelListProcessId:
+              format:
+                - "%s%s"
+                - "channelList"
+                - now:
+          - processStart:
+            - $channelListProcessId
+            - subscribe:
+              - "channelList"
+              - sequence:
+                - $data: {}
+                - $data.subscribed: $subscribe
+                - $data.channelName: "channelList"
+                - $data.timestamp:
+                    now:
+                - wsWrite: $data
+              - [conn, message]
+          - $data: {}
+          - $data.subscribed:
+              channelList:
+          - $data.channelName: "channelList"
+          - $data.timestamp:
+              now:
+          - wsWrite: $data
+        - is:
+          - $message.close
+          - true
+        - sequence:
+          - processKill: $message.processId
+          - $data: {}
+          - $data.type: "subscribeEnd"
+          - $data.processId: $message.processId
+          - wsWrite: $data
+        - is:
+          - $message.subscribe
+          - true
+        - sequence:
+          - $processId:
+              format:
+                - "%s%s"
+                - $message.channel
+                - now:
+          - processStart:
+            - $processId
+            - subscribe:
+              - $message.channel
+              - sequence:
+                - $data: {}
+                - $data.subscribed: $subscribe
+                - $data.channelName: $channelName
+                - $data.timestamp:
+                    now:
+                - wsWrite: $data
+              - [conn, message]
+          - $data: {}
+          - $data.type: "subscribeStart"
+          - $data.channelName: $message.channel
+          - $data.timestamp:
+              now:
+          - $data.processId: $processId
+          - wsWrite: $data
+        - is:
+          - $message.publish
+          - true
+        - publish:
+          - $message.channel
+          - $message.json
+        
+    #onclose
+    - sequence:
+      - processKill: $processId
+      - processKill: $channelListProcessId
+
+  - handler:
+    - get
+    - "/ws"
+    - render:
+      - "ws.html.tpl"
+      - {}
+
+  - handler:
+    - get
+    - "/admin/list"
+    - sequence:
+      - mongoGet: yamls
+      - render:
+        - 'list.html.tpl'
+        - yamls: $seq
+          processes:
+            processes:
+
+  - handler:
+    - post
+    - "/admin/list"
+    - sequence:
+      - $yamls:
+          mongoGet: yamls
+      - $objectIdHex:
+          do:
+          - $req.FormValue
+          - run
+      - $processId:
+          do:
+          - $req.FormValue
+          - kill
+      - when:
+        - not: [$objectIdHex, ""]
+        - sequence:
+          - filter:
+            - $yamls
+            - is:
+              - do: $item._id.Hex
+              - $objectIdHex
+          - when:
+            - is:
+              - len: $seq
+              - 0
+            - exit:
+          - parseYaml: "$seq[0].yaml"
+          - processStart:
+            - format:
+              - "%s%s"
+              - $objectIdHex
+              - now:
+            - $seq
+        - not: [$processId, ""]
+        - processKill: $processId
+      - render:
+        - 'list.html.tpl'
+        - yamls: $yamls
+          processes:
+            processes:
+
+  - handler:
+    - get
+    - "/admin/edit"
+    - render:
+      - 'edit.html.tpl'
+      - {}
+
+  - handler:
+    - get
+    - "/admin/edit/{objectIdHex:[a-z0-9]+}"
+    - sequence:
+      - $objectIdHex:
+          do:
+            - "chi.URLParam"
+            - $req
+            - objectIdHex
+      - $yamls:
+          mongoGet: yamls
+      - filter:
+        - $yamls
+        - is:
+          - do: $item._id.Hex
+          - $objectIdHex
+      - render:
+        - 'edit.html.tpl'
+        - "$seq[0]"
+
+  - handler:
+    - post
+    - "/admin/edit/{objectIdHex:[a-z0-9]+}"
+    - sequence:
+      - $yaml:
+          do:
+            - $req.FormValue
+            - yaml
+      - $objectIdHex:
+          do:
+            - "chi.URLParam"
+            - $req
+            - objectIdHex
+      - $yamls:
+          mongoGet: yamls
+      - filter:
+        - $yamls
+        - is:
+          - do: $item._id.Hex
+          - $objectIdHex
+      - $seq[0]
+      - $seq.yaml: $yaml
+      - $updated: $seq
+      - mongoReplace:
+        - yamls
+        - $updated
+      - render:
+        - 'edit.html.tpl'
+        - $updated
+
+  - handler:
+    - post
+    - "/admin/edit"
+    - sequence:
+      - mongoInsert:
+        - yamls
+        - yaml:
+            do:
+            - $req.FormValue
+            - yaml
+          name: wao
+      - redirect: "/admin/list"
+
+  - do:
+    - http.ListenAndServe
+    - ":8080"
+    - $router
