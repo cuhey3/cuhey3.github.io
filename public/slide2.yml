@@ -249,7 +249,7 @@ slides: &slides
           - https://github.com/go-yaml/yaml
         - text: でパースしたとき、キーがなんでも型(interface{})になってしまう
       -
-        - space: 2
+        - space: 1
       -
         - text: 　・
         - link:
@@ -263,7 +263,7 @@ slides: &slides
       -
         - ・importされたpackage自体を変数に入れられない
       -
-        - space: 2
+        - space: 1
       -
         - 　・使いたいメソッドは、前もって登録する必要あり（激痛）
       -
@@ -271,7 +271,7 @@ slides: &slides
       -
         - ・独自の例外処理スタイル
       -
-        - space: 2
+        - space: 1
       -
         - 　・panic/recoverには深入りせず、tupleでエラーを返すように
 
@@ -280,7 +280,11 @@ slides: &slides
       - 今後の展望
     content:
       -
-        - pub/subとかフローの可視化に取り組みたい
+        - ・スクレイピングフローの可視化に取り組む予定
+      -
+        - space: 1
+      -
+        - "　・リソースの更新が連鎖していくようなやつ"
 
   - template: *titleOnlyTemplate
     title:
@@ -318,7 +322,7 @@ main:
               - しうへい
           content:
             -
-              - ドリコム エンジニア総選挙 (2/21)
+              - "ドリコム エンジニア総選挙 (2/21)"
     - $leftTurn:
         createElementNS:
           - 'http://www.w3.org/2000/svg'
