@@ -1,0 +1,346 @@
+templates:
+  titleOnlyTemplate: &titleOnlyTemplate
+    title:
+      stroke-width: 0.5
+      stroke: black
+      centerY:
+        offset: 0
+        height: 90
+      centerX: true
+      startX: 10
+      startY: 0
+      newlineScale: 1.2
+      font-size: 16
+  largeTitleTemplate: &largeTitleTemplate
+    title:
+      stroke-width: 0.5
+      stroke: black
+      centerY:
+        offset: 0
+        height: 80
+      centerX: true
+      startX: 10
+      startY: 0
+      newlineScale: 1.2
+      font-size: 16
+    content:
+      centerY:
+        offset: 15
+        height: 80
+      centerX: true
+      newlineScale: 1.5
+      font-size: 5
+
+  footerTemplate: &footerTemplate
+    title:
+      startX: 170
+      startY: 0
+      centerY:
+        offset: 90
+        height: 10
+      font-size: 4
+    content:
+      startX: 10
+      startY: 0
+      centerY:
+        offset: 90
+        height: 10
+      font-size: 4
+    line:
+      - x1: 0
+        y1: 90
+        x2: 200
+        y2: 90
+        stroke: black
+        stroke-width: 0.3
+
+  defaultTemplate: &defaultTemplate
+    title:
+      stroke-width: 0.3
+      stroke: black
+      centerY:
+        offset: 0
+        height: 15
+      startX: 10
+      startY: 0
+      font-size: 8
+    content:
+      startX: 10
+      startY: 25
+      newlineScale: 1.5
+      font-size: 5
+    line:
+      - x1: 0
+        y1: 15
+        x2: 200
+        y2: 15
+        stroke: black
+        stroke-width: 0.3
+
+slides: &slides
+  - template: *titleOnlyTemplate
+    title:
+      - YAMLで
+      - Goも動かそう
+
+  - template: *titleOnlyTemplate
+    title:
+      - 自己紹介
+  - template: *defaultTemplate
+    title:
+      - この発表は何？
+    content:
+      -
+        - ・趣味で開発している自作ライブラリを紹介します
+      -
+        - "　・DSLライブラリです"
+      -
+        - "　・YAML形式のテキストでDSLを記述します"
+      -
+        - "　・仮称: mydsl"
+      -
+        - space: 5
+      -
+        - ・1月には別の場所でJavaScript/Node.js版について話しました
+      -
+        - "　"
+        - link:
+          - そのときのスライド
+          - https://cuhey3.github.io/slide.html
+      -
+        - space: 5
+      -
+        - ・今回はGo版mydsl
+
+  - template: *defaultTemplate
+    title:
+      - mydsl概観
+    content:
+      -
+        - image:
+          - '/public/image1.png'
+          - 65
+  - template: *defaultTemplate
+    title:
+      - JSで標準出力をさせる場合
+    content:
+      -
+        - image:
+          - '/public/image2.png'
+          - 65
+
+  - template: *defaultTemplate
+    title:
+      - DSL関数printの実装（JSの場合）
+    content:
+      -
+        - image:
+          - '/public/dsl-function-image.png'
+          - 40
+      -
+        - space: 3
+
+  - template: *largeTitleTemplate
+    title:
+      - デモサイト(JS版)
+    content:
+      - link: 'https://cuhey3.github.io'
+
+  - template: *defaultTemplate
+    title:
+      - Go版mydslを作る動機
+    content:
+      -
+        - "・YAMLを、そのまま違う言語でも動かせたらすごい！クロス言語だ。"
+      -
+        - space: 5
+      -
+        - "・静的型チェックのある言語でも、実装できることを確かめたかった。"
+      -
+        - space: 5
+      -
+        - "・どうせやるなら、自分が全然知らない言語 ⇒ Goでしょ。"
+      -
+        - space: 2
+      -
+        - "　・スクレイピングの絡みでchannel周りにも興味があった。"
+
+  - template: *defaultTemplate
+    title:
+      - mydslについて見てほしい機能（山盛り）
+    content:
+      -
+        - "1. 変数の代入/評価ができます（変数コンテナオブジェクトへの書き込み）"
+      -
+        - space: 1
+      -
+        - "2. ネストした変数へのアクセス、配列へのアクセスできます"
+      -
+        - space: 1
+      -
+        - "3. 四則演算できます（一つの式で二回以上は演算できない！しょぼ！）"
+      -
+        - space: 1
+      -
+        - "4. ビルトイン関数を呼べます/newもできます"
+      -
+        - space: 1
+      -
+        - "5. YAML内で関数定義できます/クラスも定義できますがあやしい"
+      -
+        - space: 1
+      -
+        - "6. MapReduceあります/Go版mydslでも使えて便利"
+      -
+        - space: 1
+      -
+        - "7. 一時変数を減らすように、sequenceという構文を持っています"
+
+  - template: *defaultTemplate
+    title:
+      - Go版mydslはできたのか？
+    content:
+      -
+        - ・2～3週間くらいで割とできた
+      -
+        - space: 5
+      -
+        - ・コア機能の移植＋非同期定常処理、channel周り
+      -
+        - space: 5
+      -
+        - ・とは言えまだ粗々なので非公開
+
+  - template: *titleOnlyTemplate
+    title:
+      - デモ（画面のみ）
+
+  - template: *defaultTemplate
+    title:
+      - どんなデモ？
+    content:
+      -
+        - ・YAMLをWebページからMongoDBに保存/更新します
+      -
+        - space: 5
+      -
+        - ・保存したYAMLをWebページから実行できます
+      -
+        - space: 5
+      -
+        - ・定常処理(timer/subscribe)に関しては実行しっぱなし/停止ができます
+      -
+        - space: 5
+      -
+        - ・publish/subscribeの概念が実装されています
+      -
+        - space: 5
+      -
+        - ・Websocketでsubscribeして覗けます/Websocketからpublishもできます
+
+  - template: *defaultTemplate
+    title:
+      - Go版mydslを作る上で苦労したところ
+    content:
+      -
+        - text: ・
+        - link:
+          - go-yaml
+          - https://github.com/go-yaml/yaml
+        - text: でパースしたとき、キーがなんでも型(interface{})になってしまう
+      -
+        - space: 2
+      -
+        - text: 　・
+        - link:
+          - issue
+          - https://github.com/go-yaml/yaml/issues/139
+        - text: には挙がってるけどいつ対応するのか不明
+      -
+        - 　・泣く泣く、キーはstringでもinterface{}でもどっちでも動くようにした
+      -
+        - space: 5
+      -
+        - ・importされたpackage自体を変数に入れられない
+      -
+        - space: 2
+      -
+        - 　・使いたいメソッドは、前もって登録する必要あり（激痛）
+      -
+        - space: 5
+      -
+        - ・独自の例外処理スタイル
+      -
+        - space: 2
+      -
+        - 　・panic/recoverには深入りせず、tupleでエラーを返すように
+
+  - template: *defaultTemplate
+    title:
+      - 今後の展望
+    content:
+      -
+        - pub/subとかフローの可視化に取り組みたい
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: ご清聴ありがとうございました
+        font-size: 8
+        stroke-width: 0.3
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: おまけ
+
+  - template: *largeTitleTemplate
+    title:
+      - text: このスライドもYAMLで書かれています！
+        font-size: 8
+        stroke-width: 0.3
+    content:
+      - link:
+          - GitHubで見る
+          - 'https://github.com/Cuhey3/cuhey3.github.io/blob/master/public/slide2.yml'
+
+
+main:
+  sequence:
+    - presentation:
+        svg:
+          do: [document.querySelector, 'svg']
+        slides: *slides
+        from-dsl:
+          "~transform: { format: ['translate(%s, 0)', multiply: ['$animatedIndex - ~index', -200]] }"
+        footer:
+          template: *footerTemplate
+          title:
+            -
+              - しうへい
+          content:
+            -
+              - ドリコム エンジニア総選挙 (2/21)
+    - $leftTurn:
+        createElementNS:
+          - 'http://www.w3.org/2000/svg'
+          - 'polygon'
+          - points: "25,20 2,50 25,80"
+            class: arrow
+          - $svg
+    - $rightTurn:
+        createElementNS:
+        - 'http://www.w3.org/2000/svg'
+        - 'polygon'
+        - points: "175,20 198,50 175,80"
+          class: arrow
+        - $svg
+    - defineKeyEvent: ['right', 'keydown', 'key', 'ArrowRight']
+    - defineKeyEvent: ['left', 'keydown', 'key', 'ArrowLeft']
+    - defineClickEvent: ['left', $leftTurn]
+    - defineClickEvent: ['right', $rightTurn]
+    - defineSwipeEvent: ['left', 'x', +30]
+    - defineSwipeEvent: ['right', 'x', -30]
+    - defineAnimation: ['right', 'animatedIndex', 1, 350, 0, '$existSlideLength - 1']
+    - defineAnimation: ['left', 'animatedIndex', -1, 350, 0, '$existSlideLength - 1']
+    - startAnimation:
+      - events:
+      - animatedIndex: 0
