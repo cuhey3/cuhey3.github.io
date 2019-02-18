@@ -315,6 +315,14 @@ slides: &slides
         - space: 1
       -
         - "　・リソースの更新が連鎖していくようなやつ"
+      -
+        - space: 5
+      -
+        - ・流行りの技術同人誌を作りたい
+      -
+        - space: 1
+      -
+        - "　・誰か作り方を教えてください…><"
 
   - template: *titleOnlyTemplate
     title:
