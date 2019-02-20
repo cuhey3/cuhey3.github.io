@@ -378,7 +378,7 @@ slides: &slides
       - 今後の展望
     content:
       -
-        - ・スクレイピングフローの可視化に取り組む予定
+        - ・SVGを使ってスクレイピングフローの可視化に取り組む予定
       -
         - space: 1
       -
@@ -397,6 +397,10 @@ slides: &slides
       - text: ご清聴ありがとうございました
         font-size: 8
         stroke-width: 0.3
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: 重大発表
 
   - template: *titleOnlyTemplate
     title:
