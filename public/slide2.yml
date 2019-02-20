@@ -171,7 +171,7 @@ slides: &slides
       -
         - space: 1
       -
-        - "6. MapReduceあります/Go版mydslでも使えて便利"
+        - "6. map, filterあります/Go版mydslでも使えて便利"
       -
         - space: 1
       -
@@ -205,68 +205,136 @@ slides: &slides
       -
         - space: 5
       -
-        - ・コア機能の移植＋非同期定常処理、channel周り
+        - ・コア関数の移植＋非同期定常処理、channel周りの関数
       -
         - space: 5
       -
-        - ・とは言えまだ粗々なので非公開
+        - text: ・粗々ですがソース公開中
+      -
+        - text: "　"
+        - link:
+          - "https://github.com/Cuhey3/mygodemo"
 
-  - template: *titleOnlyTemplate
+
+
+  - template: *largeTitleTemplate
     title:
-      - デモ（画面のみ）
+      - デモサイト(Go版)
+    content:
+      - link: 'https://mygodemo.herokuapp.com/admin/list'
 
   - template: *defaultTemplate
     title:
       - どんなデモ？
     content:
       -
-        - ・YAMLをWebページからMongoDBに保存/更新します
+        - "1. YAMLをWebページからMongoDBに保存/更新します"
       -
         - space: 5
       -
-        - ・保存したYAMLをWebページから実行できます
+        - "2. 保存したYAMLをWebページから実行できます"
       -
         - space: 5
       -
-        - ・定常処理(timer/subscribe)に関しては実行しっぱなし/停止ができます
+        - "3. 定常処理(timer/subscribe)に関しては実行しっぱなし/停止ができます"
       -
         - space: 5
       -
-        - ・publish/subscribeの概念が実装されています
+        - "4. publish/subscribeの概念が実装されています"
       -
         - space: 5
       -
-        - ・Websocketでsubscribeして覗けます/Websocketからpublishもできます
+        - "5. Websocketでsubscribeして覗けます / Websocketからpublishもできます"
 
   - template: *defaultTemplate
     title:
       - デモ作成にあたって追加したDSL関数
     content:
       -
-        - ・mongoGet / mongoInsert / mongoReplace
+        - text: "MongoDB系　"
+        - link:
+          - mongoGet
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-mongo.go#L24"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - mongoInsert
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-mongo.go#L47"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - mongoReplace
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-mongo.go#L61"
       -
         - space: 2
       -
-        - ・processStart / processKill / processes
+        - text: "プロセス系　"
+        - link:
+          - processStart
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L137"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - processKill
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L164"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - processes
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L183"
       -
         - space: 2
       -
-        - ・handler / send / render / redirect
+        - text: "ハンドラ系　"
+        - link:
+          - handler
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L85"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - send
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L108"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - render
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L117"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - redirect
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L129"
       -
         - space: 2
       -
-        - ・wsHandler / wsWrite
+        - text: "Websocket系　"
+        - link:
+          - wsHandler
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L36"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - wsWrite
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L70"
       -
         - space: 2
       -
-        - ・timer / publish / subscribe / channelList
+        - text: "定常処理系　"
+        - link:
+          - timer
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-core.go#L734"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - publish
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L258"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - subscribe
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L202"
+        - text: "\u00A0/\u00A0"
+        - link:
+          - channelList
+          - "https://github.com/Cuhey3/mygodemo/blob/7a1ca0683f55af88e3c09230b7238df20668b83e/dsl-server.go#L292"
+
       -
         - space: 5
       -
         - text: YAML上での使われ方を
         - link:
             - 見る
-            - https://github.com/Cuhey3/cuhey3.github.io/blob/master/public/go_demo.yml
+            - https://github.com/Cuhey3/mygodemo/blob/master/yamls/router.yml
 
   - template: *defaultTemplate
     title:
@@ -291,7 +359,7 @@ slides: &slides
       -
         - space: 5
       -
-        - ・importされたpackage自体を変数に入れられない
+        - ・importされたpackage自体を、変数に代入することができない
       -
         - space: 1
       -
