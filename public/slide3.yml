@@ -103,8 +103,6 @@ slides: &slides
         - "・IT業界3年（業務系Webアプリ開発）"
       -
         - space: 2
-      -
-        - "　・Node.jsスクラッチプロジェクトのリード経験あります（開発1年～）"
 
   - template: *defaultTemplate
     title:
@@ -128,8 +126,6 @@ slides: &slides
         - "　・インテグレーションが好き"
       -
         - space: 3
-      -
-        - "・フルスタックフレームワークよりはライブラリを選んで組み合わせたいタイプ"
 
   - template: *defaultTemplate
     title:
@@ -139,20 +135,13 @@ slides: &slides
         - "・よくいるオタク"
       -
         - "　・ITよりも00年代のマイナーアニメや声優の方が詳しい？"
+        - "　・大久保瑠美さんのオタク歴7年"
       -
         - space: 3
       -
-        - "・大久保瑠美さんのオタク歴7年"
+        - "・最近家族にTwitterアカウントがバレたので鍵アカにしました"
       -
-        - text: "　・"
-        - link:
-          - ゆるゆりクラウドファンディング
-          - "https://camp-fire.jp/projects/view/103528"
-        - text: に2桁万円つぎ込む
-      -
-        - space: 3
-      -
-        - "・最近家族にTwitterアカウントがバレたので鍵アカにしました…"
+        - "　・勉強会でつながれなくて困ってます…"
 
   - template: *titleOnlyTemplate
     title:
