@@ -1,0 +1,324 @@
+templates:
+  titleOnlyTemplate: &titleOnlyTemplate
+    title:
+      stroke-width: 0.5
+      stroke: black
+      centerY:
+        offset: 0
+        height: 90
+      centerX: true
+      startX: 10
+      startY: 0
+      newlineScale: 1.2
+      font-size: 16
+  largeTitleTemplate: &largeTitleTemplate
+    title:
+      stroke-width: 0.5
+      stroke: black
+      centerY:
+        offset: 0
+        height: 80
+      centerX: true
+      startX: 10
+      startY: 0
+      newlineScale: 1.2
+      font-size: 16
+    content:
+      centerY:
+        offset: 15
+        height: 80
+      centerX: true
+      newlineScale: 1.5
+      font-size: 5
+
+  footerTemplate: &footerTemplate
+    title:
+      startX: 147
+      startY: 0
+      centerY:
+        offset: 90
+        height: 10
+      font-size: 4
+    content:
+      startX: 10
+      startY: 0
+      centerY:
+        offset: 90
+        height: 10
+      font-size: 4
+    line:
+      - x1: 0
+        y1: 90
+        x2: 200
+        y2: 90
+        stroke: black
+        stroke-width: 0.3
+
+  defaultTemplate: &defaultTemplate
+    title:
+      stroke-width: 0.3
+      stroke: black
+      centerY:
+        offset: 0
+        height: 15
+      startX: 10
+      startY: 0
+      font-size: 8
+    content:
+      startX: 10
+      startY: 25
+      newlineScale: 1.5
+      font-size: 5
+    line:
+      - x1: 0
+        y1: 15
+        x2: 200
+        y2: 15
+        stroke: black
+        stroke-width: 0.3
+
+slides: &slides
+  - template: *titleOnlyTemplate
+    title:
+      - あなたのコードを
+      - 設定ファイル化する
+
+  - template: *titleOnlyTemplate
+    title:
+      - 自己紹介
+
+  - template: *defaultTemplate
+    title:
+      - 経歴
+    content:
+      -
+        - "・20代はぶらぶら"
+      -
+        - space: 2
+      -
+        - "・事務 兼 コルセンSV 兼 社内SE 3年"
+      -
+        - space: 2
+      -
+        - "・IT業界3年（業務系Webアプリ開発）"
+      -
+        - space: 2
+      -
+        - "・Node.jsスクラッチプロジェクトのリード経験あります（開発1年～）"
+
+  - template: *defaultTemplate
+    title:
+      - 技術とか
+    content:
+      -
+        - "・書ける言語"
+      -
+        - "　・Java / HTML5 / JavaScript / Node.js / Python? / Go"
+      -
+        - space: 3
+      -
+        - "・勉強中"
+      -
+        - "　・React Native + Expo"
+      -
+        - space: 3
+      -
+        - "・全方位の技術に一周遅れでついていくことに喜びを覚えるタイプ"
+      -
+        - "　・インテグレーションが好き"
+      -
+        - space: 3
+      -
+        - "・フルスタックフレームワークよりはライブラリを選んで組み合わせたいタイプ"
+
+  - template: *defaultTemplate
+    title:
+      - パーソナリティ
+    content:
+      -
+        - "・ITよりも00年代のマイナーアニメや声優の方が詳しい？"
+      -
+        - space: 3
+      -
+        - "・大久保瑠美さんのオタク歴7年"
+      -
+        - text: "　・"
+        - link:
+          - ゆるゆりクラウドファンディング
+          - "https://camp-fire.jp/projects/view/103528"
+        - text: に2桁万円つぎ込む
+      -
+        - space: 3
+      -
+        - "・最近家族にTwitterアカウントがバレたので鍵アカにしました…"
+
+  - template: *titleOnlyTemplate
+    title:
+      - コードを
+      - 設定ファイル化しよう
+
+  - template: *defaultTemplate
+    title:
+      - 設定ファイルはふだんから書きます
+    content:
+      -
+        - ・接続プロパティとか
+      -
+        - ・クラウドインスタンスの何だとか
+      -
+        - ・Webアプリにおけるルーティングで書くこともある
+      -
+        - space: 5
+      -
+        - ⇒ 設定を書くと、プログラムがそれを解釈してよしなにやってくれます。
+
+  - template: *titleOnlyTemplate
+    title:
+      - しゃらくさい
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: 全部設定ファイル化しよう
+        font-size: 12
+        stroke-width: 0.3
+
+  - template: *titleOnlyTemplate
+    title:
+      - してみた
+
+  - template: *largeTitleTemplate
+    title:
+      - サンプル1
+    content:
+      - link:
+        - SVGの時計
+        - 'https://cuhey3.github.io/clock.html'
+
+  - template: *largeTitleTemplate
+    title:
+      - サンプル2
+    content:
+      - link:
+        - Tensorflow.jsのデモ
+        - 'https://cuhey3.github.io/tensorflow.html'
+
+  - template: *largeTitleTemplate
+    title:
+      - サンプル3
+    content:
+      - link:
+        - このスライド(設定ファイルを見る)
+        - 'https://github.com/Cuhey3/cuhey3.github.io/blob/master/public/slide3.yml'
+
+  - template: *largeTitleTemplate
+    title:
+      - サンプル4
+    content:
+      - link:
+        - 設定テキストを受け取って、サーバーサイドで実行(Go)
+        - 'https://mygodemo.herokuapp.com/admin/list'
+
+  - template: *largeTitleTemplate
+    title:
+      - サンプル5
+    content:
+      - link:
+        - サンプル4のリクエストを受け取るハンドラが、すでに設定ファイル(Go)
+        - 'https://github.com/Cuhey3/mygodemo/blob/master/yamls/router.yml'
+
+  - template: *defaultTemplate
+    title:
+      - コードを設定ファイル化する手順
+    content:
+      -
+        - "1. 設定ファイルの書式を決める"
+      -
+        - space: 1
+      -
+        - "2. 設定ファイルを解釈するプログラムを書く"
+      -
+        - space: 1
+      -
+        - "3. 2が呼び出す関数を書く（普通にコードを書く・必要なだけ書く）"
+      -
+        - space: 1
+      -
+        - "4. 実際にコードを設定ファイルで置き換えていく"
+      -
+        - space: 1
+      -
+        - "5. コードがあった場所に、設定ファイルを読み込む処理を書く"
+      -
+        - space: 3
+      -
+        - "⇒ 一式ができてしまえば、以降は設定ファイルからいきなり書き始められます。"
+      -
+        - "⇒ 1～3は他言語にも持ち出せます。（JSからGoへ移植しました）"
+
+
+  - template: *titleOnlyTemplate
+    title:
+      - 実装の詳細は…
+
+  - template: *largeTitleTemplate
+    title:
+      - 時間の都合で割愛！
+    content:
+      -
+        - link:
+          - "https://cuhey3.github.ioを見て！"
+          - "https://cuhey3.github.io"
+
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: ご清聴ありがとうございました
+        font-size: 8
+        stroke-width: 0.3
+
+  - template: *largeTitleTemplate
+    title:
+      - text: 転職活動中
+    content:
+      - 声かけてください。。。
+main:
+  sequence:
+    - presentation:
+        svg:
+          do: [document.querySelector, 'svg']
+        slides: *slides
+        from-dsl:
+          "~transform: { format: ['translate(%s, 0)', multiply: ['$animatedIndex - ~index', -200]] }"
+        footer:
+          template: *footerTemplate
+          title:
+            -
+              - しうへい@cuhey3.github.io
+          content:
+            -
+              - "ドリコム エンジニア総選挙 (2/21)"
+    - $leftTurn:
+        createElementNS:
+          - 'http://www.w3.org/2000/svg'
+          - 'polygon'
+          - points: "25,20 2,50 25,80"
+            class: arrow
+          - $svg
+    - $rightTurn:
+        createElementNS:
+        - 'http://www.w3.org/2000/svg'
+        - 'polygon'
+        - points: "175,20 198,50 175,80"
+          class: arrow
+        - $svg
+    - defineKeyEvent: ['right', 'keydown', 'key', 'ArrowRight']
+    - defineKeyEvent: ['left', 'keydown', 'key', 'ArrowLeft']
+    - defineClickEvent: ['left', $leftTurn]
+    - defineClickEvent: ['right', $rightTurn]
+    - defineSwipeEvent: ['left', 'x', +30]
+    - defineSwipeEvent: ['right', 'x', -30]
+    - defineAnimation: ['right', 'animatedIndex', 1, 350, 0, '$existSlideLength - 1']
+    - defineAnimation: ['left', 'animatedIndex', -1, 350, 0, '$existSlideLength - 1']
+    - startAnimation:
+      - events:
+      - animatedIndex: 0
