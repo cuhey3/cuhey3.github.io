@@ -1,0 +1,49 @@
+<html>
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.12.0/js-yaml.js"></script>
+  <script src="../lib/dsl-core.js"></script>
+  <script src="../lib/dsl-client.js"></script>
+  <script src="../lib/dsl-slide.js"></script>
+  <script src="../lib/dsl-event.js"></script>
+  <script src="../lib/dsl-animation.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+    }
+
+    svg {
+      background-color: #e6ecf0;
+    }
+  </style>
+</head>
+
+<body>
+  <svg viewBox="0 0 200 100">
+    <style><![CDATA[
+      a text{
+        fill: blue;
+        text-decoration: underline;
+      }
+      .arrow:not(:hover){
+        opacity: 0;
+      }
+      .arrow:hover{
+        fill: #4286f4;
+        opacity: 0.3;
+      }
+      ]]></style>
+  </svg>
+  <script>
+    /* global fetch, jsyaml, Argument */
+    (async function() {
+      const response = await fetch('/public/slide3.yml');
+      const text = await response.text();
+      const yamlObject = await jsyaml.safeLoad(text);
+      new Argument(yamlObject.main).evaluate({});
+    })();
+  </script>
+</body>
+
+</html>
