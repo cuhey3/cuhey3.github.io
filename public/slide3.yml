@@ -288,7 +288,7 @@ main:
               - しうへい@cuhey3.github.io
           content:
             -
-              - "ドリコム エンジニア総選挙 (2/21)"
+              - "BE もくもく会 vol,4 (2/26)"
     - $leftTurn:
         createElementNS:
           - 'http://www.w3.org/2000/svg'
