@@ -38,7 +38,7 @@
 
     #modal {
       padding: 0.3rem;
-      display: none;
+      display: block;
       /* Hidden by default */
       position: fixed;
       /* Stay in place */
@@ -58,7 +58,7 @@
     #inputTextarea {
       margin-top: 0.3rem;
       width: 95%;
-      height: 95%;
+      height: 85%;
     }
   </style>
 </head>
@@ -67,7 +67,7 @@
   <a id="viewSrcButton" target="_blank" style="" href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_geometry_cube.html" title="View original source">View original source</a>
   <a id="backButton" style="" href="/" title="back">back</a>
   <button id="inputButton">input</button>
-  <div id="modal"><button id="evaluateButton">evaluate</button><button id="closeButton">close</button><br><textarea id="inputTextarea">
+  <div id="modal">When you click the evaluate button, <br>3D objects are drawn based on YAML.<br><button id="evaluateButton">evaluate</button><button id="closeButton">close</button><br><textarea id="inputTextarea">
 sequence:
   - $camera:
       new:
