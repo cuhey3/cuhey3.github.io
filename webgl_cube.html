@@ -16,16 +16,6 @@
       opacity: 0.7;
     }
 
-    #viewYamlButton {
-      position: fixed;
-      bottom: 40px;
-      right: 200px;
-      padding: 8px;
-      color: #fff;
-      background-color: #555;
-      opacity: 0.7;
-    }
-
     #backButton {
       position: fixed;
       bottom: 40px;
@@ -35,13 +25,116 @@
       background-color: #555;
       opacity: 0.7;
     }
+
+    #inputButton {
+      position: fixed;
+      top: 40px;
+      left: 40px;
+      padding: 8px;
+      color: #fff;
+      background-color: #555;
+      opacity: 0.7;
+    }
+
+    #modal {
+      padding: 0.3rem;
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      /* Stay in place */
+      z-index: 1;
+      /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 30%;
+      /* Full width */
+      height: 100%;
+      /* Full height */
+      overflow: auto;
+      /* Enable scroll if needed */
+      background-color: white;
+    }
+
+    #inputTextarea {
+      margin-top: 0.3rem;
+      width: 95%;
+      height: 95%;
+    }
   </style>
 </head>
 
 <body>
   <a id="viewSrcButton" target="_blank" style="" href="https://github.com/mrdoob/three.js/blob/master/examples/webgl_geometry_cube.html" title="View original source">View original source</a>
-  <a id="viewYamlButton" target="_blank" style="" href="https://github.com/Cuhey3/cuhey3.github.io/blob/master/public/webgl_cube.yml" title="View original source">View YAML</a>
   <a id="backButton" style="" href="/" title="back">back</a>
+  <button id="inputButton">input</button>
+  <div id="modal"><button id="evaluateButton">evaluate</button><button id="closeButton">close</button><br><textarea id="inputTextarea">
+sequence:
+  - $camera:
+      new:
+        - THREE.PerspectiveCamera
+        - 70
+        - window.innerWidth / window.innerHeight
+        - 1
+        - 1000
+  - $camera.position.z: 400
+  - $scene:
+      new: THREE.Scene
+  - $textureLoader:
+      new: THREE.TextureLoader
+  - $texture:
+      do: [$textureLoader, load, '/public/crate.gif']
+  - $geometry:
+      new:
+      - THREE.BoxBufferGeometry
+      - 200
+      - 200
+      - 200
+  - {}
+  - $seq.map: $texture
+  - $material:
+      new: [THREE.MeshBasicMaterial, $seq]
+  - $mesh:
+      new:
+      - THREE.Mesh
+      - $geometry
+      - $material
+  - do: [$scene.add, $mesh]
+  - $renderer:
+      new:
+      - THREE.WebGLRenderer
+      - { antialias: true }
+  - do: [$renderer.setPixelRatio, window.devicePixelRatio]
+  - do:
+    - $renderer.setSize
+    - window.innerWidth
+    - window.innerHeight
+  - do: [document.body.appendChild, $renderer.domElement]
+  - $onWindowResizeFunc:
+      function:
+      - []
+      - sequence:
+        - $camera.aspect: window.innerWidth / window.innerHeight
+        - do: $camera.updateProjectionMatrix
+        - do:
+          - $renderer.setSize
+          - window.innerWidth
+          - window.innerHeight
+  - do:
+    - window.addEventListener
+    - 'resize'
+    - $onWindowResizeFunc
+    - false
+  - $animate:
+      function:
+      - []
+      - sequence:
+        - do: [window.requestAnimationFrame, $animate]
+        - $mesh.rotation.x: $mesh.rotation.x + 0.1
+        - $mesh.rotation.y: $mesh.rotation.y + 0.1
+        - do: [$renderer.render, $scene, $camera]
+  - do: $animate
+  - $renderer.forceContextLoss
+  </textarea></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.12.0/js-yaml.js"></script>
   <script src="../lib/dsl-core.js"></script>
@@ -50,11 +143,27 @@
     /* global Argument, jsyaml, fetch, THREE, addGlobalObject */
     (async function() {
       addGlobalObject({ THREE });
-      const response = await fetch('/public/webgl_cube.yml');
-      const text = await response.text();
-      const json = await jsyaml.safeLoad(text);
-      new Argument(json.main).evaluate({});
+      // const response = await fetch('/public/webgl_cube.yml');
+      // const text = await response.text();
+      const inputTextarea = document.getElementById("inputTextarea");
+      let evaluated;
+      document.getElementById("evaluateButton").onclick = async function(event) {
+        try {
+          document.querySelector("canvas").remove();
+          evaluated();
+        }
+        catch (e) {}
+        const json = await jsyaml.safeLoad(inputTextarea.value);
+        evaluated = await new Argument(json).evaluate({});
+      }
     })();
+    const modal = document.getElementById("modal");
+    document.getElementById("closeButton").onclick = function(event) {
+      modal.style.display = "none";
+    };
+    document.getElementById("inputButton").onclick = function(event) {
+      modal.style.display = "block";
+    };
   </script>
 </body>
 
