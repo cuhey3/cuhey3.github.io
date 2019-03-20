@@ -232,7 +232,7 @@ slides: &slides
         - ・テストツールがすき(go test / go tool cover)
       -
         - "　・テストもyamlで書いてます。"
-        - "　⇒"
+        - "⇒"
         - link:
           - こちら
           - https://github.com/cuhey3/mydsl/blob/master/go/test/yamls/testsuite.yml
