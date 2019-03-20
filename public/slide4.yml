@@ -1,0 +1,305 @@
+templates:
+  titleOnlyTemplate: &titleOnlyTemplate
+    title:
+      stroke-width: 0.5
+      stroke: black
+      centerY:
+        offset: 0
+        height: 90
+      centerX: true
+      startX: 10
+      startY: 0
+      newlineScale: 1.2
+      font-size: 16
+  largeTitleTemplate: &largeTitleTemplate
+    title:
+      stroke-width: 0.5
+      stroke: black
+      centerY:
+        offset: 0
+        height: 80
+      centerX: true
+      startX: 10
+      startY: 0
+      newlineScale: 1.2
+      font-size: 16
+    content:
+      centerY:
+        offset: 15
+        height: 80
+      centerX: true
+      newlineScale: 1.5
+      font-size: 5
+
+  footerTemplate: &footerTemplate
+    title:
+      startX: 144
+      startY: 0
+      centerY:
+        offset: 90
+        height: 10
+      font-size: 4
+    content:
+      startX: 10
+      startY: 0
+      centerY:
+        offset: 90
+        height: 10
+      font-size: 4
+    line:
+      - x1: 0
+        y1: 90
+        x2: 200
+        y2: 90
+        stroke: black
+        stroke-width: 0.3
+
+  defaultTemplate: &defaultTemplate
+    title:
+      stroke-width: 0.3
+      stroke: black
+      centerY:
+        offset: 0
+        height: 15
+      startX: 10
+      startY: 0
+      font-size: 8
+    content:
+      startX: 10
+      startY: 25
+      newlineScale: 1.5
+      font-size: 5
+    line:
+      - x1: 0
+        y1: 15
+        x2: 200
+        y2: 15
+        stroke: black
+        stroke-width: 0.3
+
+slides: &slides
+  - template: *titleOnlyTemplate
+    title:
+      - GoでDSLを
+      - 作る・動かす
+
+  - template: *titleOnlyTemplate
+    title:
+      - 自己紹介
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: 趣味でDSLを作ってます
+        font-size: 12
+        stroke-width: 0.3
+
+  - template: *largeTitleTemplate
+    title:
+      - 早速デモ
+    content:
+      - link:
+        - 'https://mygodemo.herokuapp.com/admin/list'
+
+  - template: *defaultTemplate
+    title:
+      - デモの見てほしいところ
+    content:
+      -
+        - 1. 起動するところ（YAMLを渡すところ）
+      -
+        - space: 3
+      -
+        - 2. ルータを設定しているところ
+      -
+        - space: 3
+      -
+        - 3. YAMLを受け取って実行しているところ
+
+  - template: *defaultTemplate
+    title:
+      - "DSLのアーキテクチャ 1/3: Argument"
+
+    content:
+      -
+        - "・構造体: Argumentを定義します。"
+      -
+        - 　・任意の構造化データを、RawArgフィールドに保持します。
+      -
+        - space: 3
+      -
+        - ・ArgumentはEvaluate（評価）メソッドを持ちます。
+      -
+        - 　・引数は *map[string]interface{}（変数コンテナ）
+      -
+        - "　・戻り値は評価結果: interface{}と、error"
+      -
+        - space: 3
+      -
+        - ・Evaluateの過程で再帰的にArgumentが生成され、評価されます。
+
+  - template: *defaultTemplate
+    title:
+      - "DSLのアーキテクチャ 2/3: 変数の扱い"
+
+    content:
+      -
+        - ・変数は変数コンテナ（*map[string]interface{}）で管理します。
+      -
+        - "　・コンテナへsetする時は、 {$foo: bar} を評価する"
+      -
+        - "　・コンテナからgetする時は、 $foo を評価する"
+      -
+        - space: 3
+      -
+        - ・Argumentを評価しながら、コンテナを書き換えていきます。
+
+  - template: *defaultTemplate
+    title:
+      - "DSLのアーキテクチャ 3/3: DSL関数"
+
+    content:
+      -
+        - "・Argument.RawArgがmap型で、キーを一つしか持たない場合、"
+      -
+        - 　DSL関数の呼び出しと解釈し、値をArgumentでラップし、DSL関数に渡します。
+      -
+        - space: 3
+      -
+        - ・DSL関数の、引数と戻り値の型は固定です。
+      -
+        - "　・引数: (container *map[string]interface{}, args ...Argument)"
+      -
+        - "　・戻り値: (interface{}, error)"
+      -
+        - space: 3
+      -
+        - ・argsの何番目をいつ評価するか？はDSL関数の実装に委ねられています。
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: 結構色んな処理、DSL関数を書きましたが…
+        font-size: 7
+        stroke-width: 0.3
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: なんとか持ってます！
+        font-size: 9
+        stroke-width: 0.3
+
+  - template: *defaultTemplate
+    title:
+      - 実装で苦労したところ
+    content:
+      -
+        - "・map["
+        - bold: string
+        - "]interface{}と、"
+      -
+        - "　map["
+        - bold: "interface{}"
+        - "]interface{}が別物。"
+      -
+        - "　（"
+        - link:
+          - go-yaml
+          - https://github.com/go-yaml/yaml
+        - "では、map["
+        - bold: interface{}
+        - "]interface{}でパースされてしまう。）"
+      -
+        - space: 3
+      -
+        - ・モジュールそのものを変数で持っておくことができない。
+      -
+        - "　⇒ 使用するメソッドを、事前に登録しておく必要あり。"
+      -
+        - image:
+          - '/public/go-img.PNG'
+          - 20
+
+  - template: *defaultTemplate
+    title:
+      - Goのいいところ
+    content:
+      -
+        - ・リファクタリングが楽
+      -
+        - "　・つい数時間前まで変数コンテナは参照型ではありませんでした…"
+      -
+        - space: 3
+      -
+        - ・テストツールがすき(go test / go tool cover)
+      -
+        - "　・テストもyamlで書いてます。"
+        - "　⇒"
+        - link:
+          - こちら
+          - https://github.com/cuhey3/mydsl/blob/master/go/test/yamls/testsuite.yml
+  - template: *defaultTemplate
+    title:
+      - DSLを作ると何が良いか
+    content:
+      -
+        - "1. 楽しい"
+      -
+        - space: 3
+      -
+        - "2. リフレクションが得意になる"
+      -
+        - space: 3
+      -
+        - "3. 定期処理をWeb管理画面から上げ下げするようなのが作れる"
+      -
+        - space: 3
+      -
+        - "4. プロトタイピングに利用できるかも？"
+
+
+  - template: *titleOnlyTemplate
+    title:
+      - text: ご清聴ありがとうございました
+        font-size: 8
+        stroke-width: 0.3
+
+main:
+  sequence:
+    - presentation:
+        svg:
+          do: [document.querySelector, 'svg']
+        slides: *slides
+        from-dsl:
+          "~transform: { format: ['translate(%s, 0)', multiply: ['$animatedIndex - ~index', -200]] }"
+        footer:
+          template: *footerTemplate
+          title:
+            -
+              - しうへい@cuhey3.github.io
+          content:
+            -
+              - "Otemachi.go #1 (3/20)"
+    - $leftTurn:
+        createElementNS:
+          - 'http://www.w3.org/2000/svg'
+          - 'polygon'
+          - points: "25,20 2,50 25,80"
+            class: arrow
+          - $svg
+    - $rightTurn:
+        createElementNS:
+        - 'http://www.w3.org/2000/svg'
+        - 'polygon'
+        - points: "175,20 198,50 175,80"
+          class: arrow
+        - $svg
+    - defineKeyEvent: ['right', 'keydown', 'key', 'ArrowRight']
+    - defineKeyEvent: ['left', 'keydown', 'key', 'ArrowLeft']
+    - defineClickEvent: ['left', $leftTurn]
+    - defineClickEvent: ['right', $rightTurn]
+    - defineSwipeEvent: ['left', 'x', +30]
+    - defineSwipeEvent: ['right', 'x', -30]
+    - defineAnimation: ['right', 'animatedIndex', 1, 350, 0, '$existSlideLength - 1']
+    - defineAnimation: ['left', 'animatedIndex', -1, 350, 0, '$existSlideLength - 1']
+    - startAnimation:
+      - events:
+      - animatedIndex: 0
