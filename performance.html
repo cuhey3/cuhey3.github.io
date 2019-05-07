@@ -151,12 +151,12 @@ and open the template in the editor.
       };
       function isBusinessDay(index) {
         const mod = index % 7;
-        return mod !== 0 && mod !== 6 && holiday[actualThisMonth + "/" + index] !== true;
+        return mod !== 0 && mod !== 6 && holiday[actualThisMonth + "/" + (index + monthMod)] !== true;
       }
       Array.from(document.querySelectorAll('.cell')).forEach(function (cell, index) {
         const dateString = index + monthMod;
         if (firstCell <= index && lastCell >= index) {
-          if (!isBusinessDay(dateString)) {
+          if (!isBusinessDay(index)) {
             cell.style = "background-color: #FFD1D1";
             cell.querySelector(".day").innerText = dateString;
             cell.querySelector(".time").innerText = "-";
