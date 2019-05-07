@@ -36,7 +36,7 @@ and open the template in the editor.
   </head>
   <body>
     <div class="month">
-      April. 2019
+      May. 2019
     </div>
     <table>
       <thead>
@@ -138,13 +138,17 @@ and open the template in the editor.
       const actualThisMonth = thisDateObject.getMonth() + 1;
       const thisDate = thisDateObject.getDate();
       const thisDay = thisDateObject.getDay();
-      const firstDay = (thisDay - thisDate + 35) % 7 + 1;
+      const firstDay = (thisDay - thisDate + 35) % 7 + 3;
       const lastDay = new Date(thisDateObject.getYear(), thisDateObject.getMonth() + 1, 0).getDate();
       console.log(firstDay, lastDay);
       console.log(thisDate, thisDay, firstDay);
       const holiday = {
         "4/29": true,
-        "4/30": true
+        "4/30": true,
+        "5/1": true,
+        "5/2": true,
+        "5/3": true,
+        "5/6": true
       };
       function isBusinessDay(index) {
         const mod = index % 7;
