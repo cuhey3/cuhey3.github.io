@@ -140,7 +140,7 @@ and open the template in the editor.
       const thisDay = thisDateObject.getDay();
       const firstCell = (thisDay - thisDate + 35) % 7 + 1;
       const lastCell = new Date(thisDateObject.getYear(), thisDateObject.getMonth() + 1, 0).getDate();
-      const monthMod = -2;
+      const monthMod = +2;
       const holiday = {
         "4/29": true,
         "4/30": true,
