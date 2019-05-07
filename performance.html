@@ -138,11 +138,9 @@ and open the template in the editor.
       const actualThisMonth = thisDateObject.getMonth() + 1;
       const thisDate = thisDateObject.getDate();
       const thisDay = thisDateObject.getDay();
-      const firstDay = (thisDay - thisDate + 35) % 7 + 1;
-      const lastDay = new Date(thisDateObject.getYear(), thisDateObject.getMonth() + 1, 0).getDate();
+      const firstCell = (thisDay - thisDate + 35) % 7 + 1;
+      const lastCell = new Date(thisDateObject.getYear(), thisDateObject.getMonth() + 1, 0).getDate();
       const monthMod = -2;
-      console.log(firstDay, lastDay);
-      console.log(thisDate, thisDay, firstDay);
       const holiday = {
         "4/29": true,
         "4/30": true,
@@ -156,22 +154,23 @@ and open the template in the editor.
         return mod !== 0 && mod !== 6 && holiday[actualThisMonth + "/" + index] !== true;
       }
       Array.from(document.querySelectorAll('.cell')).forEach(function (cell, index) {
-        if (firstDay <= index && lastDay >= index) {
-          if (!isBusinessDay(index)) {
+        const dateString = index + monthMod;
+        if (firstCell <= index && lastCell >= index) {
+          if (!isBusinessDay(dateString)) {
             cell.style = "background-color: #FFD1D1";
-            cell.querySelector(".day").innerText = index + monthMod;
+            cell.querySelector(".day").innerText = dateString;
             cell.querySelector(".time").innerText = "-";
           } else {
-            cell.querySelector(".day").innerText = index + monthMod;
-            cell.querySelector(".time").innerText = window.localStorage.getItem(actualThisMonth + "/" + index) || "-";
+            cell.querySelector(".day").innerText = dateString;
+            cell.querySelector(".time").innerText = window.localStorage.getItem(actualThisMonth + "/" + dateString) || "-";
             cell.onclick = function (event) {
-              const num = Number(window.prompt("enter the time", window.localStorage.getItem(actualThisMonth + "/" + index) || 7.5));
+              const num = Number(window.prompt("enter the time", window.localStorage.getItem(actualThisMonth + "/" + dateString) || 7.5));
               if (isNaN(num)) {
-                window.localStorage.removeItem(actualThisMonth + "/" + index);
+                window.localStorage.removeItem(actualThisMonth + "/" + dateString);
                 cell.querySelector(".time").innerText = "-";
                 suggest();
               } else {
-                window.localStorage.setItem(actualThisMonth + "/" + index, num);
+                window.localStorage.setItem(actualThisMonth + "/" + dateString, num);
                 cell.querySelector(".time").innerText = num;
                 suggest();
               }
@@ -187,7 +186,7 @@ and open the template in the editor.
         let sumTime = 0;
         let remainBusinessDay = 0;
         Array.from(document.querySelectorAll('.cell')).forEach(function (cell, index) {
-          if (firstDay <= index && lastDay >= index && isBusinessDay(index)) {
+          if (firstCell <= index && lastCell >= index && isBusinessDay(index)) {
             const time = Number(cell.querySelector(".time").innerText);
             if (isNaN(time)) {
               sumTime += baseTime;
