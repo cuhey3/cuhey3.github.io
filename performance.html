@@ -138,9 +138,9 @@ and open the template in the editor.
       const actualThisMonth = thisDateObject.getMonth() + 1;
       const thisDate = thisDateObject.getDate();
       const thisDay = thisDateObject.getDay();
+      const monthMod = -2;
       const firstCell = (thisDay - thisDate + 35) % 7 + 1;
       const lastCell = new Date(thisDateObject.getYear(), thisDateObject.getMonth() + 1, 0).getDate() - monthMod;
-      const monthMod = -2;
       const holiday = {
         "4/29": true,
         "4/30": true,
