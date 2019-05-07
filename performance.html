@@ -186,7 +186,7 @@ and open the template in the editor.
         let sumTime = 0;
         let remainBusinessDay = 0;
         Array.from(document.querySelectorAll('.cell')).forEach(function (cell, index) {
-          if (firstCell <= index && lastCell >= index && isBusinessDay(index + monthMod)) {
+          if (firstCell <= index && lastCell >= index && isBusinessDay(index)) {
             const time = Number(cell.querySelector(".time").innerText);
             if (isNaN(time)) {
               sumTime += baseTime;
