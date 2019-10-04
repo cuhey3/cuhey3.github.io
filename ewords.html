@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+  <head>
+    <title>TODO supply a title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body style="width:1080px">
+    <div style="float:left;">
+      <iframe
+        title="Inline Frame Example"
+        width="780"
+        height="800"
+        src="http://e-words.jp/w/%E3%82%A2%E3%82%A4%E3%82%B3%E3%83%B3.html">
+      </iframe>
+      <br>
+      <span>おすすめポイント</span> <span style="color:blue;">10</span> <span style="color:red;">5</span>
+    </div>
+    <div style="float:right;">
+      <h3>みんなで作るe-wordsおすすめ集</h3>
+      <a href="#">戻る</a> <a href="#">進む</a><br>
+      <button style="height:50px;width:120px;" id="foo">知っててほしい</button>
+      <br><br>
+      <button style="height:50px;width:120px;">知らなくていい</button>
+      <br><br>
+      <button style="height:50px;width:120px;">ストックする</button>
+      <br><br>
+      <button style="height:50px;width:120px;">非表示</button>
+      <br><br>
+      <a href="#">ストックを見る</a>
+      <br>
+      <a href="#">非表示を見る</a>
+    </div>
+    <script>
+      const iframe = document.getElementsByTagName('iframe')[0];
+      document.getElementById('foo').onclick = function () {
+        iframe.src = "http://e-words.jp/w/LINE.html";
+      }
+    </script>
+  </body>
+</html>
