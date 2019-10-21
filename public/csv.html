@@ -14,22 +14,27 @@ and open the template in the editor.
   </head>
   <body>
 
+    <p>CSV入力↓</p>
     <textarea placeholder="ここにinput csvを貼ります" rows="20" cols="100" id="inputCsv">aaa,bbb,ccc
 ddd,eee,fff
 ggg,hhh,iii
-</textarea>
+    </textarea>
     <p><button onclick="convertCsv()">CSVを処理する</button>&nbsp;<span id="readyLibrary">ライブラリの準備中...</span></p>
-    <textarea placeholder="ここにoutput csvが出力されます" rows="20" cols="100" id="outputCsv"></textarea>
+    <p>CSV出力↓</p>
+    <textarea placeholder="ここに処理後のCSVが出力されます" rows="20" cols="100" id="outputCsv"></textarea>
+    <p><a href="#" id="downloadLink" download="filename.csv" target="_blank">ダウンロード（ファイル準備中）</a></p>
     <script>
       if (jQuery.csv) {
         document.querySelector('#readyLibrary').innerHTML = "ライブラリ準備OK!";
       }
+      const downloadLink = document.querySelector('#downloadLink');
       function convertCsv() {
+        downloadLink.innerHTML = 'ダウンロード（準備中）';
         // textareaからのCSV読み取り
         const inputCsvText = document.querySelector('#inputCsv').value;
         // CSVテキストからJavaScriptオブジェクト（配列だけど）に変換
         const loadedCsvData = jQuery.csv.toArrays(inputCsvText);
-        // outputに出したくないCSV行をフィルタ（今は全部返してる）
+        // outputに出したくないCSV行をフィルタして消す
         const filteredCsvData = loadedCsvData.filter(filterFunction);
         // outputする前に変換をかけている
         const convertedCsvData = filteredCsvData.map(convertFunction);
@@ -38,6 +43,7 @@ ggg,hhh,iii
         const convertedCsvText = jQuery.csv.fromArrays(convertedCsvData);
         // outputCsv textareaにセット
         document.querySelector('#outputCsv').value = convertedCsvText;
+        readyForDownloadFile(convertedCsvText);
       }
       function filterFunction(data) {
         // outputに出したくないCSVの行はここでfalseを返す
@@ -55,7 +61,12 @@ ggg,hhh,iii
         newData[1] = data[2];
         return newData;
       }
-
+      
+      function readyForDownloadFile(text) {
+        const blob = new Blob([text], {"type": "text/csv"});
+        downloadLink.setAttribute('href', window.URL.createObjectURL(blob));
+        downloadLink.innerHTML = 'ダウンロード';
+      }
     </script>
   </body>
 </html>
