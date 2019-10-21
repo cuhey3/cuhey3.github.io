@@ -1,1 +1,61 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+  <head>
+    <title>TODO supply a title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.5/jquery.csv.js"></script>
+  </head>
+  <body>
 
+    <textarea placeholder="ここにinput csvを貼ります" rows="20" cols="100" id="inputCsv">aaa,bbb,ccc
+ddd,eee,fff
+ggg,hhh,iii
+</textarea>
+    <p><button onclick="convertCsv()">CSVを処理する</button>&nbsp;<span id="readyLibrary">ライブラリの準備中...</span></p>
+    <textarea placeholder="ここにoutput csvが出力されます" rows="20" cols="100" id="outputCsv"></textarea>
+    <script>
+      if (jQuery.csv) {
+        document.querySelector('#readyLibrary').innerHTML = "ライブラリ準備OK!";
+      }
+      function convertCsv() {
+        // textareaからのCSV読み取り
+        const inputCsvText = document.querySelector('#inputCsv').value;
+        // CSVテキストからJavaScriptオブジェクト（配列だけど）に変換
+        const loadedCsvData = jQuery.csv.toArrays(inputCsvText);
+        // outputに出したくないCSV行をフィルタ（今は全部返してる）
+        const filteredCsvData = loadedCsvData.filter(filterFunction);
+        // outputする前に変換をかけている
+        const convertedCsvData = filteredCsvData.map(convertFunction);
+
+        // JavaScriptオブジェクト（配列）をCSVテキストに変換
+        const convertedCsvText = jQuery.csv.fromArrays(convertedCsvData);
+        // outputCsv textareaにセット
+        document.querySelector('#outputCsv').value = convertedCsvText;
+      }
+      function filterFunction(data) {
+        // outputに出したくないCSVの行はここでfalseを返す
+        // 三番目の列がfffだったら結果に含めない
+        if (data[2] === 'fff') {
+          return false;
+        }
+        return true;
+      }
+      function convertFunction(data) {
+        // outputするときに変換をかけたいときはここで何かをしてまた返す
+        const newData = data.slice(); // 配列のコピー
+        // 行の二列目と三列目を入れ替えている
+        newData[2] = data[1];
+        newData[1] = data[2];
+        return newData;
+      }
+
+    </script>
+  </body>
+</html>
