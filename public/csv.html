@@ -6,11 +6,12 @@ and open the template in the editor.
 -->
 <html>
   <head>
-    <title>TODO supply a title</title>
+    <title>CSV変換ツール</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.5/jquery.csv.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/1.0.30/encoding.js"></script>
   </head>
   <body>
 
@@ -34,11 +35,12 @@ ggg,hhh,iii
         const inputCsvText = document.querySelector('#inputCsv').value;
         // CSVテキストからJavaScriptオブジェクト（配列だけど）に変換
         const loadedCsvData = jQuery.csv.toArrays(inputCsvText);
+        console.log('loadedCsvData', loadedCsvData);
         // outputに出したくないCSV行をフィルタして消す
         const filteredCsvData = loadedCsvData.filter(filterFunction);
+        console.log('filteredCsvData', filteredCsvData);
         // outputする前に変換をかけている
         const convertedCsvData = filteredCsvData.map(convertFunction);
-
         // JavaScriptオブジェクト（配列）をCSVテキストに変換
         const convertedCsvText = jQuery.csv.fromArrays(convertedCsvData);
         // outputCsv textareaにセット
@@ -46,9 +48,10 @@ ggg,hhh,iii
         readyForDownloadFile(convertedCsvText);
       }
       function filterFunction(data) {
+        console.log('filterFunction', data);
         // outputに出したくないCSVの行はここでfalseを返す
         // 三番目の列がfffだったら結果に含めない
-        if (data[2] === 'fff') {
+        if (data[31] <= '2019-09-30 23:59:59') {
           return false;
         }
         return true;
@@ -61,11 +64,42 @@ ggg,hhh,iii
         newData[1] = data[2];
         return newData;
       }
-      
       function readyForDownloadFile(text) {
-        const blob = new Blob([text], {"type": "text/csv"});
+        const shiftJisCodeList = Encoding.convert(toUTF8Array(text), 'sjis', 'utf8');
+        const uInt8List = new Uint8Array(shiftJisCodeList);
+        const blob = new Blob([uInt8List], {"type": "text/csv"});
         downloadLink.setAttribute('href', window.URL.createObjectURL(blob));
         downloadLink.innerHTML = 'ダウンロード';
+      }
+      function toUTF8Array(str) {
+        var utf8 = [];
+        for (var i = 0; i < str.length; i++) {
+          var charcode = str.charCodeAt(i);
+          if (charcode < 0x80)
+            utf8.push(charcode);
+          else if (charcode < 0x800) {
+            utf8.push(0xc0 | (charcode >> 6),
+                    0x80 | (charcode & 0x3f));
+          } else if (charcode < 0xd800 || charcode >= 0xe000) {
+            utf8.push(0xe0 | (charcode >> 12),
+                    0x80 | ((charcode >> 6) & 0x3f),
+                    0x80 | (charcode & 0x3f));
+          }
+          // surrogate pair
+          else {
+            i++;
+            // UTF-16 encodes 0x10000-0x10FFFF by
+            // subtracting 0x10000 and splitting the
+            // 20 bits of 0x0-0xFFFFF into two halves
+            charcode = 0x10000 + (((charcode & 0x3ff) << 10)
+                    | (str.charCodeAt(i) & 0x3ff));
+            utf8.push(0xf0 | (charcode >> 18),
+                    0x80 | ((charcode >> 12) & 0x3f),
+                    0x80 | ((charcode >> 6) & 0x3f),
+                    0x80 | (charcode & 0x3f));
+          }
+        }
+        return utf8;
       }
     </script>
   </body>
