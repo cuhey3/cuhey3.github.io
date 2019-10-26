@@ -15,12 +15,14 @@ and open the template in the editor.
   </head>
   <body>
 
+    <input type="file" id="file1" onChange="loadFile(this)">
     <p>CSV入力↓</p>
     <textarea placeholder="ここにinput csvを貼ります" rows="20" cols="100" id="inputCsv">あああ,いいい,ううう
 えええ,おおお,かかか
 ききき,くくく,けけけ
     </textarea>
-    <p><button onclick="convertCsv()">CSVを処理する</button>&nbsp;<span id="readyLibrary">ライブラリの準備中...</span></p>
+    <p><input type="text" id="workshopName">
+    <button onclick="convertCsv()">CSVを処理する</button>&nbsp;<span id="readyLibrary">ライブラリの準備中...</span></p>
     <p>CSV出力↓</p>
     <textarea placeholder="ここに処理後のCSVが出力されます" rows="20" cols="100" id="outputCsv"></textarea>
     <p><a href="#" id="downloadLink" download="filename.csv" target="_blank">ダウンロード（ファイル準備中）</a></p>
@@ -29,6 +31,7 @@ and open the template in the editor.
         document.querySelector('#readyLibrary').innerHTML = "ライブラリ準備OK!";
       }
       const downloadLink = document.querySelector('#downloadLink');
+      const workshopName = document.querySelector('#workshopName');
       function convertCsv() {
         downloadLink.innerHTML = 'ダウンロード（準備中）';
         // textareaからのCSV読み取り
@@ -39,6 +42,8 @@ and open the template in the editor.
         // outputに出したくないCSV行をフィルタして消す
         const filteredCsvData = loadedCsvData.filter(filterFunction);
         console.log('filteredCsvData', filteredCsvData);
+        // メールアドレスで重複を削除する処理を行う
+        const mailUniqueCsvData = mailToUnique(filteredCsvData);
         // outputする前に変換をかけている
         const convertedCsvData = filteredCsvData.map(convertFunction);
         // JavaScriptオブジェクト（配列）をCSVテキストに変換
@@ -48,13 +53,13 @@ and open the template in the editor.
         readyForDownloadFile(convertedCsvText);
       }
       function filterFunction(data) {
-        console.log('filterFunction', data);
+        console.log('filterFunction', workshopName.value, data);
         // outputに出したくないCSVの行はここでfalseを返す
         // 三番目の列がfffだったら結果に含めない
-        if (data[31] <= '2019-09-30 23:59:59') {
-          return false;
+        if (data[5] === workshopName.value) {
+          return true;
         }
-        return true;
+        return false;
       }
       function convertFunction(data) {
         // outputするときに変換をかけたいときはここで何かをしてまた返す
@@ -100,6 +105,34 @@ and open the template in the editor.
           }
         }
         return utf8;
+      }
+      /*
+       * input type="file" タグからファイルを読み込んで#inputCsv テキストエリアにセットする関数
+       */
+      function loadFile(fileElement) {
+        return new Promise((resolve, reject) => {
+          var fr = new FileReader();
+          fr.onload = () => {
+            resolve(fr.result);
+          };
+          fr.readAsText(fileElement.files[0], 'shift_jis');
+        }).then((result) => {
+          document.querySelector('#inputCsv').value = result;
+        });
+      }
+      /*
+       * メールアドレスを使ってCSVデータの重複を削除する関数
+       */
+      function mailToUnique(csvData) {
+        let uniqueCsvData = null;
+        const mailAddressObject = {};
+        window.alert('mailToUnique 処理を始める前のCSVの件数は、 ' + csvData.length + ' 件');
+
+        uniqueCsvData = csvData.filter((data) => {
+          return true;
+        });
+        window.alert(csvData.length - uniqueCsvData.length + ' 件の重複が見つかり、削除しました。');
+        return uniqueCsvData;
       }
     </script>
   </body>
