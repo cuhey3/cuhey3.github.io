@@ -1,8 +1,79 @@
+const currentMoveAmount = {
+  x: 0,
+  y: 0,
+};
+const totalMoveAmount = {
+  x: 0,
+  y: 0,
+}
+
+
+class SVGView {
+  constructor(field, svg) {
+    this.field = field;
+    this.svg = svg;
+    this.circles = [];
+    this.lines = [];
+    this.initView();
+  }
+  initView() {
+    this.field.nodes.forEach((node) => {
+      this.circles.push(new SVG('circle').attr({
+        cx: node.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
+        cy: node.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
+        r: 10,
+      }).to(this.svg));
+    });
+    this.field.nodes.forEach((node, index) => {
+      node.connected.forEach((c) => {
+        const connectedIndex = this.field.nodes.indexOf(c);
+        if (connectedIndex > index) {
+          this.lines.push(new SVG('line').attr({
+            x1: node.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
+            y1: node.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
+            x2: c.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
+            y2: c.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
+            stroke: 'blue',
+            'stroke-width': 2,
+          }).to(this.svg));
+        }
+      });
+    });
+  }
+  bind() {
+    let count = 0;
+    while (count < 5000) {
+      this.field.calc();
+      count++;
+    }
+    this.fit();
+  }
+
+  fit() {
+    this.field.nodes.forEach((node, index) => {
+      const circle = this.circles[index];
+      circle.attr({
+        cx: node.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
+        cy: node.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
+      });
+      this.field.connectionList.forEach((array, index) => {
+        const fromNode = this.field.nodes[array[0]];
+        const toNode = this.field.nodes[array[1]];
+        const line = this.lines[index];
+        line.attr({
+          x1: fromNode.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
+          y1: fromNode.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
+          x2: toNode.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
+          y2: toNode.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
+        });
+      });
+    });
+  }
+}
+
 class Field {
   constructor(nodeCount) {
     this.nodes = [];
-    this.circles = [];
-    this.lines = [];
     this.connectionMap = {};
     this.connectionList = [];
     while (this.nodes.length < nodeCount) {
@@ -10,64 +81,49 @@ class Field {
     }
     this.randomConnect();
   }
-  fit() {
-    // const randomIndex = Math.floor(Math.random() * this.nodes.length);
-    // const node = this.nodes[randomIndex];
-    // node.position = {
-    //   x: Math.floor(Math.random() * 100),
-    //   y: Math.floor(Math.random() * 100),
-    // };
-    this.nodes.forEach((node, index) => {
-      const circle = this.circles[index];
-      circle.attr({
-        cx: node.position.x * 5,
-        cy: node.position.y * 5,
-      });
-      this.connectionList.forEach((array, index) => {
-        const fromNode = this.nodes[array[0]];
-        const toNode = this.nodes[array[1]];
-        const line = this.lines[index];
-        line.attr({
-          x1: fromNode.position.x * 5,
-          y1: fromNode.position.y * 5,
-          x2: toNode.position.x * 5,
-          y2: toNode.position.y * 5,
-        });
-      });
-    });
+  init() {
+
+  }
+
+  reset() {
+
+  }
+
+  stop() {
+
+  }
+
+  start() {
+
   }
 
   calc() {
-    let count = 0;
-    while (count < 5000) {
-      this.nodes.forEach((node) => {
-        node.force.x = 0;
-        node.force.y = 0;
-        const otherNodes = this.otherNodes(node);
-        otherNodes.forEach((other) => {
-          const coulomb = node.calcCoulomb(other);
-          node.force.x += coulomb.x;
-          node.force.y += coulomb.y;
-        });
-        node.connected.forEach((connected) => {
-          const hooke = node.calcHooke(connected);
-          node.force.x += hooke.x;
-          node.force.y += hooke.y;
-        });
-        const delta = 0.01;
-        node.speed.x = (node.speed.x + delta * node.force.x / 1) * 0.97;
-        node.speed.y = (node.speed.y + delta * node.force.y / 1) * 0.97;
-        node.position.x += node.speed.x * delta;
-        node.position.y += node.speed.y * delta;
+    this.nodes.forEach((node) => {
+      node.force.x = 0;
+      node.force.y = 0;
+      const otherNodes = this.otherNodes(node);
+      otherNodes.forEach((other) => {
+        const coulomb = node.calcCoulomb(other);
+        node.force.x += coulomb.x;
+        node.force.y += coulomb.y;
       });
-      count++;
-    }
-    this.fit();
+      node.connected.forEach((connected) => {
+        const hooke = node.calcHooke(connected);
+        node.force.x += hooke.x;
+        node.force.y += hooke.y;
+      });
+      const delta = 0.01;
+      node.speed.x = (node.speed.x + delta * node.force.x / 1) * 0.97;
+      node.speed.y = (node.speed.y + delta * node.force.y / 1) * 0.97;
+      node.position.x += node.speed.x * delta;
+      node.position.y += node.speed.y * delta;
+    });
   }
 
   otherNodes(node) {
     return this.nodes.filter((n) => n !== node);
   }
+
   randomConnect() {
     const otherNodeCount = this.nodes.length - 1;
     this.nodes.forEach((node, indexA) => {
@@ -91,7 +147,6 @@ class Field {
 }
 
 class Node {
-
   constructor() {
     this.position = {
       x: Math.floor(Math.random() * 100),
@@ -119,6 +174,7 @@ class Node {
       node.edge(this);
     }
   }
+
   calcCoulomb(node, c = 1000) {
     const dx = this.position.x - node.position.x;
     const dy = this.position.y - node.position.y;
@@ -129,11 +185,10 @@ class Node {
     return {
       x: Math.cos(Math.atan2(dy, dx)) * c / Math.pow(distance, 2),
       y: Math.sin(Math.atan2(dy, dx)) * c / Math.pow(distance, 2),
-      // x: Math.sin(atan) * c / Math.pow(distance, 2) * Math.sign(dx),
-      // y: Math.cos(atan) * c / Math.pow(distance, 2) * Math.sign(dy),
     }
   }
-  calcHooke(node, h = 200, hl = 30) {
+
+  calcHooke(node, h = 20, hl = 30) {
     const dx = this.position.x - node.position.x;
     const dy = this.position.y - node.position.y;
     const powX = Math.pow(dx, 2);
@@ -143,8 +198,6 @@ class Node {
     return {
       x: Math.cos(Math.atan2(dy, dx)) * h * (distance - hl) * -1,
       y: Math.sin(Math.atan2(dy, dx)) * h * (distance - hl) * -1,
-      // x: Math.sin(atan) * h / (distance - hl) * Math.sign(dx) * -1,
-      // y: Math.cos(atan) * h / (distance - hl) * Math.sign(dy) * -1,
     }
   }
 }
@@ -328,26 +381,46 @@ const svg = new SVG().attr({
 //
 // SVG.joint(rumi, mikac).to(svg);
 
-const field = new Field(5);
-field.nodes.forEach((node) => {
-  field.circles.push(new SVG('circle').attr({
-    cx: node.position.x * 5,
-    cy: node.position.y * 5,
-    r: 5,
-  }).to(svg));
-});
-field.nodes.forEach((node, index) => {
-  node.connected.forEach((c) => {
-    const connectedIndex = field.nodes.indexOf(c);
-    if (connectedIndex > index) {
-      field.lines.push(new SVG('line').attr({
-        x1: node.position.x * 5,
-        y1: node.position.y * 5,
-        x2: c.position.x * 5,
-        y2: c.position.y * 5,
-        stroke: 'blue',
-        'stroke-width': 2,
-      }).to(svg));
-    }
-  });
-});
+const field = new Field(10);
+const svgView = new SVGView(field, svg);
+svgView.bind();
+let isDown = false;
+const startPosition = {
+  x: 0,
+  y: 0,
+};
+
+document.onmousedown = function(event) {
+  if (1 === event.which) {
+    console.log(event.clientX, event.clientY);
+    console.log("down");
+    isDown = true;
+    startPosition.x = event.clientX;
+    startPosition.y = event.clientY;
+  }
+}
+
+document.onmouseup = function() {
+  if (1 === event.which) {
+    console.log("up");
+    isDown = false;
+    totalMoveAmount.x += currentMoveAmount.x;
+    totalMoveAmount.y += currentMoveAmount.y;
+    currentMoveAmount.x = 0;
+    currentMoveAmount.y = 0;
+    console.log(totalMoveAmount);
+  }
+}
+
+document.onmousemove = function(event) {
+  if (!isDown) {
+    return;
+  }
+  const {
+    clientX,
+    clientY
+  } = event;
+  currentMoveAmount.x = clientX - startPosition.x;
+  currentMoveAmount.y = clientY - startPosition.y;
+  svgView.fit();
+}
