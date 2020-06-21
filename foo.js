@@ -424,7 +424,7 @@ class SVG {
 
 const svg = new SVG().attr({
   width: 1000,
-  height: 1000,
+  height: 2000,
 }).to(document.body);
 
 // const rumi = new SVG('text', '大久保瑠美').attr({
@@ -454,14 +454,17 @@ window.requestAnimationFrame(bindWrap);
 
 let isDown = false;
 
-document.onmousedown = function(event) {
+const downEventHandler = function(event) {
   if (1 === event.which) {
     isDown = true;
     startPosition.set(event.clientX, event.clientY);
   }
 }
 
-document.onmouseup = function() {
+document.onmousedown = downEventHandler;
+document.ontouchstart = downEventHandler;
+
+const upEventHandler = function() {
   if (1 === event.which) {
     isDown = false;
     totalMoveAmount.plus(currentMoveAmount, true);
@@ -469,7 +472,10 @@ document.onmouseup = function() {
   }
 }
 
-document.onmousemove = function(event) {
+document.onmouseup = upEventHandler;
+document.ontouchend = upEventHandler;
+
+const moveEventHandler = function(event) {
   if (!isDown) {
     return;
   }
@@ -478,6 +484,8 @@ document.onmousemove = function(event) {
   svgView.fit();
 }
 
+document.onmousemove = moveEventHandler;
+document.ontouchmove = moveEventHandler;
 svg.elem().addEventListener("mousewheel", function(event) {
   if (event.deltaY > 0) {
     svgView.scale -= 0.2;
