@@ -94,6 +94,16 @@ class SVGView {
   }
   bind() {
     const now = new Date().getTime();
+
+    this.field.calc((now - startTime) / 500);
+    this.field.calc((now - startTime) / 500);
+    this.field.calc((now - startTime) / 500);
+    this.field.calc((now - startTime) / 500);
+    this.field.calc((now - startTime) / 500);
+    this.field.calc((now - startTime) / 500);
+    this.field.calc((now - startTime) / 500);
+    this.field.calc((now - startTime) / 500);
+    this.field.calc((now - startTime) / 500);
     this.field.calc((now - startTime) / 500);
     startTime = now;
     this.fit();
@@ -168,7 +178,7 @@ class Field {
         const hooke = node.calcHooke(connected);
         node.force.plus(hooke, true);
       });
-      node.speed.is(node.speed.plus(node.force.mp(dt).dv(1)).mp(0.9));
+      node.speed.is(node.speed.plus(node.force.mp(dt).dv(1)).mp(0.95));
       node.position.plus(node.speed.mp(dt), true);
     });
   }
@@ -241,7 +251,7 @@ class Node {
     );
   }
 
-  calcHooke(node, h = 5, hl = 10) {
+  calcHooke(node, h = 10, hl = 10) {
     const dp = this.position.minus(node.position);
     const dx = dp.x;
     const dy = dp.y;
