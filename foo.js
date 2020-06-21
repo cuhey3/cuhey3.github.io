@@ -94,18 +94,18 @@ class SVGView {
   }
   bind() {
     const now = new Date().getTime();
-
-    this.field.calc((now - startTime) / 500);
-    this.field.calc((now - startTime) / 500);
-    this.field.calc((now - startTime) / 500);
-    this.field.calc((now - startTime) / 500);
-    this.field.calc((now - startTime) / 500);
-    this.field.calc((now - startTime) / 500);
-    this.field.calc((now - startTime) / 500);
-    this.field.calc((now - startTime) / 500);
-    this.field.calc((now - startTime) / 500);
-    this.field.calc((now - startTime) / 500);
+    const delta = Math.min(now - startTime, 20);
     startTime = now;
+    this.field.calc(delta / 500);
+    this.field.calc(delta / 500);
+    this.field.calc(delta / 500);
+    this.field.calc(delta / 500);
+    this.field.calc(delta / 500);
+    this.field.calc(delta / 500);
+    this.field.calc(delta / 500);
+    this.field.calc(delta / 500);
+    this.field.calc(delta / 500);
+    this.field.calc(delta / 500);
     this.fit();
   }
 
@@ -459,33 +459,52 @@ const downEventHandler = function(event) {
     isDown = true;
     startPosition.set(event.clientX, event.clientY);
   }
+  if (0 === event.which) {
+    isDown = true;
+    startPosition.set(
+      event.changedTouches[0].clientX,
+      event.changedTouches[0].clientY,
+    );
+  }
 }
 
-document.onmousedown = downEventHandler;
-document.ontouchstart = downEventHandler;
+document.addEventListener('mousedown', downEventHandler, false);
+document.addEventListener('touchstart', downEventHandler, false);
 
-const upEventHandler = function() {
-  if (1 === event.which) {
+const upEventHandler = function(event) {
+  if (1 === event.which || 0 === event.which) {
+    console.log(event);
     isDown = false;
     totalMoveAmount.plus(currentMoveAmount, true);
     currentMoveAmount.reset();
   }
 }
 
-document.onmouseup = upEventHandler;
-document.ontouchend = upEventHandler;
+document.addEventListener('mouseup', upEventHandler, false);
+document.addEventListener('touchend', upEventHandler, false);
 
 const moveEventHandler = function(event) {
+  event.preventDefault();
   if (!isDown) {
     return;
   }
-  currentMoveAmount.is(new Point(event.clientX, event.clientY)
-    .minus(startPosition, true));
+  if (event instanceof TouchEvent) {
+    currentMoveAmount.is(new Point(
+      event.changedTouches[0].clientX,
+      event.changedTouches[0].clientY,
+    ).minus(startPosition, true));
+  }
+  if (event instanceof MouseEvent) {
+    currentMoveAmount.is(new Point(event.clientX, event.clientY)
+      .minus(startPosition, true));
+  }
   svgView.fit();
 }
 
-document.onmousemove = moveEventHandler;
-document.ontouchmove = moveEventHandler;
+document.addEventListener('mousemove', moveEventHandler, false);
+document.addEventListener('touchmove', moveEventHandler, {
+  passive: false
+});
 svg.elem().addEventListener("mousewheel", function(event) {
   if (event.deltaY > 0) {
     svgView.scale -= 0.2;
