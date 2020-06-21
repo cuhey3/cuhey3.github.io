@@ -1,73 +1,132 @@
-const currentMoveAmount = {
-  x: 0,
-  y: 0,
-};
-const totalMoveAmount = {
-  x: 0,
-  y: 0,
+class Point {
+  constructor(x = 0, y = 0) {
+    this.set(x, y);
+  }
+
+  plus(point, flag) {
+    return this._sum(point, +1, flag);
+  }
+
+  minus(point, flag) {
+    return this._sum(point, -1, flag);
+  }
+
+  _sum(point, sign, flag) {
+    if (flag) {
+      this.x += point.x * sign;
+      this.y += point.y * sign;
+      return this;
+    }
+    return new Point(
+      this.x + point.x * sign,
+      this.y + point.y * sign,
+    );
+  }
+
+  reset() {
+    this.x = 0;
+    this.y = 0;
+  }
+
+  get() {
+    return {
+      x: this.x,
+      y: this.y,
+    };
+  }
+
+  set(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  is(point) {
+    this.x = point.x;
+    this.y = point.y;
+  }
+
+  mp(amount) {
+    return new Point(this.x * amount, this.y * amount);
+  }
+  dv(amount) {
+    return new Point(this.x / amount, this.y / amount);
+  }
 }
-
-
+const currentMoveAmount = new Point();
+const totalMoveAmount = new Point();
+const startPosition = new Point();
 class SVGView {
-  constructor(field, svg) {
+  constructor(field, svg, option = {}) {
     this.field = field;
     this.svg = svg;
     this.circles = [];
     this.lines = [];
+    this.scale = option.scale || 10;
     this.initView();
   }
   initView() {
+    const cameraPoint = this.getCameraPoint();
     this.field.nodes.forEach((node) => {
+      const position = node.position.mp(this.scale).plus(cameraPoint);
       this.circles.push(new SVG('circle').attr({
-        cx: node.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
-        cy: node.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
-        r: 10,
+        cx: position.x,
+        cy: position.y,
+        r: this.scale,
       }).to(this.svg));
     });
     this.field.nodes.forEach((node, index) => {
       node.connected.forEach((c) => {
+        const position1 = node.position.mp(this.scale).plus(cameraPoint);
+        const position2 = c.position.mp(this.scale).plus(cameraPoint);
         const connectedIndex = this.field.nodes.indexOf(c);
         if (connectedIndex > index) {
           this.lines.push(new SVG('line').attr({
-            x1: node.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
-            y1: node.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
-            x2: c.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
-            y2: c.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
+            x1: position1.x,
+            y1: position1.y,
+            x2: position2.x,
+            y2: position2.y,
             stroke: 'blue',
-            'stroke-width': 2,
+            'stroke-width': this.scale / 5,
           }).to(this.svg));
         }
       });
     });
   }
   bind() {
-    let count = 0;
-    while (count < 5000) {
-      this.field.calc();
-      count++;
-    }
+    const now = new Date().getTime();
+    this.field.calc((now - startTime) / 500);
+    startTime = now;
     this.fit();
   }
 
   fit() {
+    const cameraPoint = this.getCameraPoint();
     this.field.nodes.forEach((node, index) => {
       const circle = this.circles[index];
+      const position = node.position.mp(this.scale).plus(cameraPoint);
       circle.attr({
-        cx: node.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
-        cy: node.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
+        cx: position.x,
+        cy: position.y,
+        r: this.scale,
       });
       this.field.connectionList.forEach((array, index) => {
         const fromNode = this.field.nodes[array[0]];
         const toNode = this.field.nodes[array[1]];
         const line = this.lines[index];
+        const position1 = fromNode.position.mp(this.scale).plus(cameraPoint);
+        const position2 = toNode.position.mp(this.scale).plus(cameraPoint);
         line.attr({
-          x1: fromNode.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
-          y1: fromNode.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
-          x2: toNode.position.x * 5 + currentMoveAmount.x + totalMoveAmount.x,
-          y2: toNode.position.y * 5 + currentMoveAmount.y + totalMoveAmount.y,
+          x1: position1.x,
+          y1: position1.y,
+          x2: position2.x,
+          y2: position2.y,
+          'stroke-width': this.scale / 5,
         });
       });
     });
+  }
+  getCameraPoint() {
+    return currentMoveAmount.plus(totalMoveAmount);
   }
 }
 
@@ -97,26 +156,20 @@ class Field {
 
   }
 
-  calc() {
+  calc(dt) {
     this.nodes.forEach((node) => {
-      node.force.x = 0;
-      node.force.y = 0;
+      node.force.reset();
       const otherNodes = this.otherNodes(node);
       otherNodes.forEach((other) => {
         const coulomb = node.calcCoulomb(other);
-        node.force.x += coulomb.x;
-        node.force.y += coulomb.y;
+        node.force.plus(coulomb, true);
       });
       node.connected.forEach((connected) => {
         const hooke = node.calcHooke(connected);
-        node.force.x += hooke.x;
-        node.force.y += hooke.y;
+        node.force.plus(hooke, true);
       });
-      const delta = 0.01;
-      node.speed.x = (node.speed.x + delta * node.force.x / 1) * 0.97;
-      node.speed.y = (node.speed.y + delta * node.force.y / 1) * 0.97;
-      node.position.x += node.speed.x * delta;
-      node.position.y += node.speed.y * delta;
+      node.speed.is(node.speed.plus(node.force.mp(dt).dv(1)).mp(0.9));
+      node.position.plus(node.speed.mp(dt), true);
     });
   }
 
@@ -148,18 +201,11 @@ class Field {
 
 class Node {
   constructor() {
-    this.position = {
-      x: Math.floor(Math.random() * 100),
-      y: Math.floor(Math.random() * 100),
-    };
-    this.force = {
-      x: 0,
-      y: 0,
-    };
-    this.speed = {
-      x: 0,
-      y: 0,
-    };
+    this.position = new Point(
+      Math.floor(Math.random() * 100), Math.floor(Math.random() * 100)
+    );
+    this.force = new Point();
+    this.speed = new Point();
     this.connected = [];
   }
 
@@ -175,30 +221,38 @@ class Node {
     }
   }
 
-  calcCoulomb(node, c = 1000) {
-    const dx = this.position.x - node.position.x;
-    const dy = this.position.y - node.position.y;
+  calcCoulomb(node, c = 5000) {
+    const dp = this.position.minus(node.position);
+    // const dx = this.position.x - node.position.x;
+    // const dy = this.position.y - node.position.y;
+    const dx = dp.x;
+    const dy = dp.y;
     const powX = Math.pow(dx, 2);
     const powY = Math.pow(dy, 2);
     const distance = Math.sqrt(powX + powY);
     const atan = Math.atan(Math.abs(dx / dy));
-    return {
-      x: Math.cos(Math.atan2(dy, dx)) * c / Math.pow(distance, 2),
-      y: Math.sin(Math.atan2(dy, dx)) * c / Math.pow(distance, 2),
-    }
+    // return {
+    //   x: Math.cos(Math.atan2(dy, dx)) * c / Math.pow(distance, 2),
+    //   y: Math.sin(Math.atan2(dy, dx)) * c / Math.pow(distance, 2),
+    // }
+    return new Point(
+      Math.cos(Math.atan2(dy, dx)) * c / Math.pow(distance, 2),
+      Math.sin(Math.atan2(dy, dx)) * c / Math.pow(distance, 2),
+    );
   }
 
-  calcHooke(node, h = 20, hl = 30) {
-    const dx = this.position.x - node.position.x;
-    const dy = this.position.y - node.position.y;
+  calcHooke(node, h = 5, hl = 10) {
+    const dp = this.position.minus(node.position);
+    const dx = dp.x;
+    const dy = dp.y;
     const powX = Math.pow(dx, 2);
     const powY = Math.pow(dy, 2);
     const distance = Math.sqrt(powX + powY);
     const atan = Math.atan(Math.abs(dx / dy));
-    return {
-      x: Math.cos(Math.atan2(dy, dx)) * h * (distance - hl) * -1,
-      y: Math.sin(Math.atan2(dy, dx)) * h * (distance - hl) * -1,
-    }
+    return new Point(
+      Math.cos(Math.atan2(dy, dx)) * h * (distance - hl) * -1,
+      Math.sin(Math.atan2(dy, dx)) * h * (distance - hl) * -1,
+    );
   }
 }
 
@@ -287,7 +341,6 @@ class SVG {
         this.wrapper.correct();
         this.parentElement.appendChild(this.wrapper.svg);
         this.wrapper.points();
-        console.log(this.wrapper.pointsObj);
       }
     }
     return this;
@@ -349,7 +402,6 @@ class SVG {
         y: this.attrObj.y + height,
       },
     };
-    console.log(this.pointsObj);
   }
   // Elementを返却
   elem() {
@@ -383,32 +435,27 @@ const svg = new SVG().attr({
 
 const field = new Field(10);
 const svgView = new SVGView(field, svg);
-svgView.bind();
-let isDown = false;
-const startPosition = {
-  x: 0,
-  y: 0,
+let startTime = new Date().getTime();
+const bindWrap = function() {
+  svgView.bind();
+  window.requestAnimationFrame(bindWrap);
 };
+window.requestAnimationFrame(bindWrap);
+
+let isDown = false;
 
 document.onmousedown = function(event) {
   if (1 === event.which) {
-    console.log(event.clientX, event.clientY);
-    console.log("down");
     isDown = true;
-    startPosition.x = event.clientX;
-    startPosition.y = event.clientY;
+    startPosition.set(event.clientX, event.clientY);
   }
 }
 
 document.onmouseup = function() {
   if (1 === event.which) {
-    console.log("up");
     isDown = false;
-    totalMoveAmount.x += currentMoveAmount.x;
-    totalMoveAmount.y += currentMoveAmount.y;
-    currentMoveAmount.x = 0;
-    currentMoveAmount.y = 0;
-    console.log(totalMoveAmount);
+    totalMoveAmount.plus(currentMoveAmount, true);
+    currentMoveAmount.reset();
   }
 }
 
@@ -416,11 +463,20 @@ document.onmousemove = function(event) {
   if (!isDown) {
     return;
   }
-  const {
-    clientX,
-    clientY
-  } = event;
-  currentMoveAmount.x = clientX - startPosition.x;
-  currentMoveAmount.y = clientY - startPosition.y;
+  currentMoveAmount.is(new Point(event.clientX, event.clientY)
+    .minus(startPosition, true));
   svgView.fit();
 }
+
+svg.elem().addEventListener("mousewheel", function(event) {
+  if (event.deltaY > 0) {
+    svgView.scale -= 0.2;
+    if (svgView.scale < 0.2) {
+      svgView.scale = 0.2;
+    }
+  } else {
+    svgView.scale += 0.2;
+  }
+  svgView.fit();
+  event.preventDefault();
+});
