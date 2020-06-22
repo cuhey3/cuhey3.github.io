@@ -146,7 +146,15 @@ class Field {
     this.connectionMap = {};
     this.connectionList = [];
     while (this.nodes.length < nodeCount) {
-      this.nodes.push(new Node());
+      let node = null;
+      if (0 === this.nodes.length) {
+        node = new Node(50, 10);
+      } else if (nodeCount - 1 === this.nodes.length) {
+        node = new Node(50, 90);
+      } else {
+        node = new Node();
+      }
+      this.nodes.push(node);
     }
     this.randomConnect();
   }
@@ -167,7 +175,7 @@ class Field {
   }
 
   calc(dt) {
-    this.nodes.forEach((node) => {
+    this.nodes.forEach((node, index) => {
       node.force.reset();
       const otherNodes = this.otherNodes(node);
       otherNodes.forEach((other) => {
@@ -179,6 +187,12 @@ class Field {
         node.force.plus(hooke, true);
       });
       node.speed.is(node.speed.plus(node.force.mp(dt).dv(1)).mp(0.95));
+      // if (0 === index) {
+      //   node.speed.x = 0;
+      // }
+      // if (this.nodes.length - 1 === index) {
+      //   node.speed.x = 0;
+      // }
       node.position.plus(node.speed.mp(dt), true);
     });
   }
@@ -190,9 +204,15 @@ class Field {
   randomConnect() {
     const otherNodeCount = this.nodes.length - 1;
     this.nodes.forEach((node, indexA) => {
-      const otherNodes = this.nodes.filter((n) => node !== n);
-      const randomIndex = Math.floor(Math.random() * otherNodeCount);
-      const randomOtherNode = otherNodes[randomIndex];
+      if (indexA === this.nodes.length - 1) {
+        return;
+      }
+      // const otherNodes = this.otherNodes(node);
+      // const randomIndex = Math.floor(Math.random() * otherNodeCount);
+      // const randomOtherNode = otherNodes[randomIndex];
+      const randomIndex = Math.floor(Math.random() * (this.nodes.length - indexA - 1)) + indexA + 1;
+      console.log(indexA, randomIndex);
+      const randomOtherNode = this.nodes[randomIndex];
       const indexB = this.nodes.indexOf(randomOtherNode);
       const sortedIndex = [indexA, indexB].sort();
       if (!this.connectionMap[sortedIndex[0]]) {
@@ -210,10 +230,8 @@ class Field {
 }
 
 class Node {
-  constructor() {
-    this.position = new Point(
-      Math.floor(Math.random() * 100), Math.floor(Math.random() * 100)
-    );
+  constructor(x = Math.floor(Math.random() * 100), y = Math.floor(Math.random() * 100)) {
+    this.position = new Point(x, y);
     this.force = new Point();
     this.speed = new Point();
     this.connected = [];
@@ -473,7 +491,6 @@ document.addEventListener('touchstart', downEventHandler, false);
 
 const upEventHandler = function(event) {
   if (1 === event.which || 0 === event.which) {
-    console.log(event);
     isDown = false;
     totalMoveAmount.plus(currentMoveAmount, true);
     currentMoveAmount.reset();
