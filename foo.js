@@ -53,6 +53,7 @@ class Point {
   }
 }
 const currentMoveAmount = new Point();
+const circleMoveAmount = new Point();
 const totalMoveAmount = new Point();
 const startPosition = new Point();
 class SVGView {
@@ -68,11 +69,13 @@ class SVGView {
     const cameraPoint = this.getCameraPoint();
     this.field.nodes.forEach((node) => {
       const position = node.position.mp(this.scale).plus(cameraPoint);
-      this.circles.push(new SVG('circle').attr({
+      const circle = new SVG('circle').attr({
         cx: position.x,
         cy: position.y,
         r: this.scale,
-      }).to(this.svg));
+      }).to(this.svg);
+      circle.node = node;
+      this.circles.push(circle);
     });
     this.field.nodes.forEach((node, index) => {
       node.connected.forEach((c) => {
@@ -117,7 +120,7 @@ class SVGView {
       circle.attr({
         cx: position.x,
         cy: position.y,
-        r: this.scale,
+        r: this.scale * 1.5,
       });
       this.field.connectionList.forEach((array, index) => {
         const fromNode = this.field.nodes[array[0]];
@@ -176,6 +179,9 @@ class Field {
 
   calc(dt) {
     this.nodes.forEach((node, index) => {
+      if (node.fixed) {
+        return;
+      }
       node.force.reset();
       const otherNodes = this.otherNodes(node);
       otherNodes.forEach((other) => {
@@ -211,7 +217,6 @@ class Field {
       // const randomIndex = Math.floor(Math.random() * otherNodeCount);
       // const randomOtherNode = otherNodes[randomIndex];
       const randomIndex = Math.floor(Math.random() * (this.nodes.length - indexA - 1)) + indexA + 1;
-      console.log(indexA, randomIndex);
       const randomOtherNode = this.nodes[randomIndex];
       const indexB = this.nodes.indexOf(randomOtherNode);
       const sortedIndex = [indexA, indexB].sort();
@@ -471,8 +476,14 @@ const bindWrap = function() {
 window.requestAnimationFrame(bindWrap);
 
 let isDown = false;
+let isCircleClicked = false;
+let clieckedCircle = null;
+let startCirclePosition = new Point();
+const startEvent = ['mousedown', 'touchstart'];
+const endEvent = ['mouseup', 'touchend'];
+const moveEvent = ['mousemove', 'touchmove'];
 
-const downEventHandler = function(event) {
+bindMultiEvent(svg.elem(), startEvent, function(event) {
   if (1 === event.which) {
     isDown = true;
     startPosition.set(event.clientX, event.clientY);
@@ -484,44 +495,46 @@ const downEventHandler = function(event) {
       event.changedTouches[0].clientY,
     );
   }
-}
+});
 
-document.addEventListener('mousedown', downEventHandler, false);
-document.addEventListener('touchstart', downEventHandler, false);
-
-const upEventHandler = function(event) {
+bindMultiEvent(svg.elem(), endEvent, function(event) {
   if (1 === event.which || 0 === event.which) {
     isDown = false;
     totalMoveAmount.plus(currentMoveAmount, true);
     currentMoveAmount.reset();
   }
-}
-
-document.addEventListener('mouseup', upEventHandler, false);
-document.addEventListener('touchend', upEventHandler, false);
+});
 
 const moveEventHandler = function(event) {
   event.preventDefault();
   if (!isDown) {
     return;
   }
+  let movedPosition = null;
   if (event instanceof TouchEvent) {
-    currentMoveAmount.is(new Point(
+    movedPosition = new Point(
       event.changedTouches[0].clientX,
       event.changedTouches[0].clientY,
-    ).minus(startPosition, true));
+    ).minus(startPosition, true);
+  } else if (event instanceof MouseEvent) {
+    movedPosition = new Point(event.clientX, event.clientY)
+      .minus(startPosition, true);
   }
-  if (event instanceof MouseEvent) {
-    currentMoveAmount.is(new Point(event.clientX, event.clientY)
-      .minus(startPosition, true));
+  if (isCircleClicked) {
+    console.log(startCirclePosition)
+    clickedCircle.node.position.is(startCirclePosition.plus(movedPosition.dv(svgView.scale)));
+  } else {
+    currentMoveAmount.is(movedPosition);
   }
   svgView.fit();
 }
 
-document.addEventListener('mousemove', moveEventHandler, false);
-document.addEventListener('touchmove', moveEventHandler, {
+svg.elem().addEventListener('mousemove', moveEventHandler, false);
+svg.elem().addEventListener('touchmove', moveEventHandler, {
   passive: false
 });
+
+//ToDo: wheel位置を考慮したin/out
 svg.elem().addEventListener("mousewheel", function(event) {
   if (event.deltaY > 0) {
     svgView.scale -= 0.2;
@@ -533,4 +546,37 @@ svg.elem().addEventListener("mousewheel", function(event) {
   }
   svgView.fit();
   event.preventDefault();
+});
+
+function bindMultiEvent(element, events, handler) {
+  events.forEach((event) => {
+    element.addEventListener(event, handler, false);
+  })
+}
+
+svgView.circles.forEach((circle) => {
+  const elem = circle.elem();
+  bindMultiEvent(elem, startEvent, function(event) {
+    circle.attr('fill', 'green');
+    isCircleClicked = true;
+    circle.node.fixed = true;
+    clickedCircle = circle;
+    startCirclePosition.is(circle.node.position);
+    if (1 === event.which) {
+      startPosition.set(event.clientX, event.clientY);
+    }
+    if (0 === event.which) {
+      startPosition.set(
+        event.changedTouches[0].clientX,
+        event.changedTouches[0].clientY,
+      );
+    }
+  });
+  bindMultiEvent(elem, endEvent, function(event) {
+    circle.attr('fill', 'black');
+    isCircleClicked = false;
+    circle.node.fixed = null;
+    clickedCircle = null;
+    circleMoveAmount.reset();
+  });
 });
