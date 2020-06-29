@@ -62,7 +62,7 @@ class SVGView {
     this.svg = svg;
     this.circles = [];
     this.lines = [];
-    this.scale = option.scale || 10;
+    this.scale = option.scale || 8;
     this.initView();
   }
   initView() {
@@ -178,10 +178,10 @@ class Field {
   }
 
   calc(dt) {
+    if (this.nodes.some((node) => node.fixed)) {
+      return;
+    }
     this.nodes.forEach((node, index) => {
-      if (node.fixed) {
-        return;
-      }
       node.force.reset();
       const otherNodes = this.otherNodes(node);
       otherNodes.forEach((other) => {
@@ -209,16 +209,31 @@ class Field {
 
   randomConnect() {
     const otherNodeCount = this.nodes.length - 1;
+    const connectedIndex = {
+      0: true
+    };
     this.nodes.forEach((node, indexA) => {
-      if (indexA === this.nodes.length - 1) {
+      if (indexA === this.nodes.length) {
         return;
       }
-      // const otherNodes = this.otherNodes(node);
-      // const randomIndex = Math.floor(Math.random() * otherNodeCount);
-      // const randomOtherNode = otherNodes[randomIndex];
-      const randomIndex = Math.floor(Math.random() * (this.nodes.length - indexA - 1)) + indexA + 1;
-      const randomOtherNode = this.nodes[randomIndex];
-      const indexB = this.nodes.indexOf(randomOtherNode);
+      const otherNodes = this.otherNodes(node);
+      let randomOtherNode = null;
+      let indexB = null;
+      while (true) {
+        const randomIndex = Math.floor(Math.random() * otherNodeCount);
+        randomOtherNode = otherNodes[randomIndex];
+        indexB = this.nodes.indexOf(randomOtherNode);
+        console.log(indexA, indexB, connectedIndex);
+        //        break;
+        if (connectedIndex[indexA] || connectedIndex[indexB]) {
+          connectedIndex[indexA] = true;
+          connectedIndex[indexB] = true;
+          console.log(indexA, indexB);
+          break;
+        }
+      }
+      // const randomIndex = Math.floor(Math.random() * (this.nodes.length - indexA - 1)) + indexA + 1;
+      // const randomOtherNode = this.nodes[randomIndex];
       const sortedIndex = [indexA, indexB].sort();
       if (!this.connectionMap[sortedIndex[0]]) {
         this.connectionMap[sortedIndex[0]] = {};
@@ -446,7 +461,7 @@ class SVG {
 // todo: groupを意識したコード
 
 const svg = new SVG().attr({
-  width: 1000,
+  width: 2000,
   height: 2000,
 }).to(document.body);
 
@@ -499,6 +514,7 @@ bindMultiEvent(svg.elem(), startEvent, function(event) {
 
 bindMultiEvent(svg.elem(), endEvent, function(event) {
   if (1 === event.which || 0 === event.which) {
+    isCircleClicked = false;
     isDown = false;
     totalMoveAmount.plus(currentMoveAmount, true);
     currentMoveAmount.reset();
@@ -521,7 +537,6 @@ const moveEventHandler = function(event) {
       .minus(startPosition, true);
   }
   if (isCircleClicked) {
-    console.log(startCirclePosition)
     clickedCircle.node.position.is(startCirclePosition.plus(movedPosition.dv(svgView.scale)));
   } else {
     currentMoveAmount.is(movedPosition);
