@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+      }
+      th,
+      td {
+        padding: 0 5px;
+      }
+      .red {
+        background-color: #fa87ce;
+      }
+      .blue {
+        background-color: #87cefa;
+      }
+      table {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="display: flex; width: 100%">
+      <div style="margin-right: 10px">
+        <h4>カードの競売</h4>
+        <div id="dealView"></div>
+        <div id="phaseView"></div>
+        <h4>競売予定</h4>
+        <div id="dealScheduleView"></div>
+      </div>
+      <div style="margin-right: 10px">
+        <h4>プレイヤーの状況</h4>
+        <div style="display: flex; width: 100%">
+          <div style="margin-right: 10px">
+            <div id="player1View" style="width: 100%"></div>
+            <div id="player1CardStockView" style="width: 100%"></div>
+          </div>
+          <div>
+            <div id="player2View" style="width: 100%"></div>
+            <div id="player2CardStockView" style="width: 100%"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-right: 10px">
+        <h4>ログ</h4>
+        <div id="logView"></div>
+      </div>
+    </div>
+    <script src="./util/index.js"></script>
+    <script src="./model/index.js"></script>
+    <script src="./view/index.js"></script>
+    <script src="./main.js"></script>
+  </body>
+</html>
