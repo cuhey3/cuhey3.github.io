@@ -3,6 +3,7 @@
   const models = [
     "LogView",
     "PlayerView",
+    "BattleSimulatorView",
     "CardStockView",
     "DealView",
     "DealScheduleView",

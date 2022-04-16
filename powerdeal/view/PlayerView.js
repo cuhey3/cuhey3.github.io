@@ -13,6 +13,7 @@ class PlayerView {
         <tr><th class="${this.player.colorClass}">HP</th><td style="text-align:right;"></td></tr>
         <tr><th class="${this.player.colorClass}">ATK</th><td style="text-align:right;"></td></tr>
         <tr><th class="${this.player.colorClass}">DEF</th><td style="text-align:right;"></td></tr>
+        <tr><th class="${this.player.colorClass}">Damage</th><td style="text-align:right;"></td></tr>
         <tr><th class="${this.player.colorClass}">Money</th><td style="text-align:right;"></td></tr>
       </table>
     `;
@@ -40,6 +41,10 @@ class PlayerView {
     tds[1].textContent = `${this.player.hp}/${this.player.maxHp}`;
     tds[2].textContent = this.player.atk;
     tds[3].textContent = this.player.def;
-    tds[4].textContent = `${this.player.money}(+${this.player.gain})`;
+    tds[4].textContent = Math.max(
+      this.player.opponent.atk - this.player.def,
+      1
+    );
+    tds[5].textContent = `${this.player.money}(+${this.player.gain})`;
   }
 }

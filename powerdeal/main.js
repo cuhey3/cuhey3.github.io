@@ -3,18 +3,18 @@ window.onload = function () {
   const logModel = new LogModel();
   logModel.bindView(new LogView("#logView"));
   instances.put("log", logModel);
-  const player1Name = "プーチン";
-  // window.prompt('プレイヤー1の名前を入力してください');
+  const player1Name = window.prompt("プレイヤー1の名前を入力してください");
   const player1Model = new PlayerModel("player1", player1Name, "red");
+  instances.put("player1", player1Model);
+  const player2Name = window.prompt("プレイヤー2の名前を入力してください");
+  const player2Model = new PlayerModel("player2", player2Name, "blue");
+  player1Model.opponent = player2Model;
+  player2Model.opponent = player1Model;
+  instances.put("player2", player2Model);
   player1Model.bindView(new PlayerView("#player1View"));
   player1Model.cardStock.bindView(new CardStockView("#player1CardStockView"));
-  instances.put("player1", player1Model);
-  const player2Name = "ゼレンスキー";
-  // window.prompt('プレイヤー2の名前を入力してください');
-  const player2Model = new PlayerModel("player2", player2Name, "blue");
   player2Model.bindView(new PlayerView("#player2View"));
   player2Model.cardStock.bindView(new CardStockView("#player2CardStockView"));
-  instances.put("player2", player2Model);
   const dealModel = new DealModel();
   const cardsArray = [];
   const lastCard = cards.pop();
@@ -44,5 +44,10 @@ window.onload = function () {
   gameModel.joinPlayer(player2Model);
   const observerModel = new ObserverModel();
   instances.put("observer", observerModel);
+  const battleSimulatorModel = new BattleSimulatorModel();
+  battleSimulatorModel.bindView(
+    new BattleSimulatorView("#battleSimulatorView")
+  );
+  instances.put("battleSimulator", battleSimulatorModel);
   gameModel.start();
 };

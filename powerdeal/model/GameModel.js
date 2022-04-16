@@ -38,8 +38,9 @@ class GameModel {
     };
     this.post = {
       deal: () => {
-        this.players.forEach((player) => player.view.draw());
         instances.get("initiative").decide();
+        this.players.forEach((player) => player.view.draw());
+        instances.get("battleSimulator").simulate();
       },
       useCard: function () {},
       battle: () => {
@@ -72,6 +73,7 @@ class GameModel {
         if (this.phases[0] == "useCard" && this.phases[1] == "battle") {
           instances.get("initiative").reverse();
         }
+        instances.get("battleSimulator").simulate();
       },
       turnEnd: function () {},
     };

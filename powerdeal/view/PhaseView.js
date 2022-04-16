@@ -16,7 +16,6 @@ class PhaseView {
     this.draw();
   }
   draw() {
-    console.log(this.model.phase);
     if (this.model.phase == "gameEnd") {
       const observer = instances.get("observer");
       this.element.innerHTML = `${observer.result.win.name}さんの勝ちです`;

@@ -81,5 +81,6 @@ class PlayerModel {
     if (observer.result) {
       instances.get("phase").gameEnd();
     }
+    instances.get("battleSimulator").simulate();
   }
 }

@@ -27,5 +27,6 @@ class PhaseModel {
     console.log("called gameend");
     this.phase = "gameEnd";
     this.view.draw();
+    instances.get("battleSimulator").simulate();
   }
 }

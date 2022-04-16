@@ -1,6 +1,7 @@
 (function () {
   const path = "./model";
   const models = [
+    "BattleSimulatorModel",
     "card",
     "CardStockModel",
     "LogModel",
