@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="utf-8">
+<style>
+    table {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    table, tr, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 5px;
+    }
+
+    li {
+        list-style: none;
+    }
+</style>
+<body>
+<script type="module">
+    import init, { greet } from "./wasm/pkg/my_wasm.js";
+    await init();
+    greet("WebAssembly");
+</script>
+</body>
+<h1>SFL2024勝ち抜け予想</h1>
+<h2>リーグ勝ち抜け予想表示用レイアウト検討</h2>
+<h3>ディビジョンS</h3>
+<table>
+    <thead>
+    <tr>
+        <th>チーム</th><th>ポイント<br>現在</th><th>ポイント<br>予想</th><th>得失<br>現在</th><th>得失<br>予想</th><th>プレイオフ<br>進出確率</th><th>1位<br>確率</th><th>2位<br>確率</th><th>3位<br>確率</th><th>4位<br>確率</th><th>5位<br>確率</th><th>6位<br>確率</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            DFM
+        </td>
+        <td>110</td>
+        <td>150.5</td>
+        <td>3</td>
+        <td>-3.2</td>
+        <td>42.5%</td>
+        <td>13.5%</td>
+        <td>14.5%</td>
+        <td>12.5%</td>
+        <td>17.5%</td>
+        <td>13.5%</td>
+        <td>17.5%</td>
+    </tr>
+    <tr>
+        <td>
+            OJA
+        </td>
+        <td>110</td>
+        <td>150.5</td>
+        <td>3</td>
+        <td>-3.2</td>
+        <td>42.5%</td>
+        <td>13.5%</td>
+        <td>14.5%</td>
+        <td>12.5%</td>
+        <td>17.5%</td>
+        <td>13.5%</td>
+        <td>17.5%</td>
+    </tr>
+    <tr>
+        <td>
+            DFM
+        </td>
+        <td>110</td>
+        <td>150.5</td>
+        <td>3</td>
+        <td>-3.2</td>
+        <td>42.5%</td>
+        <td>13.5%</td>
+        <td>14.5%</td>
+        <td>12.5%</td>
+        <td>17.5%</td>
+        <td>13.5%</td>
+        <td>17.5%</td>
+    </tr>
+    <tr>
+        <td>
+            OJA
+        </td>
+        <td>110</td>
+        <td>150.5</td>
+        <td>3</td>
+        <td>-3.2</td>
+        <td>42.5%</td>
+        <td>13.5%</td>
+        <td>14.5%</td>
+        <td>12.5%</td>
+        <td>17.5%</td>
+        <td>13.5%</td>
+        <td>17.5%</td>
+    </tr>
+    <tr>
+        <td>
+            DFM
+        </td>
+        <td>110</td>
+        <td>150.5</td>
+        <td>3</td>
+        <td>-3.2</td>
+        <td>42.5%</td>
+        <td>13.5%</td>
+        <td>14.5%</td>
+        <td>12.5%</td>
+        <td>17.5%</td>
+        <td>13.5%</td>
+        <td>17.5%</td>
+    </tr>
+    <tr>
+        <td>
+            OJA
+        </td>
+        <td>110</td>
+        <td>150.5</td>
+        <td>3</td>
+        <td>-3.2</td>
+        <td>42.5%</td>
+        <td>13.5%</td>
+        <td>14.5%</td>
+        <td>12.5%</td>
+        <td>17.5%</td>
+        <td>13.5%</td>
+        <td>17.5%</td>
+    </tr>
+    </tbody>
+</table>
+<h2>レート表示用レイアウト検討</h2>
+<h3>ディビジョンS</h3>
+<table>
+    <thead>
+    <tr>
+        <th>チーム</th>
+        <th>レート</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>DFM</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>OJA</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>DFM</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>OJA</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>DFM</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>OJA</td>
+        <td>1500</td>
+    </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+    <tr>
+        <th>チーム</th>
+        <th>先鋒・中堅</th>
+        <th>大将・延長</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>DFM</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>OJA</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>DFM</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>OJA</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>DFM</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>OJA</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    </tbody>
+</table>
+
+<table>
+    <thead>
+    <tr>
+        <th>チーム</th>
+        <th>先鋒・中堅<br>AWAY</th>
+        <th>先鋒・中堅<br>HOME</th>
+        <th>大将・延長<br>AWAY</th>
+        <th>大将・延長<br>HOME</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>DFM</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>OJA</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>DFM</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>OJA</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>DFM</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    <tr>
+        <td>OJA</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+        <td>1500</td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>予想設定</h2>
+<ul>
+    <li>
+        <label>
+            <input type="checkbox">
+            レートを計算して確率に反映する
+        </label>
+    </li>
+    <li>
+        <ul>
+            <li>
+                <label>
+                    <input type="checkbox">
+                    AWAY / HOMEを区別してレートを計算する
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="checkbox">
+                    先鋒戦・中堅戦と大将戦・延長戦を区別してレートを計算する
+                </label>
+            </li>
+        </ul>
+    </li>
+</ul>
+<span>※レートは全てバトル単位で計算します。（バトル得失まで予想します）</span>
+<h2>試合結果を入力</h2>
+<h3>ディビジョンS 第2節　8/27開催
+</h3>
+<table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr>
+        <th colspan="2">第1試合</th>
+        <th colspan="3">先鋒戦</th>
+        <th colspan="3">中堅戦</th>
+        <th colspan="5">大将戦</th>
+        <th colspan="1">延長戦</th>
+        <th>ポイント</th>
+    </tr>
+    <tr>
+        <th>
+            DFM
+        </th>
+        <th>
+            AWAY
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            25
+        </td>
+    </tr>
+    <tr>
+        <th>
+            OJA
+        </th>
+        <th>
+            HOME
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+<!--                document.querySelectorAll('[name=s-1-van-3]:checked')[0].value-->
+                <input type="radio" name="s-1-van-3" checked disabled value="test">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            20
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr>
+        <th colspan="2">第1試合</th>
+        <th colspan="3">先鋒戦</th>
+        <th colspan="3">中堅戦</th>
+        <th colspan="5">大将戦</th>
+        <th colspan="1">延長戦</th>
+        <th>ポイント</th>
+    </tr>
+    <tr>
+        <th>
+            DFM
+        </th>
+        <th>
+            AWAY
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            25
+        </td>
+    </tr>
+    <tr>
+        <th>
+            OJA
+        </th>
+        <th>
+            HOME
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            20
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr>
+        <th colspan="2">第1試合</th>
+        <th colspan="3">先鋒戦</th>
+        <th colspan="3">中堅戦</th>
+        <th colspan="5">大将戦</th>
+        <th colspan="1">延長戦</th>
+        <th>ポイント</th>
+    </tr>
+    <tr>
+        <th>
+            DFM
+        </th>
+        <th>
+            AWAY
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            25
+        </td>
+    </tr>
+    <tr>
+        <th>
+            OJA
+        </th>
+        <th>
+            HOME
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            20
+        </td>
+    </tr>
+    </tbody>
+</table>
+<h3>ディビジョンF 第2節</h3>
+<table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr>
+        <th colspan="2">第1試合</th>
+        <th colspan="3">先鋒戦</th>
+        <th colspan="3">中堅戦</th>
+        <th colspan="5">大将戦</th>
+        <th colspan="1">延長戦</th>
+        <th>ポイント</th>
+    </tr>
+    <tr>
+        <th>
+            DFM
+        </th>
+        <th>
+            AWAY
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            25
+        </td>
+    </tr>
+    <tr>
+        <th>
+            OJA
+        </th>
+        <th>
+            HOME
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            20
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr>
+        <th colspan="2">第1試合</th>
+        <th colspan="3">先鋒戦</th>
+        <th colspan="3">中堅戦</th>
+        <th colspan="5">大将戦</th>
+        <th colspan="1">延長戦</th>
+        <th>ポイント</th>
+    </tr>
+    <tr>
+        <th>
+            DFM
+        </th>
+        <th>
+            AWAY
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            25
+        </td>
+    </tr>
+    <tr>
+        <th>
+            OJA
+        </th>
+        <th>
+            HOME
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            20
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr>
+        <th colspan="2">第1試合</th>
+        <th colspan="3">先鋒戦</th>
+        <th colspan="3">中堅戦</th>
+        <th colspan="5">大将戦</th>
+        <th colspan="1">延長戦</th>
+        <th>ポイント</th>
+    </tr>
+    <tr>
+        <th>
+            DFM
+        </th>
+        <th>
+            AWAY
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            25
+        </td>
+    </tr>
+    <tr>
+        <th>
+            OJA
+        </th>
+        <th>
+            HOME
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-van-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-mid-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-2">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-3">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-4">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-general-5">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="s-1-extra-1">
+            </label>
+        </td>
+        <td>
+            20
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
