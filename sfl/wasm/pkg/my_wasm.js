@@ -287,9 +287,6 @@ function __wbg_get_imports() {
         const ret = arg0;
         return addHeapObject(ret);
     };
-    imports.wbg.__wbg_alert_2d1d70c681ff59db = function(arg0, arg1) {
-        alert(getStringFromWasm0(arg0, arg1));
-    };
     imports.wbg.__wbg_log_f8052ab673a8670c = function(arg0, arg1) {
         console.log(getStringFromWasm0(arg0, arg1));
     };
