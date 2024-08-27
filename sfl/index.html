@@ -40,6 +40,9 @@
             text-align: right;
             min-width: 50px;
         }
+        input[type="radio"] {
+            cursor: pointer;
+        }
     </style>
     <meta name="google-site-verification" content="xHHEihBbGTkulHW5I_nPIqjB8Xnj8pitqNxMe-Wlvgo"/>
 </head>
@@ -48,38 +51,253 @@
     import init, {greet} from "./wasm/pkg/my_wasm.js";
 
     await init();
-    const array = greet("WebAssembly");
-    for (let n = 0; n < 2; n++) {
-        const value = array[n];
-        for (let i = 0; i < 6; i++) {
-            value[i].push(value[i][1] + value[i][2] + value[i][3]);
-        }
-        value.sort((a, b) => b[15] - a[15]);
-        for (let i = 0; i < 6; i++) {
-            for (let j = 0; j < 16; j++) {
-                const rawData = value[i][j];
-                let textData = rawData.toString();
-                if ([1, 2, 3, 4, 5, 6, 15].indexOf(j) !== -1) {
-                    textData = textData.replace(/(.)$/, '.$1%');
-                }
-                if ([8, 10].indexOf(j) !== -1) {
-                    if (Math.abs(rawData) < 1000) {
-                        textData = (Math.round(rawData / 100)).toString().replace(/(.)$/, '0.$1');
-                    } else {
-                        textData = (Math.round(rawData / 100)).toString().replace(/(.)$/, '.$1');
+    const array = greet([], [], [], 'n');
+    function drawTables(array) {
+        for (let n = 0; n < 2; n++) {
+            const value = array[n];
+            for (let i = 0; i < 6; i++) {
+                value[i].push(value[i][1] + value[i][2] + value[i][3]);
+            }
+            value.sort((a, b) => b[15] - a[15]);
+            for (let i = 0; i < 6; i++) {
+                for (let j = 0; j < 16; j++) {
+                    const rawData = value[i][j];
+                    let textData = rawData.toString();
+                    if ([1, 2, 3, 4, 5, 6, 15].indexOf(j) !== -1) {
+                        if (rawData < 10) {
+                            textData = textData.replace(/(.)$/, '0.$1%');
+                        } else {
+                            textData = textData.replace(/(.)$/, '.$1%');
+                        }
                     }
-                }
-                if ([11, 12, 13, 14].indexOf(j) !== -1) {
-                    textData = Math.round(rawData * 10).toString().replace(/(.)$/, '.$1');
-                }
-                document.getElementById(`${n === 0 ? 's' : 'f'}-${i}-${j}`).innerText = textData;
-                if (j === 0) {
-                    document.querySelectorAll(`.${n === 0 ? 's' : 'f'}-${i}-${j}`).forEach((element) => {
-                        element.innerText = textData;
-                    });
+                    if ([8, 10].indexOf(j) !== -1) {
+                        if (Math.abs(rawData) < 1000) {
+                            textData = (Math.round(rawData / 100)).toString().replace(/(.)$/, '0.$1');
+                        } else {
+                            textData = (Math.round(rawData / 100)).toString().replace(/(.)$/, '.$1');
+                        }
+                    }
+                    if ([11, 12, 13, 14].indexOf(j) !== -1) {
+                        textData = Math.round(rawData * 10).toString().replace(/(.)$/, '.$1');
+                    }
+                    document.getElementById(`${n === 0 ? 's' : 'f'}-${i}-${j}`).innerText = textData;
+                    if (j === 0) {
+                        document.querySelectorAll(`.${n === 0 ? 's' : 'f'}-${i}-${j}`).forEach((element) => {
+                            element.innerText = textData;
+                        });
+                    }
                 }
             }
         }
+    }
+    drawTables(array);
+    function inputOnchangeFunc() {
+        const inputtedGameResults = [];
+        [1,2,3].forEach((n) => {
+            let pointAway = 0;
+            let pointHome = 0;
+            // 先鋒
+            const van1 = document.querySelector(`input[name="${n}-van-1"]:checked`);
+            document.querySelectorAll(`input[name="${n}-van-2"]`).forEach((element) => {
+                if (!van1) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const van2 = document.querySelector(`input[name="${n}-van-2"]:checked`);
+            document.querySelectorAll(`input[name="${n}-van-3"]`).forEach((element) => {
+                if (!van1 || !van2) {
+                    element.disabled = 'disabled';
+                } else if (van1.value === van2.value) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const van3 = document.querySelector(`input[name="${n}-van-3"]:checked`);
+            if (van1 && van2) {
+                if (van1.value === van2.value) {
+                    pointAway += van1.value === '1' ? 10 : 0;
+                    pointHome += van1.value === '0' ? 10 : 0;
+                } else {
+                    if (van3) {
+                        pointAway += van3.value === '1' ? 10 : 0;
+                        pointHome += van3.value === '0' ? 10 : 0;
+                    }
+                }
+            }
+
+            // 中堅
+            document.querySelectorAll(`input[name="${n}-mid-1"]`).forEach((element) => {
+                // TODO 落ち着いて直す
+                if (pointAway + pointHome < 10) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const mid1 = document.querySelector(`input[name="${n}-mid-1"]:checked`);
+            document.querySelectorAll(`input[name="${n}-mid-2"]`).forEach((element) => {
+                if (!mid1) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const mid2 = document.querySelector(`input[name="${n}-mid-2"]:checked`);
+            document.querySelectorAll(`input[name="${n}-mid-3"]`).forEach((element) => {
+                if (!mid1 || !mid2) {
+                    element.disabled = 'disabled';
+                } else if (mid1.value === mid2.value) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const mid3 = document.querySelector(`input[name="${n}-mid-3"]:checked`);
+            if (mid1 && mid2) {
+                if (mid1.value === mid2.value) {
+                    pointAway += mid1.value === '1' ? 10 : 0;
+                    pointHome += mid1.value === '0' ? 10 : 0;
+                } else {
+                    if (mid3) {
+                        pointAway += mid3.value === '1' ? 10 : 0;
+                        pointHome += mid3.value === '0' ? 10 : 0;
+                    }
+                }
+            }
+            // 大将
+            document.querySelectorAll(`input[name="${n}-general-1"]`).forEach((element) => {
+                // TODO 落ち着いて直す
+                if (pointAway + pointHome < 20) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const general1 = document.querySelector(`input[name="${n}-general-1"]:checked`);
+            document.querySelectorAll(`input[name="${n}-general-2"]`).forEach((element) => {
+                if (!general1) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const general2 = document.querySelector(`input[name="${n}-general-2"]:checked`);
+            document.querySelectorAll(`input[name="${n}-general-3"]`).forEach((element) => {
+                if (!general2) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const general3 = document.querySelector(`input[name="${n}-general-3"]:checked`);
+            document.querySelectorAll(`input[name="${n}-general-4"]`).forEach((element) => {
+                if (!general1 || !general2 || !general3) {
+                    element.disabled = 'disabled';
+                } else if (general1.value === general2.value && general1.value === general3.value) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const general4 = document.querySelector(`input[name="${n}-general-4"]:checked`);
+            document.querySelectorAll(`input[name="${n}-general-5"]`).forEach((element) => {
+                if (!general1 || !general2 || !general3 || !general4) {
+                    element.disabled = 'disabled';
+                } else if ([general1.value, general2.value, general3.value, general4.value].filter((v) => v === '1').length !== 2) {
+                    // 4つのvalueを1でフィルタして長さが2ならフルセット
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const general5 = document.querySelector(`input[name="${n}-general-5"]:checked`);
+            if (general5) {
+                pointAway += general5.value === '1' ? 20 : 0;
+                pointHome += general5.value === '0' ? 20 : 0;
+            } else if (general4 && [general1.value, general2.value, general3.value].filter((v) => v === general4.value).length === 2) {
+                pointAway += general4.value === '1' ? 20 : 0;
+                pointHome += general4.value === '0' ? 20 : 0;
+            } else if (general3 && (general1.value === general2.value && general1.value === general3.value)) {
+                pointAway += general3.value === '1' ? 20 : 0;
+                pointHome += general3.value === '0' ? 20 : 0;
+            }
+
+            // 延長戦
+            document.querySelectorAll(`input[name="${n}-extra-1"]`).forEach((element) => {
+                if (pointAway !== 20 || pointHome !== 20) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const extra1 = document.querySelector(`input[name="${n}-extra-1"]:checked`);
+            if (extra1) {
+                pointAway += extra1.value === '1' ? 5 : 0;
+                pointHome += extra1.value === '0' ? 5 : 0;
+            }
+            document.getElementById(`${n}-point-away`).innerText = pointAway.toString();
+            document.getElementById(`${n}-point-home`).innerText = pointHome.toString();
+            const resultsObj = [van1, van2, [van3, mid1], mid1, mid2, [mid3, general1], general1, general2, general3, general4, general5, extra1].reduce((obj, element) => {
+                if (!obj.flag) {
+                    return obj;
+                }
+                if (Array.isArray(element)) {
+                    if (element[0]) {
+                        obj.results.push(element[0].value === '1');
+                        return obj;
+                    } else if (element[1]) {
+                        obj.results.push(false);
+                        return obj;
+                    } else {
+                        obj.flag = false;
+                        return obj;
+                    }
+                } else if (!element) {
+                    obj.flag = false;
+                    return obj;
+                } else {
+                    obj.results.push(element.value === '1');
+                    return obj;
+                }
+            }, {results: [], flag: true});
+            inputtedGameResults.push(resultsObj.results);
+        });
+        return inputtedGameResults
+    }
+    let inputtedGameResults = [];
+    document.querySelectorAll('input[type="radio"]').forEach((element) => {
+        element.onchange = function() {
+            inputtedGameResults = inputOnchangeFunc();
+        }
+    });
+    document.getElementById('simulate').onclick = function() {
+        const array = greet(...inputtedGameResults, 'f');
+        drawTables(array);
+    }
+    document.getElementById('clear').onclick = function() {
+        [1,2,3].forEach((n) => {
+            let van1 = document.querySelector(`input[name="${n}-van-1"]:checked`);
+            if (van1) {
+                van1.checked = '';
+            }
+        });
+        inputOnchangeFunc();
+        const array = greet([], [], [], 'f');
+        drawTables(array);
     }
 </script>
 <h1>SFL2024勝ち抜けシミュレーション</h1>
@@ -311,6 +529,8 @@
 </table>
 ※現在までの試合結果に、今後の試合結果をランダム生成したものを加えて、1000回シミュレーションしています。<br>
 ※現在までの試合結果からイロレーティングを算出し、今後の試合結果のランダム生成に反映しています。
+<br>
+<br>
 <h2 style="margin-bottom:0">レーティング</h2>
 <!--<h2>レート表示用レイアウト検討</h2>-->
 <!--<table>-->
@@ -538,946 +758,479 @@
 <!--    </li>-->
 <!--</ul>-->
 <!--<span>※レートは全てバトル単位で計算します。（バトル得失まで予想します）</span>-->
-<!--<h2>試合結果を入力</h2>-->
-<!--<h3>ディビジョンS 第2節　8/27開催-->
-<!--</h3>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr>-->
-<!--        <th colspan="2">第1試合</th>-->
-<!--        <th colspan="3">先鋒戦</th>-->
-<!--        <th colspan="3">中堅戦</th>-->
-<!--        <th colspan="5">大将戦</th>-->
-<!--        <th colspan="1">延長戦</th>-->
-<!--        <th>ポイント</th>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            DFM-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            AWAY-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3" disabled>-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            25-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            OJA-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            HOME-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--&lt;!&ndash;                document.querySelectorAll('[name=s-1-van-3]:checked')[0].value&ndash;&gt;-->
-<!--                <input type="radio" name="s-1-van-3" checked disabled value="test">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            20-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr>-->
-<!--        <th colspan="2">第1試合</th>-->
-<!--        <th colspan="3">先鋒戦</th>-->
-<!--        <th colspan="3">中堅戦</th>-->
-<!--        <th colspan="5">大将戦</th>-->
-<!--        <th colspan="1">延長戦</th>-->
-<!--        <th>ポイント</th>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            DFM-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            AWAY-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            25-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            OJA-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            HOME-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            20-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr>-->
-<!--        <th colspan="2">第1試合</th>-->
-<!--        <th colspan="3">先鋒戦</th>-->
-<!--        <th colspan="3">中堅戦</th>-->
-<!--        <th colspan="5">大将戦</th>-->
-<!--        <th colspan="1">延長戦</th>-->
-<!--        <th>ポイント</th>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            DFM-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            AWAY-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            25-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            OJA-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            HOME-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            20-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<!--<h3>ディビジョンF 第2節</h3>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr>-->
-<!--        <th colspan="2">第1試合</th>-->
-<!--        <th colspan="3">先鋒戦</th>-->
-<!--        <th colspan="3">中堅戦</th>-->
-<!--        <th colspan="5">大将戦</th>-->
-<!--        <th colspan="1">延長戦</th>-->
-<!--        <th>ポイント</th>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            DFM-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            AWAY-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            25-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            OJA-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            HOME-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            20-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr>-->
-<!--        <th colspan="2">第1試合</th>-->
-<!--        <th colspan="3">先鋒戦</th>-->
-<!--        <th colspan="3">中堅戦</th>-->
-<!--        <th colspan="5">大将戦</th>-->
-<!--        <th colspan="1">延長戦</th>-->
-<!--        <th>ポイント</th>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            DFM-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            AWAY-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            25-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            OJA-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            HOME-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            20-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr>-->
-<!--        <th colspan="2">第1試合</th>-->
-<!--        <th colspan="3">先鋒戦</th>-->
-<!--        <th colspan="3">中堅戦</th>-->
-<!--        <th colspan="5">大将戦</th>-->
-<!--        <th colspan="1">延長戦</th>-->
-<!--        <th>ポイント</th>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            DFM-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            AWAY-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            25-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <th>-->
-<!--            OJA-->
-<!--        </th>-->
-<!--        <th>-->
-<!--            HOME-->
-<!--        </th>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-van-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-mid-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-2">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-3">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-4">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-general-5">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <label>-->
-<!--                <input type="radio" name="s-1-extra-1">-->
-<!--            </label>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            20-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
+<br>
+<h2>最新の試合結果を入力</h2>
+<h3>ディビジョンS 第2節　8/27開催
+</h3>
+<table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr>
+        <th colspan="2" style="width:120px;">第1試合</th>
+        <th colspan="3">先鋒戦</th>
+        <th colspan="3">中堅戦</th>
+        <th colspan="5">大将戦</th>
+        <th colspan="1">延長戦</th>
+        <th>ポイント</th>
+    </tr>
+    <tr>
+        <th>
+            SNB
+        </th>
+        <th>
+            AWAY
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="1-van-1" value="1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-van-2" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-van-3" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-mid-1" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-mid-2" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-mid-3" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-general-1" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-general-2" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-general-3" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-general-4" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-general-5" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-extra-1" value="1" disabled>
+            </label>
+        </td>
+        <td id="1-point-away">
+            0
+        </td>
+    </tr>
+    <tr>
+        <th>
+            DFM
+        </th>
+        <th>
+            HOME
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="1-van-1" value="0">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-van-2" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-van-3" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-mid-1" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-mid-2" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-mid-3" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-general-1" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-general-2" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-general-3" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-general-4" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-general-5" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="1-extra-1" value="0" disabled>
+            </label>
+        </td>
+        <td id="1-point-home">
+            0
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr>
+        <th colspan="2" style="width:120px;">第2試合</th>
+        <th colspan="3">先鋒戦</th>
+        <th colspan="3">中堅戦</th>
+        <th colspan="5">大将戦</th>
+        <th colspan="1">延長戦</th>
+        <th>ポイント</th>
+    </tr>
+    <tr>
+        <th>
+            IBS
+        </th>
+        <th>
+            AWAY
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="2-van-1" value="1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-van-2" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-van-3" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-mid-1" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-mid-2" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-mid-3" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-general-1" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-general-2" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-general-3" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-general-4" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-general-5" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-extra-1" value="1" disabled>
+            </label>
+        </td>
+        <td id="2-point-away">
+            0
+        </td>
+    </tr>
+    <tr>
+        <th>
+            OJA
+        </th>
+        <th>
+            HOME
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="2-van-1" value="0">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-van-2" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-van-3" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-mid-1" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-mid-2" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-mid-3" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-general-1" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-general-2" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-general-3" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-general-4" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-general-5" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="2-extra-1" value="0" disabled>
+            </label>
+        </td>
+        <td id="2-point-home">
+            0
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+    </thead>
+    <tbody>
+    <tr>
+        <th colspan="2" style="width:120px;">第3試合</th>
+        <th colspan="3">先鋒戦</th>
+        <th colspan="3">中堅戦</th>
+        <th colspan="5">大将戦</th>
+        <th colspan="1">延長戦</th>
+        <th>ポイント</th>
+    </tr>
+    <tr>
+        <th>
+            SOL
+        </th>
+        <th>
+            AWAY
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="3-van-1" value="1">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-van-2" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-van-3" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-mid-1" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-mid-2" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-mid-3" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-general-1" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-general-2" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-general-3" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-general-4" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-general-5" value="1" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-extra-1" value="1" disabled>
+            </label>
+        </td>
+        <td id="3-point-away">
+            0
+        </td>
+    </tr>
+    <tr>
+        <th>
+            G8S
+        </th>
+        <th>
+            HOME
+        </th>
+        <td>
+            <label>
+                <input type="radio" name="3-van-1" value="0">
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-van-2" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-van-3" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-mid-1" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-mid-2" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-mid-3" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-general-1" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-general-2" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-general-3" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-general-4" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-general-5" value="0" disabled>
+            </label>
+        </td>
+        <td>
+            <label>
+                <input type="radio" name="3-extra-1" value="0" disabled>
+            </label>
+        </td>
+        <td id="3-point-home">
+            0
+        </td>
+    </tr>
+    </tbody>
+</table>
+<button style="margin-right: 10px;" id="simulate">シミュレーション</button><button id="clear">クリア</button><br>
+<p>※当サイトが試合結果データを反映する前であっても、ご自身で最新の試合結果を入力し、シミュレーションを更新することができます。</p>
 </body>
 </html>
