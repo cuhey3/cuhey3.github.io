@@ -1,53 +1,55 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<style>
-    body {
-        /*font-family: "游ゴシック","メイリオ", sans-serif;*/
-        font-family: "Hiragino Kaku Gothic ProN";
-    }
-    table {
-        text-align: center;
-        margin-bottom: 10px;
-    }
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+        }
 
-    table, tr, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-        height: 24px;
-    }
+        table {
+            text-align: center;
+            margin-bottom: 10px;
+        }
 
-    th, td {
-        padding: 10px;
-    }
+        table, tr, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            height: 24px;
+        }
 
-    li {
-        list-style: none;
-    }
-    .percent {
-        text-align: right;
-        min-width: 50px;
-    }
-</style>
-<meta name="google-site-verification" content="xHHEihBbGTkulHW5I_nPIqjB8Xnj8pitqNxMe-Wlvgo" />
+        th, td {
+            padding: 10px;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        .percent {
+            text-align: right;
+            min-width: 50px;
+        }
+    </style>
+    <meta name="google-site-verification" content="xHHEihBbGTkulHW5I_nPIqjB8Xnj8pitqNxMe-Wlvgo"/>
 </head>
 <body>
 <script type="module">
-    import init, { greet } from "./wasm/pkg/my_wasm.js";
+    import init, {greet} from "./wasm/pkg/my_wasm.js";
+
     await init();
     const array = greet("WebAssembly");
-    for (let n = 0; n < 2; n++){
+    for (let n = 0; n < 2; n++) {
         const value = array[n];
         for (let i = 0; i < 6; i++) {
             value[i].push(value[i][1] + value[i][2] + value[i][3]);
         }
-        value.sort((a, b)=>b[11] - a[11]);
-        for(let i = 0; i < 6; i++) {
-            for (let j = 0; j < 12; j++) {
+        value.sort((a, b) => b[15] - a[15]);
+        for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < 16; j++) {
                 const rawData = value[i][j];
                 let textData = rawData.toString();
-                if ([1,2,3,4,5,6,11].indexOf(j) !== -1) {
+                if ([1, 2, 3, 4, 5, 6, 15].indexOf(j) !== -1) {
                     textData = textData.replace(/(.)$/, '.$1%');
                 }
                 if ([8, 10].indexOf(j) !== -1) {
@@ -57,7 +59,15 @@
                         textData = (Math.round(rawData / 100)).toString().replace(/(.)$/, '.$1');
                     }
                 }
-                document.getElementById(`${n === 0 ? 's': 'f'}-${i}-${j}`).innerText = textData;
+                if ([11, 12, 13, 14].indexOf(j) !== -1) {
+                    textData = Math.round(rawData * 10).toString().replace(/(.)$/, '.$1');
+                }
+                document.getElementById(`${n === 0 ? 's' : 'f'}-${i}-${j}`).innerText = textData;
+                if (j === 0) {
+                    document.querySelectorAll(`.${n === 0 ? 's' : 'f'}-${i}-${j}`).forEach((element) => {
+                        element.innerText = textData;
+                    });
+                }
             }
         }
     }
@@ -69,9 +79,19 @@
 <table>
     <thead>
     <tr>
-        <th>チーム</th><th>ポイント<br>現在</th><th>ポイント<br>予想</th><th>バトル<br>得失現在</th><th>バトル<br>得失予想</th><th>プレイオフ<br>進出確率</th>
-<!--        <th>GF<br>優勝確率</th>-->
-        <th>1位<br>確率</th><th>2位<br>確率</th><th>3位<br>確率</th><th>4位<br>確率</th><th>5位<br>確率</th><th>6位<br>確率</th>
+        <th>チーム</th>
+        <th>ポイント<br>現在</th>
+        <th>ポイント<br>予想</th>
+        <th>バトル<br>得失現在</th>
+        <th>バトル<br>得失予想</th>
+        <th>プレイオフ<br>進出確率</th>
+        <!--        <th>GF<br>優勝確率</th>-->
+        <th>1位<br>確率</th>
+        <th>2位<br>確率</th>
+        <th>3位<br>確率</th>
+        <th>4位<br>確率</th>
+        <th>5位<br>確率</th>
+        <th>6位<br>確率</th>
     </tr>
     </thead>
     <tbody>
@@ -81,8 +101,8 @@
         <td id="s-0-8"></td>
         <td id="s-0-9"></td>
         <td id="s-0-10"></td>
-        <td id="s-0-11" class="percent"></td>
-<!--        <td>6.5%</td>-->
+        <td id="s-0-15" class="percent"></td>
+        <!--        <td>6.5%</td>-->
         <td id="s-0-1" class="percent"></td>
         <td id="s-0-2" class="percent"></td>
         <td id="s-0-3" class="percent"></td>
@@ -96,8 +116,8 @@
         <td id="s-1-8"></td>
         <td id="s-1-9"></td>
         <td id="s-1-10"></td>
-        <td id="s-1-11" class="percent"></td>
-<!--        <td>6.5%</td>-->
+        <td id="s-1-15" class="percent"></td>
+        <!--        <td>6.5%</td>-->
         <td id="s-1-1" class="percent"></td>
         <td id="s-1-2" class="percent"></td>
         <td id="s-1-3" class="percent"></td>
@@ -111,8 +131,8 @@
         <td id="s-2-8"></td>
         <td id="s-2-9"></td>
         <td id="s-2-10"></td>
-        <td id="s-2-11" class="percent"></td>
-<!--        <td>6.5%</td>-->
+        <td id="s-2-15" class="percent"></td>
+        <!--        <td>6.5%</td>-->
         <td id="s-2-1" class="percent"></td>
         <td id="s-2-2" class="percent"></td>
         <td id="s-2-3" class="percent"></td>
@@ -126,8 +146,8 @@
         <td id="s-3-8"></td>
         <td id="s-3-9"></td>
         <td id="s-3-10"></td>
-        <td id="s-3-11" class="percent"></td>
-<!--        <td>6.5%</td>-->
+        <td id="s-3-15" class="percent"></td>
+        <!--        <td>6.5%</td>-->
         <td id="s-3-1" class="percent"></td>
         <td id="s-3-2" class="percent"></td>
         <td id="s-3-3" class="percent"></td>
@@ -141,8 +161,8 @@
         <td id="s-4-8"></td>
         <td id="s-4-9"></td>
         <td id="s-4-10"></td>
-        <td id="s-4-11" class="percent"></td>
-<!--        <td>6.5%</td>-->
+        <td id="s-4-15" class="percent"></td>
+        <!--        <td>6.5%</td>-->
         <td id="s-4-1" class="percent"></td>
         <td id="s-4-2" class="percent"></td>
         <td id="s-4-3" class="percent"></td>
@@ -156,8 +176,8 @@
         <td id="s-5-8"></td>
         <td id="s-5-9"></td>
         <td id="s-5-10"></td>
-        <td id="s-5-11" class="percent"></td>
-<!--        <td>6.5%</td>-->
+        <td id="s-5-15" class="percent"></td>
+        <!--        <td>6.5%</td>-->
         <td id="s-5-1" class="percent"></td>
         <td id="s-5-2" class="percent"></td>
         <td id="s-5-3" class="percent"></td>
@@ -171,9 +191,19 @@
 <table>
     <thead>
     <tr>
-        <th>チーム</th><th>ポイント<br>現在</th><th>ポイント<br>予想</th><th>バトル<br>得失現在</th><th>バトル<br>得失予想</th><th>プレイオフ<br>進出確率</th>
+        <th>チーム</th>
+        <th>ポイント<br>現在</th>
+        <th>ポイント<br>予想</th>
+        <th>バトル<br>得失現在</th>
+        <th>バトル<br>得失予想</th>
+        <th>プレイオフ<br>進出確率</th>
         <!--        <th>GF<br>優勝確率</th>-->
-        <th>1位<br>確率</th><th>2位<br>確率</th><th>3位<br>確率</th><th>4位<br>確率</th><th>5位<br>確率</th><th>6位<br>確率</th>
+        <th>1位<br>確率</th>
+        <th>2位<br>確率</th>
+        <th>3位<br>確率</th>
+        <th>4位<br>確率</th>
+        <th>5位<br>確率</th>
+        <th>6位<br>確率</th>
     </tr>
     </thead>
     <tbody>
@@ -183,7 +213,7 @@
         <td id="f-0-8"></td>
         <td id="f-0-9"></td>
         <td id="f-0-10"></td>
-        <td id="f-0-11" class="percent"></td>
+        <td id="f-0-15" class="percent"></td>
         <!--        <td>6.5%</td>-->
         <td id="f-0-1" class="percent"></td>
         <td id="f-0-2" class="percent"></td>
@@ -198,7 +228,7 @@
         <td id="f-1-8"></td>
         <td id="f-1-9"></td>
         <td id="f-1-10"></td>
-        <td id="f-1-11" class="percent"></td>
+        <td id="f-1-15" class="percent"></td>
         <!--        <td>6.5%</td>-->
         <td id="f-1-1" class="percent"></td>
         <td id="f-1-2" class="percent"></td>
@@ -213,7 +243,7 @@
         <td id="f-2-8"></td>
         <td id="f-2-9"></td>
         <td id="f-2-10"></td>
-        <td id="f-2-11" class="percent"></td>
+        <td id="f-2-15" class="percent"></td>
         <!--        <td>6.5%</td>-->
         <td id="f-2-1" class="percent"></td>
         <td id="f-2-2" class="percent"></td>
@@ -228,7 +258,7 @@
         <td id="f-3-8"></td>
         <td id="f-3-9"></td>
         <td id="f-3-10"></td>
-        <td id="f-3-11" class="percent"></td>
+        <td id="f-3-15" class="percent"></td>
         <!--        <td>6.5%</td>-->
         <td id="f-3-1" class="percent"></td>
         <td id="f-3-2" class="percent"></td>
@@ -243,7 +273,7 @@
         <td id="f-4-8"></td>
         <td id="f-4-9"></td>
         <td id="f-4-10"></td>
-        <td id="f-4-11" class="percent"></td>
+        <td id="f-4-15" class="percent"></td>
         <!--        <td>6.5%</td>-->
         <td id="f-4-1" class="percent"></td>
         <td id="f-4-2" class="percent"></td>
@@ -258,7 +288,7 @@
         <td id="f-5-8"></td>
         <td id="f-5-9"></td>
         <td id="f-5-10"></td>
-        <td id="f-5-11" class="percent"></td>
+        <td id="f-5-15" class="percent"></td>
         <!--        <td>6.5%</td>-->
         <td id="f-5-1" class="percent"></td>
         <td id="f-5-2" class="percent"></td>
@@ -270,9 +300,9 @@
     </tbody>
 </table>
 ※現在までの試合結果に、今後の試合結果をランダム生成したものを加えて、1000回シミュレーションしています。<br>
-※現在までの試合結果からイロレーティングを算出し、今後の試合結果のランダム生成に反映しています。（<a href="">詳細</a>）
+※現在までの試合結果からイロレーティングを算出し、今後の試合結果のランダム生成に反映しています。
+<h2 style="margin-bottom:0">レーティング</h2>
 <!--<h2>レート表示用レイアウト検討</h2>-->
-<!--<h3>ディビジョンS</h3>-->
 <!--<table>-->
 <!--    <thead>-->
 <!--    <tr>-->
@@ -348,63 +378,130 @@
 <!--    </tr>-->
 <!--    </tbody>-->
 <!--</table>-->
+<div style="float:left;margin-right: 10px;">
+    <h3>ディビジョンS</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>チーム</th>
+            <th>先鋒・中堅<br>AWAY</th>
+            <th>先鋒・中堅<br>HOME</th>
+            <th>大将・延長<br>AWAY</th>
+            <th>大将・延長<br>HOME</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="s-0-0"></td>
+            <td id="s-0-11"></td>
+            <td id="s-0-12"></td>
+            <td id="s-0-13"></td>
+            <td id="s-0-14"></td>
+        </tr>
+        <tr>
+            <td class="s-1-0"></td>
+            <td id="s-1-11"></td>
+            <td id="s-1-12"></td>
+            <td id="s-1-13"></td>
+            <td id="s-1-14"></td>
+        </tr>
+        <tr>
+            <td class="s-2-0"></td>
+            <td id="s-2-11"></td>
+            <td id="s-2-12"></td>
+            <td id="s-2-13"></td>
+            <td id="s-2-14"></td>
 
-<!--<table>-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th>チーム</th>-->
-<!--        <th>先鋒・中堅<br>AWAY</th>-->
-<!--        <th>先鋒・中堅<br>HOME</th>-->
-<!--        <th>大将・延長<br>AWAY</th>-->
-<!--        <th>大将・延長<br>HOME</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr>-->
-<!--        <td>DFM</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>OJA</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>DFM</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>OJA</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>DFM</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>OJA</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
+        </tr>
+        <tr>
+            <td class="s-3-0"></td>
+            <td id="s-3-11"></td>
+            <td id="s-3-12"></td>
+            <td id="s-3-13"></td>
+            <td id="s-3-14"></td>
 
+        </tr>
+        <tr>
+            <td class="s-4-0"></td>
+            <td id="s-4-11"></td>
+            <td id="s-4-12"></td>
+            <td id="s-4-13"></td>
+            <td id="s-4-14"></td>
+        </tr>
+        <tr>
+            <td class="s-5-0"></td>
+            <td id="s-5-11"></td>
+            <td id="s-5-12"></td>
+            <td id="s-5-13"></td>
+            <td id="s-5-14"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div style="float:left;">
+    <h3>ディビジョンF</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>チーム</th>
+            <th>先鋒・中堅<br>AWAY</th>
+            <th>先鋒・中堅<br>HOME</th>
+            <th>大将・延長<br>AWAY</th>
+            <th>大将・延長<br>HOME</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="f-0-0"></td>
+            <td id="f-0-11"></td>
+            <td id="f-0-12"></td>
+            <td id="f-0-13"></td>
+            <td id="f-0-14"></td>
+        </tr>
+        <tr>
+            <td class="f-1-0"></td>
+            <td id="f-1-11"></td>
+            <td id="f-1-12"></td>
+            <td id="f-1-13"></td>
+            <td id="f-1-14"></td>
+
+        </tr>
+        <tr>
+            <td class="f-2-0"></td>
+            <td id="f-2-11"></td>
+            <td id="f-2-12"></td>
+            <td id="f-2-13"></td>
+            <td id="f-2-14"></td>
+
+        </tr>
+        <tr>
+            <td class="f-3-0"></td>
+            <td id="f-3-11"></td>
+            <td id="f-3-12"></td>
+            <td id="f-3-13"></td>
+            <td id="f-3-14"></td>
+
+        </tr>
+        <tr>
+            <td class="f-4-0"></td>
+            <td id="f-4-11"></td>
+            <td id="f-4-12"></td>
+            <td id="f-4-13"></td>
+            <td id="f-4-14"></td>
+        </tr>
+        <tr>
+            <td class="f-5-0"></td>
+            <td id="f-5-11"></td>
+            <td id="f-5-12"></td>
+            <td id="f-5-13"></td>
+            <td id="f-5-14"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<p style="clear: both;">
+    ※レーティングは上記の区分ごとに、1バトル（1セット）ごとに変動するよう計算しています。<br>
+    ※プレイヤーやキャラクター、またその相性はレーティングの計算には含まれていません。</p>
 <!--<h2>予想設定</h2>-->
 <!--<ul>-->
 <!--    <li>-->
