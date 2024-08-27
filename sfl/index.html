@@ -48,7 +48,7 @@
 </head>
 <body>
 <script type="module">
-    import init, {greet} from "./wasm/pkg/my_wasm.js?t=202408271753";
+    import init, {greet} from "./wasm/pkg/my_wasm.js?t=202408272300";
 
     await init();
     const array = greet([], [], [], 'n');
@@ -251,7 +251,7 @@
             }
             document.getElementById(`${n}-point-away`).innerText = pointAway.toString();
             document.getElementById(`${n}-point-home`).innerText = pointHome.toString();
-            const resultsObj = [van1, van2, [van3, mid1], mid1, mid2, [mid3, general1], general1, general2, general3, general4, general5, extra1].reduce((obj, element) => {
+            const resultsObj = [van1, van2, [van3, mid1], mid1, mid2, [mid3, general1], general1, general2, general3, [general4, extra1], [general5, extra1], extra1].reduce((obj, element) => {
                 if (!obj.flag) {
                     return obj;
                 }
@@ -285,7 +285,7 @@
         }
     });
     document.getElementById('simulate').onclick = function() {
-        const array = greet(...inputtedGameResults, 's');
+        const array = greet(...inputtedGameResults, 'f');
         drawTables(array);
     }
     document.getElementById('clear').onclick = function() {
@@ -296,12 +296,12 @@
             }
         });
         inputOnchangeFunc();
-        const array = greet([], [], [], 's');
+        const array = greet([], [], [], 'f');
         drawTables(array);
     }
 </script>
 <h1>SFL2024勝ち抜けシミュレーション</h1>
-<span>8/20 ディビジョンF第1節の結果を反映</span><br>
+<span>8/27 ディビジョンS 第2節の結果を反映</span><br>
 <a href="https://sf.esports.capcom.com/sp/sfl/2024/ranking/" target="_blank">SFL公式ランキングへ</a>
 <h3>ディビジョンS</h3>
 <table>
@@ -760,7 +760,7 @@
 <!--<span>※レートは全てバトル単位で計算します。（バトル得失まで予想します）</span>-->
 <br>
 <h2>最新の試合結果を入力</h2>
-<h3>ディビジョンS 第2節　8/27開催
+<h3>ディビジョンF 第2節　8/30開催
 </h3>
 <table>
     <thead>
@@ -776,7 +776,7 @@
     </tr>
     <tr>
         <th>
-            SNB
+            VAR
         </th>
         <th>
             AWAY
@@ -847,7 +847,7 @@
     </tr>
     <tr>
         <th>
-            DFM
+            RC
         </th>
         <th>
             HOME
@@ -932,7 +932,7 @@
     </tr>
     <tr>
         <th>
-            IBS
+            FAV
         </th>
         <th>
             AWAY
@@ -1003,7 +1003,7 @@
     </tr>
     <tr>
         <th>
-            OJA
+            IXA
         </th>
         <th>
             HOME
@@ -1088,7 +1088,7 @@
     </tr>
     <tr>
         <th>
-            SOL
+            CR
         </th>
         <th>
             AWAY
@@ -1159,7 +1159,7 @@
     </tr>
     <tr>
         <th>
-            G8S
+            CAG
         </th>
         <th>
             HOME
