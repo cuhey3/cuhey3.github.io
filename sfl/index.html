@@ -285,7 +285,7 @@
         }
     });
     document.getElementById('simulate').onclick = function() {
-        const array = greet(...inputtedGameResults, 'f');
+        const array = greet(...inputtedGameResults, 's');
         drawTables(array);
     }
     document.getElementById('clear').onclick = function() {
@@ -296,7 +296,7 @@
             }
         });
         inputOnchangeFunc();
-        const array = greet([], [], [], 'f');
+        const array = greet([], [], [], 's');
         drawTables(array);
     }
 </script>
