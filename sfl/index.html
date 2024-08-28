@@ -48,7 +48,7 @@
 </head>
 <body>
 <script type="module">
-    import init, {greet} from "./wasm/pkg/my_wasm.js?t=202408281600";
+    import init, {greet} from "./wasm/pkg/my_wasm.js?t=202408281700";
 
     await init();
     const array = greet([], [], [], 'n');
@@ -64,17 +64,18 @@
                     const rawData = value[i][j];
                     let textData = rawData.toString();
                     if ([1, 2, 3, 4, 5, 6, 15].indexOf(j) !== -1) {
-                        if (rawData < 10) {
-                            textData = textData.replace(/(.)$/, '0.$1%');
+                        let rounded = Math.round(rawData / 10).toString();
+                        if (rounded < 10) {
+                            textData = rounded.replace(/(.)$/, '0.$1%');
                         } else {
-                            textData = textData.replace(/(.)$/, '.$1%');
+                            textData = rounded.replace(/(.)$/, '.$1%');
                         }
                     }
                     if ([8, 10].indexOf(j) !== -1) {
-                        if (Math.abs(rawData) < 1000) {
-                            textData = (Math.round(rawData / 100)).toString().replace(/(.)$/, '0.$1');
+                        if (Math.abs(rawData) < 10000) {
+                            textData = (Math.round(rawData / 1000)).toString().replace(/(.)$/, '0.$1');
                         } else {
-                            textData = (Math.round(rawData / 100)).toString().replace(/(.)$/, '.$1');
+                            textData = (Math.round(rawData / 1000)).toString().replace(/(.)$/, '.$1');
                         }
                     }
                     if ([11, 12, 13, 14].indexOf(j) !== -1) {
@@ -527,7 +528,7 @@
     </tr>
     </tbody>
 </table>
-※現在までの試合結果に、今後の試合結果をランダム生成したものを加えて、1000回シミュレーションしています。<br>
+※現在までの試合結果に、今後の試合結果をランダム生成したものを加えて、10000回シミュレーションしています。<br>
 ※現在までの試合結果からイロレーティングを算出し、今後の試合結果のランダム生成に反映しています。
 <br>
 <br>
