@@ -72,7 +72,7 @@
             height: 100%;
             opacity: 0;
             z-index: -1;
-            background-color: #ccc;
+            background-color: aliceblue;
             display: table;
         }
 
@@ -388,17 +388,17 @@
         }
     });
     document.getElementById('simulate').onclick = function () {
-        document.getElementById('loader').style['opacity'] = '50%';
+        document.getElementById('loader').style['opacity'] = '70%';
         document.getElementById('loader').style['z-index'] = '100';
         setTimeout(() => {
             const array = greet(...inputOnchangeFunc(), 'f');
             drawTables(array);
             document.getElementById('loader').style['opacity'] = '0';
             document.getElementById('loader').style['z-index'] = '-1';
-        }, 0);
+        }, 1);
     }
     document.getElementById('clear').onclick = function () {
-        document.getElementById('loader').style['opacity'] = '50%';
+        document.getElementById('loader').style['opacity'] = '70%';
         document.getElementById('loader').style['z-index'] = '100';
         setTimeout(() => {
             [1, 2, 3].forEach((n) => {
@@ -411,7 +411,7 @@
             drawTables(array);
             document.getElementById('loader').style['opacity'] = '0';
             document.getElementById('loader').style['z-index'] = '-1';
-        }, 0);
+        }, 1);
     }
 </script>
 <div id="loader"><p>シミュレーションしています...</p></div>
@@ -424,7 +424,7 @@
             [シミュレーションの説明]
         </dt>
         <dd>
-            現在までの試合結果に、今後の試合結果をランダム生成して加え、10000回シミュレーションしています。
+            現在までに行われた試合結果に、今後の試合結果をランダムに生成して加え、10000回シミュレーションしています。
         </dd>
         <dd>
             また1バトル（1セット）ごとにイロレーティングを算出し、今後の試合結果のランダム生成に反映しています。
@@ -1133,7 +1133,7 @@
             </tr>
             </tbody>
         </table>
-        <p>当サイトが試合結果データを反映する前であっても、ご自身で最新の試合結果を入力し、シミュレーションを更新することができます。</p>
+        <p>試合結果が当サイトに反映される前でも、ご自身で任意の試合結果を入力し、シミュレーションを行うことができます。</p>
     </div>
     <h2 style="margin-bottom:0">レーティング</h2>
     <!--<h2>レート表示用レイアウト検討</h2>-->
