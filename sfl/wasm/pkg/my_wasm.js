@@ -181,12 +181,13 @@ function getDataViewMemory0() {
 * @param {Array<any>} inputs2
 * @param {Array<any>} inputs3
 * @param {string} division
+* @param {boolean} enable_rate
 * @returns {any}
 */
-export function greet(inputs1, inputs2, inputs3, division) {
+export function greet(inputs1, inputs2, inputs3, division, enable_rate) {
     const ptr0 = passStringToWasm0(division, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.greet(addHeapObject(inputs1), addHeapObject(inputs2), addHeapObject(inputs3), ptr0, len0);
+    const ret = wasm.greet(addHeapObject(inputs1), addHeapObject(inputs2), addHeapObject(inputs3), ptr0, len0, enable_rate);
     return takeObject(ret);
 }
 

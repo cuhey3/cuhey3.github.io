@@ -614,16 +614,18 @@
         }
     });
     document.getElementById('simulate').onclick = function () {
+        const enableRate = document.querySelector('#disable-rate:checked') === null;
         document.getElementById('loader').style['opacity'] = '70%';
         document.getElementById('loader').style['z-index'] = '100';
         setTimeout(() => {
-            const array = greet(...inputOnchangeFunc(), 'f');
+            const array = greet(...inputOnchangeFunc(), 'f', enableRate);
             drawTables(array);
             document.getElementById('loader').style['opacity'] = '0';
             document.getElementById('loader').style['z-index'] = '-1';
         }, 10);
     }
     document.getElementById('clear').onclick = function () {
+        const enableRate = document.querySelector('#disable-rate:checked') === null;
         document.getElementById('loader').style['opacity'] = '70%';
         document.getElementById('loader').style['z-index'] = '100';
         setTimeout(() => {
@@ -633,7 +635,7 @@
                     van1.checked = '';
                 }
             });
-            const array = greet(...inputOnchangeFunc(), 'f');
+            const array = greet(...inputOnchangeFunc(), 'f', enableRate);
             drawTables(array);
             document.getElementById('loader').style['opacity'] = '0';
             document.getElementById('loader').style['z-index'] = '-1';
@@ -656,7 +658,9 @@
             また1バトル（1セット）ごとにイロレーティングを算出し、今後の試合結果のランダム生成に反映しています。
         </dd>
     </dl>
-    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-hashtags="SFリーグ" data-lang="ja" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large"
+       data-hashtags="SFリーグ" data-lang="ja" data-show-count="false">Tweet</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <h2>ディビジョンS</h2>
     <div class="show expand-area">
         <table>
@@ -889,9 +893,32 @@
     <div class="show expand-area">
         <h3>ディビジョンF 第2節　8/30開催
             <button id="simulate">シミュレーション</button>
-            <button id="clear">クリア</button>
+            <button id="clear" style="margin-right: 1em;">クリア</button>
+            <label style="font-weight: normal;">
+                <input type="checkbox" id="disable-rate" style="margin-right: 0">
+                レートを確率に反映しない
+            </label>
         </h3>
-
+        <!--        <ul style="list-style: none; margin: 0">-->
+        <!--            <li>-->
+        <!--            </li>-->
+        <!--            &lt;!&ndash;        <li>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            <ul>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <li>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                    <label>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                        <input type="checkbox">&ndash;&gt;-->
+        <!--            &lt;!&ndash;                        AWAY / HOMEを区別してレートを計算する&ndash;&gt;-->
+        <!--            &lt;!&ndash;                    </label>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                </li>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <li>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                    <label>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                        <input type="checkbox">&ndash;&gt;-->
+        <!--            &lt;!&ndash;                        先鋒戦・中堅戦と大将戦・延長戦を区別してレートを計算する&ndash;&gt;-->
+        <!--            &lt;!&ndash;                    </label>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                </li>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </ul>&ndash;&gt;-->
+        <!--            &lt;!&ndash;        </li>&ndash;&gt;-->
+        <!--        </ul>-->
         <table>
             <thead>
             </thead>
@@ -1362,6 +1389,10 @@
         </table>
         <p>試合結果が当サイトに反映される前でも、ご自身で任意の試合結果を入力し、シミュレーションを行うことができます。</p>
     </div>
+    <!--    <h2>シミュレーション設定</h2>-->
+    <!--    <div class="show expand-area">-->
+
+    <!--    </div>-->
     <h2 style="margin-bottom:0">レーティング</h2>
     <!--<h2>レート表示用レイアウト検討</h2>-->
     <!--<table>-->
@@ -1565,32 +1596,6 @@
             ※レーティングは上記の区分ごとに、1バトル（1セット）ごとに変動するよう計算しています。<br>
             ※プレイヤーやキャラクター、またその相性はレーティングの計算には含まれていません。</p>
     </div>
-    <!--<h2>予想設定</h2>-->
-    <!--<ul>-->
-    <!--    <li>-->
-    <!--        <label>-->
-    <!--            <input type="checkbox">-->
-    <!--            レートを計算して確率に反映する-->
-    <!--        </label>-->
-    <!--    </li>-->
-    <!--    <li>-->
-    <!--        <ul>-->
-    <!--            <li>-->
-    <!--                <label>-->
-    <!--                    <input type="checkbox">-->
-    <!--                    AWAY / HOMEを区別してレートを計算する-->
-    <!--                </label>-->
-    <!--            </li>-->
-    <!--            <li>-->
-    <!--                <label>-->
-    <!--                    <input type="checkbox">-->
-    <!--                    先鋒戦・中堅戦と大将戦・延長戦を区別してレートを計算する-->
-    <!--                </label>-->
-    <!--            </li>-->
-    <!--        </ul>-->
-    <!--    </li>-->
-    <!--</ul>-->
-    <!--<span>※レートは全てバトル単位で計算します。（バトル得失まで予想します）</span>-->
 </div>
 </body>
 </html>
