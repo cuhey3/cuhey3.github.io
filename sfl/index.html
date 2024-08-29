@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-R4F9JM3PQ1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4F9JM3PQ1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'G-R4F9JM3PQ1');
-</script>
-<meta charset="utf-8">
-<style>
-    body {
-        padding: 0;
-        margin: 0;
-        /*font-family: "游ゴシック","メイリオ", sans-serif;*/
-        font-family: "Hiragino Kaku Gothic ProN";
-    }
-    .container {
-        padding-left: 20px;
-        margin: 0;
-    }
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4F9JM3PQ1');
+    </script>
+    <meta charset="utf-8">
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            /*font-family: "游ゴシック","メイリオ", sans-serif;*/
+            font-family: "Hiragino Kaku Gothic ProN";
+        }
+
+        .container {
+            padding-left: 20px;
+            margin: 0;
+        }
+
         table {
             text-align: center;
             margin-bottom: 10px;
@@ -45,9 +51,11 @@
             text-align: right;
             min-width: 50px;
         }
+
         input[type="radio"] {
             cursor: pointer;
         }
+
         #loader {
             padding: 0;
             position: fixed;
@@ -55,10 +63,12 @@
             top: 0;
             width: 100%;
             height: 100%;
-            opacity: 50%;
+            opacity: 0;
+            z-index: -1;
             background-color: #ccc;
             display: table;
         }
+
         #loader p {
             font-size: 3em;
             display: table-cell;
@@ -69,12 +79,14 @@
 </head>
 <body>
 <script type="module">
-    import init, {greet} from "./wasm/pkg/my_wasm.js?t=202408281700";
-
+    import init, {greet} from "./wasm/pkg/my_wasm.js?t=202408291200";
+    import {simulationData} from "./simulationData.js";
+    const array = simulationData;
     await init();
-    const array = greet([], [], [], 'n');
-    document.getElementById('loader').style['opacity'] = '0';
-    document.getElementById('loader').style['z-index'] = '-1';
+    //    const array = greet([], [], [], 'n');
+    //     console.log(JSON.stringify(array));
+    // document.getElementById('loader').style['opacity'] = '0';
+    // document.getElementById('loader').style['z-index'] = '-1';
     function drawTables(array) {
         for (let n = 0; n < 2; n++) {
             const value = array[n];
@@ -114,10 +126,12 @@
             }
         }
     }
+
     drawTables(array);
+
     function inputOnchangeFunc() {
         const inputtedGameResults = [];
-        [1,2,3].forEach((n) => {
+        [1, 2, 3].forEach((n) => {
             let pointAway = 0;
             let pointHome = 0;
             // 先鋒
@@ -302,18 +316,19 @@
         });
         return inputtedGameResults
     }
+
     let inputtedGameResults = [];
     document.querySelectorAll('input[type="radio"]').forEach((element) => {
-        element.onchange = function() {
+        element.onchange = function () {
             inputtedGameResults = inputOnchangeFunc();
         }
     });
-    document.getElementById('simulate').onclick = function() {
+    document.getElementById('simulate').onclick = function () {
         const array = greet(...inputtedGameResults, 'f');
         drawTables(array);
     }
-    document.getElementById('clear').onclick = function() {
-        [1,2,3].forEach((n) => {
+    document.getElementById('clear').onclick = function () {
+        [1, 2, 3].forEach((n) => {
             let van1 = document.querySelector(`input[name="${n}-van-1"]:checked`);
             if (van1) {
                 van1.checked = '';
@@ -326,938 +341,941 @@
 </script>
 <div id="loader"><p>シミュレーションを作成しています...</p></div>
 <div class="container">
-<h1>SFL2024勝ち抜けシミュレーション</h1>
-<span>8/27 ディビジョンS 第2節の結果を反映</span><br>
-<a href="https://sf.esports.capcom.com/sp/sfl/2024/ranking/" target="_blank">SFL公式ランキングへ</a>
-<h3>ディビジョンS</h3>
-<table>
-    <thead>
-    <tr>
-        <th>チーム</th>
-        <th>ポイント<br>現在</th>
-        <th>ポイント<br>予想</th>
-        <th>バトル<br>得失現在</th>
-        <th>バトル<br>得失予想</th>
-        <th>プレイオフ<br>進出確率</th>
-        <!--        <th>GF<br>優勝確率</th>-->
-        <th>1位<br>確率</th>
-        <th>2位<br>確率</th>
-        <th>3位<br>確率</th>
-        <th>4位<br>確率</th>
-        <th>5位<br>確率</th>
-        <th>6位<br>確率</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td id="s-0-0"></td>
-        <td id="s-0-7"></td>
-        <td id="s-0-8"></td>
-        <td id="s-0-9"></td>
-        <td id="s-0-10"></td>
-        <td id="s-0-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="s-0-1" class="percent"></td>
-        <td id="s-0-2" class="percent"></td>
-        <td id="s-0-3" class="percent"></td>
-        <td id="s-0-4" class="percent"></td>
-        <td id="s-0-5" class="percent"></td>
-        <td id="s-0-6" class="percent"></td>
-    </tr>
-    <tr>
-        <td id="s-1-0"></td>
-        <td id="s-1-7"></td>
-        <td id="s-1-8"></td>
-        <td id="s-1-9"></td>
-        <td id="s-1-10"></td>
-        <td id="s-1-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="s-1-1" class="percent"></td>
-        <td id="s-1-2" class="percent"></td>
-        <td id="s-1-3" class="percent"></td>
-        <td id="s-1-4" class="percent"></td>
-        <td id="s-1-5" class="percent"></td>
-        <td id="s-1-6" class="percent"></td>
-    </tr>
-    <tr>
-        <td id="s-2-0"></td>
-        <td id="s-2-7"></td>
-        <td id="s-2-8"></td>
-        <td id="s-2-9"></td>
-        <td id="s-2-10"></td>
-        <td id="s-2-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="s-2-1" class="percent"></td>
-        <td id="s-2-2" class="percent"></td>
-        <td id="s-2-3" class="percent"></td>
-        <td id="s-2-4" class="percent"></td>
-        <td id="s-2-5" class="percent"></td>
-        <td id="s-2-6" class="percent"></td>
-    </tr>
-    <tr>
-        <td id="s-3-0"></td>
-        <td id="s-3-7"></td>
-        <td id="s-3-8"></td>
-        <td id="s-3-9"></td>
-        <td id="s-3-10"></td>
-        <td id="s-3-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="s-3-1" class="percent"></td>
-        <td id="s-3-2" class="percent"></td>
-        <td id="s-3-3" class="percent"></td>
-        <td id="s-3-4" class="percent"></td>
-        <td id="s-3-5" class="percent"></td>
-        <td id="s-3-6" class="percent"></td>
-    </tr>
-    <tr>
-        <td id="s-4-0"></td>
-        <td id="s-4-7"></td>
-        <td id="s-4-8"></td>
-        <td id="s-4-9"></td>
-        <td id="s-4-10"></td>
-        <td id="s-4-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="s-4-1" class="percent"></td>
-        <td id="s-4-2" class="percent"></td>
-        <td id="s-4-3" class="percent"></td>
-        <td id="s-4-4" class="percent"></td>
-        <td id="s-4-5" class="percent"></td>
-        <td id="s-4-6" class="percent"></td>
-    </tr>
-    <tr>
-        <td id="s-5-0"></td>
-        <td id="s-5-7"></td>
-        <td id="s-5-8"></td>
-        <td id="s-5-9"></td>
-        <td id="s-5-10"></td>
-        <td id="s-5-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="s-5-1" class="percent"></td>
-        <td id="s-5-2" class="percent"></td>
-        <td id="s-5-3" class="percent"></td>
-        <td id="s-5-4" class="percent"></td>
-        <td id="s-5-5" class="percent"></td>
-        <td id="s-5-6" class="percent"></td>
-    </tr>
-    </tbody>
-</table>
-<h3>ディビジョンF</h3>
-<table>
-    <thead>
-    <tr>
-        <th>チーム</th>
-        <th>ポイント<br>現在</th>
-        <th>ポイント<br>予想</th>
-        <th>バトル<br>得失現在</th>
-        <th>バトル<br>得失予想</th>
-        <th>プレイオフ<br>進出確率</th>
-        <!--        <th>GF<br>優勝確率</th>-->
-        <th>1位<br>確率</th>
-        <th>2位<br>確率</th>
-        <th>3位<br>確率</th>
-        <th>4位<br>確率</th>
-        <th>5位<br>確率</th>
-        <th>6位<br>確率</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td id="f-0-0"></td>
-        <td id="f-0-7"></td>
-        <td id="f-0-8"></td>
-        <td id="f-0-9"></td>
-        <td id="f-0-10"></td>
-        <td id="f-0-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="f-0-1" class="percent"></td>
-        <td id="f-0-2" class="percent"></td>
-        <td id="f-0-3" class="percent"></td>
-        <td id="f-0-4" class="percent"></td>
-        <td id="f-0-5" class="percent"></td>
-        <td id="f-0-6" class="percent"></td>
-    </tr>
-    <tr>
-        <td id="f-1-0"></td>
-        <td id="f-1-7"></td>
-        <td id="f-1-8"></td>
-        <td id="f-1-9"></td>
-        <td id="f-1-10"></td>
-        <td id="f-1-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="f-1-1" class="percent"></td>
-        <td id="f-1-2" class="percent"></td>
-        <td id="f-1-3" class="percent"></td>
-        <td id="f-1-4" class="percent"></td>
-        <td id="f-1-5" class="percent"></td>
-        <td id="f-1-6" class="percent"></td>
-    </tr>
-    <tr>
-        <td id="f-2-0"></td>
-        <td id="f-2-7"></td>
-        <td id="f-2-8"></td>
-        <td id="f-2-9"></td>
-        <td id="f-2-10"></td>
-        <td id="f-2-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="f-2-1" class="percent"></td>
-        <td id="f-2-2" class="percent"></td>
-        <td id="f-2-3" class="percent"></td>
-        <td id="f-2-4" class="percent"></td>
-        <td id="f-2-5" class="percent"></td>
-        <td id="f-2-6" class="percent"></td>
-    </tr>
-    <tr>
-        <td id="f-3-0"></td>
-        <td id="f-3-7"></td>
-        <td id="f-3-8"></td>
-        <td id="f-3-9"></td>
-        <td id="f-3-10"></td>
-        <td id="f-3-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="f-3-1" class="percent"></td>
-        <td id="f-3-2" class="percent"></td>
-        <td id="f-3-3" class="percent"></td>
-        <td id="f-3-4" class="percent"></td>
-        <td id="f-3-5" class="percent"></td>
-        <td id="f-3-6" class="percent"></td>
-    </tr>
-    <tr>
-        <td id="f-4-0"></td>
-        <td id="f-4-7"></td>
-        <td id="f-4-8"></td>
-        <td id="f-4-9"></td>
-        <td id="f-4-10"></td>
-        <td id="f-4-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="f-4-1" class="percent"></td>
-        <td id="f-4-2" class="percent"></td>
-        <td id="f-4-3" class="percent"></td>
-        <td id="f-4-4" class="percent"></td>
-        <td id="f-4-5" class="percent"></td>
-        <td id="f-4-6" class="percent"></td>
-    </tr>
-    <tr>
-        <td id="f-5-0"></td>
-        <td id="f-5-7"></td>
-        <td id="f-5-8"></td>
-        <td id="f-5-9"></td>
-        <td id="f-5-10"></td>
-        <td id="f-5-15" class="percent"></td>
-        <!--        <td>6.5%</td>-->
-        <td id="f-5-1" class="percent"></td>
-        <td id="f-5-2" class="percent"></td>
-        <td id="f-5-3" class="percent"></td>
-        <td id="f-5-4" class="percent"></td>
-        <td id="f-5-5" class="percent"></td>
-        <td id="f-5-6" class="percent"></td>
-    </tr>
-    </tbody>
-</table>
-※現在までの試合結果に、今後の試合結果をランダム生成したものを加えて、10000回シミュレーションしています。<br>
-※現在までの試合結果からイロレーティングを算出し、今後の試合結果のランダム生成に反映しています。
-<br>
-<br>
-<h2 style="margin-bottom:0">レーティング</h2>
-<!--<h2>レート表示用レイアウト検討</h2>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th>チーム</th>-->
-<!--        <th>レート</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr>-->
-<!--        <td>DFM</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>OJA</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>DFM</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>OJA</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>DFM</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>OJA</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th>チーム</th>-->
-<!--        <th>先鋒・中堅</th>-->
-<!--        <th>大将・延長</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr>-->
-<!--        <td>DFM</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>OJA</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>DFM</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>OJA</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>DFM</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--        <td>OJA</td>-->
-<!--        <td>1500</td>-->
-<!--        <td>1500</td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
-<div style="float:left;margin-right: 10px;">
+    <h1>SFL2024勝ち抜けシミュレーション</h1>
+    <span>8/27 ディビジョンS 第2節の結果を反映</span><br>
+    <a href="https://sf.esports.capcom.com/sp/sfl/2024/ranking/" target="_blank">SFL公式ランキングへ</a>
     <h3>ディビジョンS</h3>
     <table>
         <thead>
         <tr>
             <th>チーム</th>
-            <th>先鋒・中堅<br>AWAY</th>
-            <th>先鋒・中堅<br>HOME</th>
-            <th>大将・延長<br>AWAY</th>
-            <th>大将・延長<br>HOME</th>
+            <th>ポイント<br>現在</th>
+            <th>ポイント<br>予想</th>
+            <th>バトル<br>得失現在</th>
+            <th>バトル<br>得失予想</th>
+            <th>プレイオフ<br>進出確率</th>
+            <!--        <th>GF<br>優勝確率</th>-->
+            <th>1位<br>確率</th>
+            <th>2位<br>確率</th>
+            <th>3位<br>確率</th>
+            <th>4位<br>確率</th>
+            <th>5位<br>確率</th>
+            <th>6位<br>確率</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td class="s-0-0"></td>
-            <td id="s-0-11"></td>
-            <td id="s-0-12"></td>
-            <td id="s-0-13"></td>
-            <td id="s-0-14"></td>
+            <td id="s-0-0"></td>
+            <td id="s-0-7"></td>
+            <td id="s-0-8"></td>
+            <td id="s-0-9"></td>
+            <td id="s-0-10"></td>
+            <td id="s-0-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="s-0-1" class="percent"></td>
+            <td id="s-0-2" class="percent"></td>
+            <td id="s-0-3" class="percent"></td>
+            <td id="s-0-4" class="percent"></td>
+            <td id="s-0-5" class="percent"></td>
+            <td id="s-0-6" class="percent"></td>
         </tr>
         <tr>
-            <td class="s-1-0"></td>
-            <td id="s-1-11"></td>
-            <td id="s-1-12"></td>
-            <td id="s-1-13"></td>
-            <td id="s-1-14"></td>
+            <td id="s-1-0"></td>
+            <td id="s-1-7"></td>
+            <td id="s-1-8"></td>
+            <td id="s-1-9"></td>
+            <td id="s-1-10"></td>
+            <td id="s-1-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="s-1-1" class="percent"></td>
+            <td id="s-1-2" class="percent"></td>
+            <td id="s-1-3" class="percent"></td>
+            <td id="s-1-4" class="percent"></td>
+            <td id="s-1-5" class="percent"></td>
+            <td id="s-1-6" class="percent"></td>
         </tr>
         <tr>
-            <td class="s-2-0"></td>
-            <td id="s-2-11"></td>
-            <td id="s-2-12"></td>
-            <td id="s-2-13"></td>
-            <td id="s-2-14"></td>
-
+            <td id="s-2-0"></td>
+            <td id="s-2-7"></td>
+            <td id="s-2-8"></td>
+            <td id="s-2-9"></td>
+            <td id="s-2-10"></td>
+            <td id="s-2-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="s-2-1" class="percent"></td>
+            <td id="s-2-2" class="percent"></td>
+            <td id="s-2-3" class="percent"></td>
+            <td id="s-2-4" class="percent"></td>
+            <td id="s-2-5" class="percent"></td>
+            <td id="s-2-6" class="percent"></td>
         </tr>
         <tr>
-            <td class="s-3-0"></td>
-            <td id="s-3-11"></td>
-            <td id="s-3-12"></td>
-            <td id="s-3-13"></td>
-            <td id="s-3-14"></td>
-
+            <td id="s-3-0"></td>
+            <td id="s-3-7"></td>
+            <td id="s-3-8"></td>
+            <td id="s-3-9"></td>
+            <td id="s-3-10"></td>
+            <td id="s-3-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="s-3-1" class="percent"></td>
+            <td id="s-3-2" class="percent"></td>
+            <td id="s-3-3" class="percent"></td>
+            <td id="s-3-4" class="percent"></td>
+            <td id="s-3-5" class="percent"></td>
+            <td id="s-3-6" class="percent"></td>
         </tr>
         <tr>
-            <td class="s-4-0"></td>
-            <td id="s-4-11"></td>
-            <td id="s-4-12"></td>
-            <td id="s-4-13"></td>
-            <td id="s-4-14"></td>
+            <td id="s-4-0"></td>
+            <td id="s-4-7"></td>
+            <td id="s-4-8"></td>
+            <td id="s-4-9"></td>
+            <td id="s-4-10"></td>
+            <td id="s-4-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="s-4-1" class="percent"></td>
+            <td id="s-4-2" class="percent"></td>
+            <td id="s-4-3" class="percent"></td>
+            <td id="s-4-4" class="percent"></td>
+            <td id="s-4-5" class="percent"></td>
+            <td id="s-4-6" class="percent"></td>
         </tr>
         <tr>
-            <td class="s-5-0"></td>
-            <td id="s-5-11"></td>
-            <td id="s-5-12"></td>
-            <td id="s-5-13"></td>
-            <td id="s-5-14"></td>
+            <td id="s-5-0"></td>
+            <td id="s-5-7"></td>
+            <td id="s-5-8"></td>
+            <td id="s-5-9"></td>
+            <td id="s-5-10"></td>
+            <td id="s-5-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="s-5-1" class="percent"></td>
+            <td id="s-5-2" class="percent"></td>
+            <td id="s-5-3" class="percent"></td>
+            <td id="s-5-4" class="percent"></td>
+            <td id="s-5-5" class="percent"></td>
+            <td id="s-5-6" class="percent"></td>
         </tr>
         </tbody>
     </table>
-</div>
-<div style="float:left;">
     <h3>ディビジョンF</h3>
     <table>
         <thead>
         <tr>
             <th>チーム</th>
-            <th>先鋒・中堅<br>AWAY</th>
-            <th>先鋒・中堅<br>HOME</th>
-            <th>大将・延長<br>AWAY</th>
-            <th>大将・延長<br>HOME</th>
+            <th>ポイント<br>現在</th>
+            <th>ポイント<br>予想</th>
+            <th>バトル<br>得失現在</th>
+            <th>バトル<br>得失予想</th>
+            <th>プレイオフ<br>進出確率</th>
+            <!--        <th>GF<br>優勝確率</th>-->
+            <th>1位<br>確率</th>
+            <th>2位<br>確率</th>
+            <th>3位<br>確率</th>
+            <th>4位<br>確率</th>
+            <th>5位<br>確率</th>
+            <th>6位<br>確率</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td class="f-0-0"></td>
-            <td id="f-0-11"></td>
-            <td id="f-0-12"></td>
-            <td id="f-0-13"></td>
-            <td id="f-0-14"></td>
+            <td id="f-0-0"></td>
+            <td id="f-0-7"></td>
+            <td id="f-0-8"></td>
+            <td id="f-0-9"></td>
+            <td id="f-0-10"></td>
+            <td id="f-0-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="f-0-1" class="percent"></td>
+            <td id="f-0-2" class="percent"></td>
+            <td id="f-0-3" class="percent"></td>
+            <td id="f-0-4" class="percent"></td>
+            <td id="f-0-5" class="percent"></td>
+            <td id="f-0-6" class="percent"></td>
         </tr>
         <tr>
-            <td class="f-1-0"></td>
-            <td id="f-1-11"></td>
-            <td id="f-1-12"></td>
-            <td id="f-1-13"></td>
-            <td id="f-1-14"></td>
-
+            <td id="f-1-0"></td>
+            <td id="f-1-7"></td>
+            <td id="f-1-8"></td>
+            <td id="f-1-9"></td>
+            <td id="f-1-10"></td>
+            <td id="f-1-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="f-1-1" class="percent"></td>
+            <td id="f-1-2" class="percent"></td>
+            <td id="f-1-3" class="percent"></td>
+            <td id="f-1-4" class="percent"></td>
+            <td id="f-1-5" class="percent"></td>
+            <td id="f-1-6" class="percent"></td>
         </tr>
         <tr>
-            <td class="f-2-0"></td>
-            <td id="f-2-11"></td>
-            <td id="f-2-12"></td>
-            <td id="f-2-13"></td>
-            <td id="f-2-14"></td>
-
+            <td id="f-2-0"></td>
+            <td id="f-2-7"></td>
+            <td id="f-2-8"></td>
+            <td id="f-2-9"></td>
+            <td id="f-2-10"></td>
+            <td id="f-2-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="f-2-1" class="percent"></td>
+            <td id="f-2-2" class="percent"></td>
+            <td id="f-2-3" class="percent"></td>
+            <td id="f-2-4" class="percent"></td>
+            <td id="f-2-5" class="percent"></td>
+            <td id="f-2-6" class="percent"></td>
         </tr>
         <tr>
-            <td class="f-3-0"></td>
-            <td id="f-3-11"></td>
-            <td id="f-3-12"></td>
-            <td id="f-3-13"></td>
-            <td id="f-3-14"></td>
-
+            <td id="f-3-0"></td>
+            <td id="f-3-7"></td>
+            <td id="f-3-8"></td>
+            <td id="f-3-9"></td>
+            <td id="f-3-10"></td>
+            <td id="f-3-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="f-3-1" class="percent"></td>
+            <td id="f-3-2" class="percent"></td>
+            <td id="f-3-3" class="percent"></td>
+            <td id="f-3-4" class="percent"></td>
+            <td id="f-3-5" class="percent"></td>
+            <td id="f-3-6" class="percent"></td>
         </tr>
         <tr>
-            <td class="f-4-0"></td>
-            <td id="f-4-11"></td>
-            <td id="f-4-12"></td>
-            <td id="f-4-13"></td>
-            <td id="f-4-14"></td>
+            <td id="f-4-0"></td>
+            <td id="f-4-7"></td>
+            <td id="f-4-8"></td>
+            <td id="f-4-9"></td>
+            <td id="f-4-10"></td>
+            <td id="f-4-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="f-4-1" class="percent"></td>
+            <td id="f-4-2" class="percent"></td>
+            <td id="f-4-3" class="percent"></td>
+            <td id="f-4-4" class="percent"></td>
+            <td id="f-4-5" class="percent"></td>
+            <td id="f-4-6" class="percent"></td>
         </tr>
         <tr>
-            <td class="f-5-0"></td>
-            <td id="f-5-11"></td>
-            <td id="f-5-12"></td>
-            <td id="f-5-13"></td>
-            <td id="f-5-14"></td>
+            <td id="f-5-0"></td>
+            <td id="f-5-7"></td>
+            <td id="f-5-8"></td>
+            <td id="f-5-9"></td>
+            <td id="f-5-10"></td>
+            <td id="f-5-15" class="percent"></td>
+            <!--        <td>6.5%</td>-->
+            <td id="f-5-1" class="percent"></td>
+            <td id="f-5-2" class="percent"></td>
+            <td id="f-5-3" class="percent"></td>
+            <td id="f-5-4" class="percent"></td>
+            <td id="f-5-5" class="percent"></td>
+            <td id="f-5-6" class="percent"></td>
         </tr>
         </tbody>
     </table>
-</div>
-<p style="clear: both;">
-    ※レーティングは上記の区分ごとに、1バトル（1セット）ごとに変動するよう計算しています。<br>
-    ※プレイヤーやキャラクター、またその相性はレーティングの計算には含まれていません。</p>
-<!--<h2>予想設定</h2>-->
-<!--<ul>-->
-<!--    <li>-->
-<!--        <label>-->
-<!--            <input type="checkbox">-->
-<!--            レートを計算して確率に反映する-->
-<!--        </label>-->
-<!--    </li>-->
-<!--    <li>-->
-<!--        <ul>-->
-<!--            <li>-->
-<!--                <label>-->
-<!--                    <input type="checkbox">-->
-<!--                    AWAY / HOMEを区別してレートを計算する-->
-<!--                </label>-->
-<!--            </li>-->
-<!--            <li>-->
-<!--                <label>-->
-<!--                    <input type="checkbox">-->
-<!--                    先鋒戦・中堅戦と大将戦・延長戦を区別してレートを計算する-->
-<!--                </label>-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--    </li>-->
-<!--</ul>-->
-<!--<span>※レートは全てバトル単位で計算します。（バトル得失まで予想します）</span>-->
-<br>
-<h2>最新の試合結果を入力</h2>
-<h3>ディビジョンF 第2節　8/30開催
-</h3>
-<table>
-    <thead>
-    </thead>
-    <tbody>
-    <tr>
-        <th colspan="2" style="width:120px;">第1試合</th>
-        <th colspan="3">先鋒戦</th>
-        <th colspan="3">中堅戦</th>
-        <th colspan="5">大将戦</th>
-        <th colspan="1">延長戦</th>
-        <th>ポイント</th>
-    </tr>
-    <tr>
-        <th>
-            VAR
-        </th>
-        <th>
-            AWAY
-        </th>
-        <td>
-            <label>
-                <input type="radio" name="1-van-1" value="1">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-van-2" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-van-3" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-mid-1" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-mid-2" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-mid-3" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-general-1" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-general-2" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-general-3" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-general-4" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-general-5" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-extra-1" value="1" disabled>
-            </label>
-        </td>
-        <td id="1-point-away">
-            0
-        </td>
-    </tr>
-    <tr>
-        <th>
-            RC
-        </th>
-        <th>
-            HOME
-        </th>
-        <td>
-            <label>
-                <input type="radio" name="1-van-1" value="0">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-van-2" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-van-3" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-mid-1" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-mid-2" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-mid-3" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-general-1" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-general-2" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-general-3" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-general-4" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-general-5" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="1-extra-1" value="0" disabled>
-            </label>
-        </td>
-        <td id="1-point-home">
-            0
-        </td>
-    </tr>
-    </tbody>
-</table>
-<table>
-    <thead>
-    </thead>
-    <tbody>
-    <tr>
-        <th colspan="2" style="width:120px;">第2試合</th>
-        <th colspan="3">先鋒戦</th>
-        <th colspan="3">中堅戦</th>
-        <th colspan="5">大将戦</th>
-        <th colspan="1">延長戦</th>
-        <th>ポイント</th>
-    </tr>
-    <tr>
-        <th>
-            FAV
-        </th>
-        <th>
-            AWAY
-        </th>
-        <td>
-            <label>
-                <input type="radio" name="2-van-1" value="1">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-van-2" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-van-3" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-mid-1" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-mid-2" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-mid-3" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-general-1" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-general-2" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-general-3" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-general-4" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-general-5" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-extra-1" value="1" disabled>
-            </label>
-        </td>
-        <td id="2-point-away">
-            0
-        </td>
-    </tr>
-    <tr>
-        <th>
-            IXA
-        </th>
-        <th>
-            HOME
-        </th>
-        <td>
-            <label>
-                <input type="radio" name="2-van-1" value="0">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-van-2" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-van-3" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-mid-1" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-mid-2" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-mid-3" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-general-1" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-general-2" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-general-3" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-general-4" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-general-5" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="2-extra-1" value="0" disabled>
-            </label>
-        </td>
-        <td id="2-point-home">
-            0
-        </td>
-    </tr>
-    </tbody>
-</table>
-<table>
-    <thead>
-    </thead>
-    <tbody>
-    <tr>
-        <th colspan="2" style="width:120px;">第3試合</th>
-        <th colspan="3">先鋒戦</th>
-        <th colspan="3">中堅戦</th>
-        <th colspan="5">大将戦</th>
-        <th colspan="1">延長戦</th>
-        <th>ポイント</th>
-    </tr>
-    <tr>
-        <th>
-            CR
-        </th>
-        <th>
-            AWAY
-        </th>
-        <td>
-            <label>
-                <input type="radio" name="3-van-1" value="1">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-van-2" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-van-3" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-mid-1" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-mid-2" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-mid-3" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-general-1" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-general-2" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-general-3" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-general-4" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-general-5" value="1" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-extra-1" value="1" disabled>
-            </label>
-        </td>
-        <td id="3-point-away">
-            0
-        </td>
-    </tr>
-    <tr>
-        <th>
-            CAG
-        </th>
-        <th>
-            HOME
-        </th>
-        <td>
-            <label>
-                <input type="radio" name="3-van-1" value="0">
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-van-2" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-van-3" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-mid-1" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-mid-2" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-mid-3" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-general-1" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-general-2" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-general-3" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-general-4" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-general-5" value="0" disabled>
-            </label>
-        </td>
-        <td>
-            <label>
-                <input type="radio" name="3-extra-1" value="0" disabled>
-            </label>
-        </td>
-        <td id="3-point-home">
-            0
-        </td>
-    </tr>
-    </tbody>
-</table>
-<button style="margin-right: 10px;" id="simulate">シミュレーション</button><button id="clear">クリア</button><br>
-<p>※当サイトが試合結果データを反映する前であっても、ご自身で最新の試合結果を入力し、シミュレーションを更新することができます。</p>
+    ※現在までの試合結果に、今後の試合結果をランダム生成したものを加えて、10000回シミュレーションしています。<br>
+    ※現在までの試合結果からイロレーティングを算出し、今後の試合結果のランダム生成に反映しています。
+    <br>
+    <br>
+    <h2 style="margin-bottom:0">レーティング</h2>
+    <!--<h2>レート表示用レイアウト検討</h2>-->
+    <!--<table>-->
+    <!--    <thead>-->
+    <!--    <tr>-->
+    <!--        <th>チーム</th>-->
+    <!--        <th>レート</th>-->
+    <!--    </tr>-->
+    <!--    </thead>-->
+    <!--    <tbody>-->
+    <!--    <tr>-->
+    <!--        <td>DFM</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>OJA</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>DFM</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>OJA</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>DFM</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>OJA</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    </tbody>-->
+    <!--</table>-->
+    <!--<table>-->
+    <!--    <thead>-->
+    <!--    <tr>-->
+    <!--        <th>チーム</th>-->
+    <!--        <th>先鋒・中堅</th>-->
+    <!--        <th>大将・延長</th>-->
+    <!--    </tr>-->
+    <!--    </thead>-->
+    <!--    <tbody>-->
+    <!--    <tr>-->
+    <!--        <td>DFM</td>-->
+    <!--        <td>1500</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>OJA</td>-->
+    <!--        <td>1500</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>DFM</td>-->
+    <!--        <td>1500</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>OJA</td>-->
+    <!--        <td>1500</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>DFM</td>-->
+    <!--        <td>1500</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    <tr>-->
+    <!--        <td>OJA</td>-->
+    <!--        <td>1500</td>-->
+    <!--        <td>1500</td>-->
+    <!--    </tr>-->
+    <!--    </tbody>-->
+    <!--</table>-->
+    <div style="float:left;margin-right: 10px;">
+        <h3>ディビジョンS</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>チーム</th>
+                <th>先鋒・中堅<br>AWAY</th>
+                <th>先鋒・中堅<br>HOME</th>
+                <th>大将・延長<br>AWAY</th>
+                <th>大将・延長<br>HOME</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="s-0-0"></td>
+                <td id="s-0-11"></td>
+                <td id="s-0-12"></td>
+                <td id="s-0-13"></td>
+                <td id="s-0-14"></td>
+            </tr>
+            <tr>
+                <td class="s-1-0"></td>
+                <td id="s-1-11"></td>
+                <td id="s-1-12"></td>
+                <td id="s-1-13"></td>
+                <td id="s-1-14"></td>
+            </tr>
+            <tr>
+                <td class="s-2-0"></td>
+                <td id="s-2-11"></td>
+                <td id="s-2-12"></td>
+                <td id="s-2-13"></td>
+                <td id="s-2-14"></td>
+
+            </tr>
+            <tr>
+                <td class="s-3-0"></td>
+                <td id="s-3-11"></td>
+                <td id="s-3-12"></td>
+                <td id="s-3-13"></td>
+                <td id="s-3-14"></td>
+
+            </tr>
+            <tr>
+                <td class="s-4-0"></td>
+                <td id="s-4-11"></td>
+                <td id="s-4-12"></td>
+                <td id="s-4-13"></td>
+                <td id="s-4-14"></td>
+            </tr>
+            <tr>
+                <td class="s-5-0"></td>
+                <td id="s-5-11"></td>
+                <td id="s-5-12"></td>
+                <td id="s-5-13"></td>
+                <td id="s-5-14"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="float:left;">
+        <h3>ディビジョンF</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>チーム</th>
+                <th>先鋒・中堅<br>AWAY</th>
+                <th>先鋒・中堅<br>HOME</th>
+                <th>大将・延長<br>AWAY</th>
+                <th>大将・延長<br>HOME</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="f-0-0"></td>
+                <td id="f-0-11"></td>
+                <td id="f-0-12"></td>
+                <td id="f-0-13"></td>
+                <td id="f-0-14"></td>
+            </tr>
+            <tr>
+                <td class="f-1-0"></td>
+                <td id="f-1-11"></td>
+                <td id="f-1-12"></td>
+                <td id="f-1-13"></td>
+                <td id="f-1-14"></td>
+
+            </tr>
+            <tr>
+                <td class="f-2-0"></td>
+                <td id="f-2-11"></td>
+                <td id="f-2-12"></td>
+                <td id="f-2-13"></td>
+                <td id="f-2-14"></td>
+
+            </tr>
+            <tr>
+                <td class="f-3-0"></td>
+                <td id="f-3-11"></td>
+                <td id="f-3-12"></td>
+                <td id="f-3-13"></td>
+                <td id="f-3-14"></td>
+
+            </tr>
+            <tr>
+                <td class="f-4-0"></td>
+                <td id="f-4-11"></td>
+                <td id="f-4-12"></td>
+                <td id="f-4-13"></td>
+                <td id="f-4-14"></td>
+            </tr>
+            <tr>
+                <td class="f-5-0"></td>
+                <td id="f-5-11"></td>
+                <td id="f-5-12"></td>
+                <td id="f-5-13"></td>
+                <td id="f-5-14"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p style="clear: both;">
+        ※レーティングは上記の区分ごとに、1バトル（1セット）ごとに変動するよう計算しています。<br>
+        ※プレイヤーやキャラクター、またその相性はレーティングの計算には含まれていません。</p>
+    <!--<h2>予想設定</h2>-->
+    <!--<ul>-->
+    <!--    <li>-->
+    <!--        <label>-->
+    <!--            <input type="checkbox">-->
+    <!--            レートを計算して確率に反映する-->
+    <!--        </label>-->
+    <!--    </li>-->
+    <!--    <li>-->
+    <!--        <ul>-->
+    <!--            <li>-->
+    <!--                <label>-->
+    <!--                    <input type="checkbox">-->
+    <!--                    AWAY / HOMEを区別してレートを計算する-->
+    <!--                </label>-->
+    <!--            </li>-->
+    <!--            <li>-->
+    <!--                <label>-->
+    <!--                    <input type="checkbox">-->
+    <!--                    先鋒戦・中堅戦と大将戦・延長戦を区別してレートを計算する-->
+    <!--                </label>-->
+    <!--            </li>-->
+    <!--        </ul>-->
+    <!--    </li>-->
+    <!--</ul>-->
+    <!--<span>※レートは全てバトル単位で計算します。（バトル得失まで予想します）</span>-->
+    <br>
+    <h2>最新の試合結果を入力</h2>
+    <h3>ディビジョンF 第2節　8/30開催
+    </h3>
+    <table>
+        <thead>
+        </thead>
+        <tbody>
+        <tr>
+            <th colspan="2" style="width:120px;">第1試合</th>
+            <th colspan="3">先鋒戦</th>
+            <th colspan="3">中堅戦</th>
+            <th colspan="5">大将戦</th>
+            <th colspan="1">延長戦</th>
+            <th>ポイント</th>
+        </tr>
+        <tr>
+            <th>
+                VAR
+            </th>
+            <th>
+                AWAY
+            </th>
+            <td>
+                <label>
+                    <input type="radio" name="1-van-1" value="1">
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-van-2" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-van-3" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-mid-1" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-mid-2" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-mid-3" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-general-1" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-general-2" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-general-3" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-general-4" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-general-5" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-extra-1" value="1" disabled>
+                </label>
+            </td>
+            <td id="1-point-away">
+                0
+            </td>
+        </tr>
+        <tr>
+            <th>
+                RC
+            </th>
+            <th>
+                HOME
+            </th>
+            <td>
+                <label>
+                    <input type="radio" name="1-van-1" value="0">
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-van-2" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-van-3" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-mid-1" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-mid-2" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-mid-3" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-general-1" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-general-2" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-general-3" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-general-4" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-general-5" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="1-extra-1" value="0" disabled>
+                </label>
+            </td>
+            <td id="1-point-home">
+                0
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table>
+        <thead>
+        </thead>
+        <tbody>
+        <tr>
+            <th colspan="2" style="width:120px;">第2試合</th>
+            <th colspan="3">先鋒戦</th>
+            <th colspan="3">中堅戦</th>
+            <th colspan="5">大将戦</th>
+            <th colspan="1">延長戦</th>
+            <th>ポイント</th>
+        </tr>
+        <tr>
+            <th>
+                FAV
+            </th>
+            <th>
+                AWAY
+            </th>
+            <td>
+                <label>
+                    <input type="radio" name="2-van-1" value="1">
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-van-2" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-van-3" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-mid-1" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-mid-2" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-mid-3" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-general-1" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-general-2" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-general-3" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-general-4" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-general-5" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-extra-1" value="1" disabled>
+                </label>
+            </td>
+            <td id="2-point-away">
+                0
+            </td>
+        </tr>
+        <tr>
+            <th>
+                IXA
+            </th>
+            <th>
+                HOME
+            </th>
+            <td>
+                <label>
+                    <input type="radio" name="2-van-1" value="0">
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-van-2" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-van-3" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-mid-1" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-mid-2" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-mid-3" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-general-1" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-general-2" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-general-3" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-general-4" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-general-5" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="2-extra-1" value="0" disabled>
+                </label>
+            </td>
+            <td id="2-point-home">
+                0
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table>
+        <thead>
+        </thead>
+        <tbody>
+        <tr>
+            <th colspan="2" style="width:120px;">第3試合</th>
+            <th colspan="3">先鋒戦</th>
+            <th colspan="3">中堅戦</th>
+            <th colspan="5">大将戦</th>
+            <th colspan="1">延長戦</th>
+            <th>ポイント</th>
+        </tr>
+        <tr>
+            <th>
+                CR
+            </th>
+            <th>
+                AWAY
+            </th>
+            <td>
+                <label>
+                    <input type="radio" name="3-van-1" value="1">
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-van-2" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-van-3" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-mid-1" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-mid-2" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-mid-3" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-general-1" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-general-2" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-general-3" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-general-4" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-general-5" value="1" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-extra-1" value="1" disabled>
+                </label>
+            </td>
+            <td id="3-point-away">
+                0
+            </td>
+        </tr>
+        <tr>
+            <th>
+                CAG
+            </th>
+            <th>
+                HOME
+            </th>
+            <td>
+                <label>
+                    <input type="radio" name="3-van-1" value="0">
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-van-2" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-van-3" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-mid-1" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-mid-2" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-mid-3" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-general-1" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-general-2" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-general-3" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-general-4" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-general-5" value="0" disabled>
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="radio" name="3-extra-1" value="0" disabled>
+                </label>
+            </td>
+            <td id="3-point-home">
+                0
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <button style="margin-right: 10px;" id="simulate">シミュレーション</button>
+    <button id="clear">クリア</button>
+    <br>
+    <p>
+        ※当サイトが試合結果データを反映する前であっても、ご自身で最新の試合結果を入力し、シミュレーションを更新することができます。</p>
 </div>
 </body>
 </html>
