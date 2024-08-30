@@ -147,505 +147,18 @@
         a[href] {
             color: #999;
         }
+
+        .script-init {
+            visibility: hidden;
+        }
     </style>
     <meta name="google-site-verification" content="xHHEihBbGTkulHW5I_nPIqjB8Xnj8pitqNxMe-Wlvgo"/>
 </head>
 <body>
-<script type="module">
-    import init, {greet} from "./wasm/pkg/my_wasm.js?t=202408300300";
-
-    await init();
-    const array = [
-        [
-            [
-                "G8S",
-                2771,
-                2193,
-                1725,
-                1415,
-                1104,
-                792,
-                50,
-                2224690,
-                5,
-                71319,
-                1521.2276194093238,
-                1500.048951438491,
-                1522.9139101641008,
-                1490.8328587945575
-            ],
-            [
-                "SNB",
-                624,
-                992,
-                1382,
-                1679,
-                2196,
-                3127,
-                30,
-                1886870,
-                -5,
-                -69259,
-                1494.7723805906762,
-                1478.7723805906762,
-                1515.2967878268353,
-                1477.0860898358992
-            ],
-            [
-                "SOL",
-                2745,
-                2238,
-                1768,
-                1411,
-                1067,
-                771,
-                55,
-                2235800,
-                3,
-                40350,
-                1514.2416818275192,
-                1500,
-                1510.8133607687898,
-                1500
-            ],
-            [
-                "OJA",
-                1508,
-                1652,
-                1813,
-                1846,
-                1706,
-                1475,
-                45,
-                2085525,
-                -3,
-                -39457,
-                1500,
-                1459.1251266023057,
-                1500,
-                1521.6916510619317
-            ],
-            [
-                "IBS",
-                1033,
-                1427,
-                1601,
-                1798,
-                2028,
-                2113,
-                40,
-                1997195,
-                -2,
-                -32484,
-                1518.949771305824,
-                1485.7093667339898,
-                1477.3001999926796,
-                1498.3537804366526
-            ],
-            [
-                "DFM",
-                1319,
-                1498,
-                1711,
-                1851,
-                1899,
-                1722,
-                35,
-                2022155,
-                2,
-                29531,
-                1521.9251020918703,
-                1505.2276194093238,
-                1501.0081489453887,
-                1484.7032121731647
-            ]
-        ],
-        [
-            [
-                "IXA",
-                2320,
-                2046,
-                1811,
-                1560,
-                1316,
-                947,
-                30,
-                2178890,
-                0,
-                3757,
-                1500,
-                1494.0748979081297,
-                1500,
-                1509.3396492782883
-            ],
-            [
-                "CR",
-                2702,
-                2111,
-                1780,
-                1399,
-                1232,
-                776,
-                30,
-                2210495,
-                3,
-                42986,
-                1501.4043191566975,
-                1500,
-                1522.9139101641008,
-                1500
-            ],
-            [
-                "CAG",
-                2379,
-                2034,
-                1771,
-                1551,
-                1306,
-                959,
-                30,
-                2179770,
-                1,
-                15184,
-                1501.4043191566975,
-                1500,
-                1508.6708282327074,
-                1500
-            ],
-            [
-                "RC",
-                924,
-                1326,
-                1630,
-                1865,
-                1996,
-                2259,
-                10,
-                1939105,
-                0,
-                -2486,
-                1505.9251020918703,
-                1500,
-                1490.6603507217117,
-                1500
-            ],
-            [
-                "VAR",
-                926,
-                1308,
-                1515,
-                1800,
-                2072,
-                2379,
-                10,
-                1932050,
-                -1,
-                -16661,
-                1500,
-                1498.5956808433025,
-                1500,
-                1491.3291717672926
-            ],
-            [
-                "FAV",
-                749,
-                1175,
-                1493,
-                1825,
-                2078,
-                2680,
-                10,
-                1897650,
-                -3,
-                -42780,
-                1500,
-                1498.5956808433025,
-                1500,
-                1477.0860898358992
-            ]
-        ]
-    ];
-    document.querySelectorAll('h2').forEach((element) => {
-        element.classList.add('down');
-        element.onclick = function () {
-            if (element.classList.contains('right')) {
-                element.classList.replace('right', 'down');
-                element.nextElementSibling.classList.replace('hide', 'show');
-            } else {
-                element.classList.replace('down', 'right');
-                element.nextElementSibling.classList.replace('show', 'hide');
-            }
-        }
-    });
-
-    function drawTables(array) {
-        for (let n = 0; n < 2; n++) {
-            const value = array[n];
-            for (let i = 0; i < 6; i++) {
-                value[i].push(value[i][1] + value[i][2] + value[i][3]);
-            }
-            value.sort((a, b) => b[15] - a[15]);
-            for (let i = 0; i < 6; i++) {
-                for (let j = 0; j < 16; j++) {
-                    const rawData = value[i][j];
-                    let textData = rawData.toString();
-                    if ([1, 2, 3, 4, 5, 6, 15].indexOf(j) !== -1) {
-                        let rounded = Math.round(rawData / 10).toString();
-                        if (rounded < 10) {
-                            textData = rounded.replace(/(.)$/, '0.$1%');
-                        } else {
-                            textData = rounded.replace(/(.)$/, '.$1%');
-                        }
-                    }
-                    if ([8, 10].indexOf(j) !== -1) {
-                        if (Math.abs(rawData) < 10000) {
-                            textData = (Math.round(rawData / 1000)).toString().replace(/(.)$/, '0.$1');
-                        } else {
-                            textData = (Math.round(rawData / 1000)).toString().replace(/(.)$/, '.$1');
-                        }
-                    }
-                    if ([11, 12, 13, 14].indexOf(j) !== -1) {
-                        textData = Math.round(rawData * 10).toString().replace(/(.)$/, '.$1');
-                    }
-                    document.getElementById(`${n === 0 ? 's' : 'f'}-${i}-${j}`).innerText = textData;
-                    if (j === 0) {
-                        document.querySelectorAll(`.${n === 0 ? 's' : 'f'}-${i}-${j}`).forEach((element) => {
-                            element.innerText = textData;
-                        });
-                    }
-                }
-            }
-        }
-    }
-
-    drawTables(array);
-
-    function inputOnchangeFunc() {
-        const inputtedGameResults = [];
-        [1, 2, 3].forEach((n) => {
-            let pointAway = 0;
-            let pointHome = 0;
-            // 先鋒
-            const van1 = document.querySelector(`input[name="${n}-van-1"]:checked`);
-            document.querySelectorAll(`input[name="${n}-van-2"]`).forEach((element) => {
-                if (!van1) {
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const van2 = document.querySelector(`input[name="${n}-van-2"]:checked`);
-            document.querySelectorAll(`input[name="${n}-van-3"]`).forEach((element) => {
-                if (!van1 || !van2) {
-                    element.disabled = 'disabled';
-                } else if (van1.value === van2.value) {
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const van3 = document.querySelector(`input[name="${n}-van-3"]:checked`);
-            if (van1 && van2) {
-                if (van1.value === van2.value) {
-                    pointAway += van1.value === '1' ? 10 : 0;
-                    pointHome += van1.value === '0' ? 10 : 0;
-                } else {
-                    if (van3) {
-                        pointAway += van3.value === '1' ? 10 : 0;
-                        pointHome += van3.value === '0' ? 10 : 0;
-                    }
-                }
-            }
-
-            // 中堅
-            document.querySelectorAll(`input[name="${n}-mid-1"]`).forEach((element) => {
-                // TODO 落ち着いて直す
-                if (pointAway + pointHome < 10) {
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const mid1 = document.querySelector(`input[name="${n}-mid-1"]:checked`);
-            document.querySelectorAll(`input[name="${n}-mid-2"]`).forEach((element) => {
-                if (!mid1) {
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const mid2 = document.querySelector(`input[name="${n}-mid-2"]:checked`);
-            document.querySelectorAll(`input[name="${n}-mid-3"]`).forEach((element) => {
-                if (!mid1 || !mid2) {
-                    element.disabled = 'disabled';
-                } else if (mid1.value === mid2.value) {
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const mid3 = document.querySelector(`input[name="${n}-mid-3"]:checked`);
-            if (mid1 && mid2) {
-                if (mid1.value === mid2.value) {
-                    pointAway += mid1.value === '1' ? 10 : 0;
-                    pointHome += mid1.value === '0' ? 10 : 0;
-                } else {
-                    if (mid3) {
-                        pointAway += mid3.value === '1' ? 10 : 0;
-                        pointHome += mid3.value === '0' ? 10 : 0;
-                    }
-                }
-            }
-            // 大将
-            document.querySelectorAll(`input[name="${n}-general-1"]`).forEach((element) => {
-                // TODO 落ち着いて直す
-                if (pointAway + pointHome < 20) {
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const general1 = document.querySelector(`input[name="${n}-general-1"]:checked`);
-            document.querySelectorAll(`input[name="${n}-general-2"]`).forEach((element) => {
-                if (!general1) {
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const general2 = document.querySelector(`input[name="${n}-general-2"]:checked`);
-            document.querySelectorAll(`input[name="${n}-general-3"]`).forEach((element) => {
-                if (!general2) {
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const general3 = document.querySelector(`input[name="${n}-general-3"]:checked`);
-            document.querySelectorAll(`input[name="${n}-general-4"]`).forEach((element) => {
-                if (!general1 || !general2 || !general3) {
-                    element.disabled = 'disabled';
-                } else if (general1.value === general2.value && general1.value === general3.value) {
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const general4 = document.querySelector(`input[name="${n}-general-4"]:checked`);
-            document.querySelectorAll(`input[name="${n}-general-5"]`).forEach((element) => {
-                if (!general1 || !general2 || !general3 || !general4) {
-                    element.disabled = 'disabled';
-                } else if ([general1.value, general2.value, general3.value, general4.value].filter((v) => v === '1').length !== 2) {
-                    // 4つのvalueを1でフィルタして長さが2ならフルセット
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const general5 = document.querySelector(`input[name="${n}-general-5"]:checked`);
-            if (general5) {
-                pointAway += general5.value === '1' ? 20 : 0;
-                pointHome += general5.value === '0' ? 20 : 0;
-            } else if (general4 && [general1.value, general2.value, general3.value].filter((v) => v === general4.value).length === 2) {
-                pointAway += general4.value === '1' ? 20 : 0;
-                pointHome += general4.value === '0' ? 20 : 0;
-            } else if (general3 && (general1.value === general2.value && general1.value === general3.value)) {
-                pointAway += general3.value === '1' ? 20 : 0;
-                pointHome += general3.value === '0' ? 20 : 0;
-            }
-
-            // 延長戦
-            document.querySelectorAll(`input[name="${n}-extra-1"]`).forEach((element) => {
-                if (pointAway !== 20 || pointHome !== 20) {
-                    element.disabled = 'disabled';
-                    element.checked = false;
-                } else {
-                    element.disabled = '';
-                }
-            });
-            const extra1 = document.querySelector(`input[name="${n}-extra-1"]:checked`);
-            if (extra1) {
-                pointAway += extra1.value === '1' ? 5 : 0;
-                pointHome += extra1.value === '0' ? 5 : 0;
-            }
-            document.getElementById(`${n}-point-away`).innerText = pointAway.toString();
-            document.getElementById(`${n}-point-home`).innerText = pointHome.toString();
-            const resultsObj = [van1, van2, [van3, mid1], mid1, mid2, [mid3, general1], general1, general2, general3, [general4, extra1], [general5, extra1], extra1].reduce((obj, element) => {
-                if (!obj.flag) {
-                    return obj;
-                }
-                if (Array.isArray(element)) {
-                    if (element[0]) {
-                        obj.results.push(element[0].value === '1');
-                        return obj;
-                    } else if (element[1]) {
-                        obj.results.push(false);
-                        return obj;
-                    } else {
-                        obj.flag = false;
-                        return obj;
-                    }
-                } else if (!element) {
-                    obj.flag = false;
-                    return obj;
-                } else {
-                    obj.results.push(element.value === '1');
-                    return obj;
-                }
-            }, {results: [], flag: true});
-            inputtedGameResults.push(resultsObj.results);
-        });
-        return inputtedGameResults
-    }
-
-    document.querySelectorAll('input[type="radio"]').forEach((element) => {
-        element.onchange = function () {
-            inputOnchangeFunc();
-        }
-    });
-    document.getElementById('simulate').onclick = function () {
-        const enableRate = document.querySelector('#disable-rate:checked') === null;
-        document.getElementById('loader').style['opacity'] = '70%';
-        document.getElementById('loader').style['z-index'] = '100';
-        setTimeout(() => {
-            const array = greet(...inputOnchangeFunc(), 'f', enableRate);
-            drawTables(array);
-            document.getElementById('loader').style['opacity'] = '0';
-            document.getElementById('loader').style['z-index'] = '-1';
-        }, 10);
-    }
-    document.getElementById('clear').onclick = function () {
-        const enableRate = document.querySelector('#disable-rate:checked') === null;
-        document.getElementById('loader').style['opacity'] = '70%';
-        document.getElementById('loader').style['z-index'] = '100';
-        setTimeout(() => {
-            [1, 2, 3].forEach((n) => {
-                let van1 = document.querySelector(`input[name="${n}-van-1"]:checked`);
-                if (van1) {
-                    van1.checked = '';
-                }
-            });
-            const array = greet(...inputOnchangeFunc(), 'f', enableRate);
-            drawTables(array);
-            document.getElementById('loader').style['opacity'] = '0';
-            document.getElementById('loader').style['z-index'] = '-1';
-        }, 10);
-    }
-</script>
 <div id="loader"><p>シミュレーションしています...</p></div>
 <div class="container">
     <h1>SFL2024勝ち抜けシミュレーション</h1>
-    <span>8/27 ディビジョンS 第2節の結果を反映</span><br>
+    <span id="before-match-info" class="script-init">0/00 ディビジョンN 第0節の結果を反映</span><br>
     <a href="https://sf.esports.capcom.com/sp/sfl/2024/ranking/" target="_blank">SFL公式ランキングへ</a>
     <dl>
         <dt>
@@ -658,9 +171,11 @@
             また1バトル（1セット）ごとにイロレーティングを算出し、今後の試合結果のランダム生成に反映しています。
         </dd>
     </dl>
-    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large"
-       data-hashtags="SFリーグ" data-lang="ja" data-show-count="false">Tweet</a>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <div style="height: 2em;">
+        <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large"
+           data-hashtags="SFリーグ" data-lang="ja" data-show-count="false">Tweet</a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
     <h2>ディビジョンS</h2>
     <div class="show expand-area">
         <table>
@@ -891,7 +406,7 @@
     </div>
     <h2>最新の試合結果を入力</h2>
     <div class="show expand-area">
-        <h3>ディビジョンF 第2節　8/30開催
+        <h3><span id="current-match-info" class="script-init" style="display: inline-block; width: 17em;">ディビジョンN 第0節　0/00開催</span>
             <button id="simulate">シミュレーション</button>
             <button id="clear" style="margin-right: 1em;">クリア</button>
             <label style="font-weight: normal;">
@@ -932,8 +447,8 @@
                 <td>ポイント</td>
             </tr>
             <tr>
-                <th>
-                    VAR
+                <th id="current-match-1-away-team" class="script-init">
+                    AAA
                 </th>
                 <th>
                     AWAY
@@ -1003,8 +518,8 @@
                 </td>
             </tr>
             <tr>
-                <th>
-                    RC
+                <th id="current-match-1-home-team" class="script-init">
+                    BBB
                 </th>
                 <th>
                     HOME
@@ -1088,8 +603,8 @@
                 <td>ポイント</td>
             </tr>
             <tr>
-                <th>
-                    FAV
+                <th id="current-match-2-away-team" class="script-init">
+                    CCC
                 </th>
                 <th>
                     AWAY
@@ -1159,8 +674,8 @@
                 </td>
             </tr>
             <tr>
-                <th>
-                    IXA
+                <th id="current-match-2-home-team" class="script-init">
+                    DDD
                 </th>
                 <th>
                     HOME
@@ -1244,8 +759,8 @@
                 <td>ポイント</td>
             </tr>
             <tr>
-                <th>
-                    CR
+                <th id="current-match-3-away-team" class="script-init">
+                    EEE
                 </th>
                 <th>
                     AWAY
@@ -1315,8 +830,8 @@
                 </td>
             </tr>
             <tr>
-                <th>
-                    CAG
+                <th id="current-match-3-home-team" class="script-init">
+                    FFF
                 </th>
                 <th>
                     HOME
@@ -1597,5 +1112,357 @@
             ※プレイヤーやキャラクター、またその相性はレーティングの計算には含まれていません。</p>
     </div>
 </div>
+<script type="module">
+    import init, {greet, get_division_matches} from "./wasm/pkg/sfl_lib.js?t=202408301600";
+
+    await init();
+    // マッチ取得ロジック
+    // const matches = get_division_matches();
+    // matches.sort((a, b) => a[0] === b[0] ? (a[2] > b[2] ? 1 : -1) : (a[0] > b[0] ? 1 : -1));
+    // console.log(JSON.stringify(matches));
+    // 取得されたマッチ
+    const matches = [["08/16", 1, 1, "S", "DFM", "OJA", false], ["08/16", 1, 2, "S", "G8S", "SNB", false], ["08/16", 1, 3, "S", "SOL", "IBS", false], ["08/20", 1, 1, "F", "RC", "IXA", false], ["08/20", 1, 2, "F", "CAG", "VAR", false], ["08/20", 1, 3, "F", "CR", "FAV", false], ["08/27", 2, 1, "S", "SNB", "DFM", false], ["08/27", 2, 2, "S", "IBS", "OJA", false], ["08/27", 2, 3, "S", "SOL", "G8S", false], ["08/30", 2, 1, "F", "VAR", "RC", false], ["08/30", 2, 2, "F", "FAV", "IXA", false], ["08/30", 2, 3, "F", "CR", "CAG", false], ["09/03", 3, 1, "S", "OJA", "SOL", false], ["09/03", 3, 2, "S", "G8S", "DFM", false], ["09/03", 3, 3, "S", "SNB", "IBS", false], ["09/06", 3, 1, "F", "IXA", "CR", false], ["09/06", 3, 2, "F", "CAG", "RC", false], ["09/06", 3, 3, "F", "VAR", "FAV", false], ["09/10", 4, 1, "S", "G8S", "OJA", false], ["09/10", 4, 2, "S", "SNB", "SOL", false], ["09/10", 4, 3, "S", "IBS", "DFM", false], ["09/18", 4, 1, "F", "CAG", "IXA", false], ["09/18", 4, 2, "F", "VAR", "CR", false], ["09/18", 4, 3, "F", "FAV", "RC", false], ["09/20", 5, 1, "S", "IBS", "G8S", false], ["09/20", 5, 2, "S", "DFM", "SOL", false], ["09/20", 5, 3, "S", "OJA", "SNB", false], ["10/01", 5, 1, "F", "FAV", "CAG", false], ["10/01", 5, 2, "F", "RC", "CR", false], ["10/01", 5, 3, "F", "IXA", "VAR", false], ["10/04", 6, 1, "S", "IBS", "SOL", false], ["10/04", 6, 2, "S", "SNB", "G8S", false], ["10/04", 6, 3, "S", "OJA", "DFM", false], ["10/08", 6, 1, "F", "FAV", "CR", false], ["10/08", 6, 2, "F", "VAR", "CAG", false], ["10/08", 6, 3, "F", "IXA", "RC", false], ["10/22", 7, 1, "S", "G8S", "SOL", false], ["10/22", 7, 2, "S", "DFM", "SNB", false], ["10/22", 7, 3, "S", "OJA", "IBS", false], ["10/25", 7, 1, "F", "CAG", "CR", false], ["10/25", 7, 2, "F", "RC", "VAR", false], ["10/25", 7, 3, "F", "IXA", "FAV", false], ["10/29", 8, 1, "S", "IBS", "SNB", false], ["10/29", 8, 2, "S", "SOL", "OJA", false], ["10/29", 8, 3, "S", "DFM", "G8S", false], ["11/01", 8, 1, "F", "FAV", "VAR", false], ["11/01", 8, 2, "F", "CR", "IXA", false], ["11/01", 8, 3, "F", "RC", "CAG", false], ["11/05", 9, 1, "S", "OJA", "G8S", false], ["11/05", 9, 2, "S", "DFM", "IBS", false], ["11/05", 9, 3, "S", "SOL", "SNB", false], ["11/15", 9, 1, "F", "IXA", "CAG", false], ["11/15", 9, 2, "F", "RC", "FAV", false], ["11/15", 9, 3, "F", "CR", "VAR", false], ["11/19", 10, 1, "S", "SNB", "OJA", false], ["11/19", 10, 2, "S", "SOL", "DFM", false], ["11/19", 10, 3, "S", "G8S", "IBS", false], ["11/22", 10, 1, "F", "VAR", "IXA", false], ["11/22", 10, 2, "F", "CR", "RC", false], ["11/22", 10, 3, "F", "CAG", "FAV", false]];
+
+
+    // サイト更新時修正1/3
+    // 最新結果入力後にシミュレートを更新し、コンソールからコピーして貼り付け
+    const array = [[["SOL", 2745, 2238, 1768, 1411, 1067, 771, 55, 2235800, 3, 40350, 1514.2416818275192, 1500, 1510.8133607687898, 1500, 6751], ["G8S", 2771, 2193, 1725, 1415, 1104, 792, 50, 2224690, 5, 71319, 1521.2276194093238, 1500.048951438491, 1522.9139101641008, 1490.8328587945575, 6689], ["OJA", 1508, 1652, 1813, 1846, 1706, 1475, 45, 2085525, -3, -39457, 1500, 1459.1251266023057, 1500, 1521.6916510619317, 4973], ["DFM", 1319, 1498, 1711, 1851, 1899, 1722, 35, 2022155, 2, 29531, 1521.9251020918703, 1505.2276194093238, 1501.0081489453887, 1484.7032121731647, 4528], ["IBS", 1033, 1427, 1601, 1798, 2028, 2113, 40, 1997195, -2, -32484, 1518.949771305824, 1485.7093667339898, 1477.3001999926796, 1498.3537804366526, 4061], ["SNB", 624, 992, 1382, 1679, 2196, 3127, 30, 1886870, -5, -69259, 1494.7723805906762, 1478.7723805906762, 1515.2967878268353, 1477.0860898358992, 2998]], [["CR", 2702, 2111, 1780, 1399, 1232, 776, 30, 2210495, 3, 42986, 1501.4043191566975, 1500, 1522.9139101641008, 1500, 6593], ["CAG", 2379, 2034, 1771, 1551, 1306, 959, 30, 2179770, 1, 15184, 1501.4043191566975, 1500, 1508.6708282327074, 1500, 6184], ["IXA", 2320, 2046, 1811, 1560, 1316, 947, 30, 2178890, 0, 3757, 1500, 1494.0748979081297, 1500, 1509.3396492782883, 6177], ["RC", 924, 1326, 1630, 1865, 1996, 2259, 10, 1939105, 0, -2486, 1505.9251020918703, 1500, 1490.6603507217117, 1500, 3880], ["VAR", 926, 1308, 1515, 1800, 2072, 2379, 10, 1932050, -1, -16661, 1500, 1498.5956808433025, 1500, 1491.3291717672926, 3749], ["FAV", 749, 1175, 1493, 1825, 2078, 2680, 10, 1897650, -3, -42780, 1500, 1498.5956808433025, 1500, 1477.0860898358992, 3417]]];
+
+    // サイト更新時修正2/3(対象のディビジョンに新節の分だけを貼り付けて追加)
+    // 入力がない状態でシミュレートをした時に、シミュレート結果が変わらないことを確認する
+    // 合わなければ1/3からやり直す
+    const getDivisionSResults = () => [
+        // 1節
+        [true, true, false, false, true, true, false, true, false, true, false, true,],
+        [true, true, false, true, false, true, true, true, true, false],
+        [true, false, true, true, false, true, false, false, true, true, false, true,],
+        // 2節
+        [false, false, false, false, true, true, true, false, true, true, false, false,],
+        [true, true, false, true, false, true, false, true, false, false, false, false,],
+        [false, true, false, false, true, true, false, false, true, true, true, false,]
+    ];
+    const getDivisionFResults = () => [
+        // 1節
+        [true, true, false, false, true, false, true, true, false, false, false, false,],
+        [false, false, false, true, true, false, false, true, false, true, true, false,],
+        [false, false, false, true, true, false, true, true, true, false, false, false,],
+        // 2節
+    ];
+
+    // サイト更新時修正3/3
+    const currentMatchIndex = 3;
+
+    const beforeMatch1 = matches[(currentMatchIndex - 1) * 3];
+    let beforeMatchInfo = document.getElementById('before-match-info');
+    beforeMatchInfo.innerHTML
+        = `${beforeMatch1[0].replace(/^0/, '').replace(/\/0/, '')} ディビジョン${beforeMatch1[3]} 第${beforeMatch1[1]}節の結果を反映`;
+
+    const currentMatch1 = matches[currentMatchIndex * 3];
+    const currentMatch2 = matches[currentMatchIndex * 3 + 1];
+    const currentMatch3 = matches[currentMatchIndex * 3 + 2];
+
+    let currentMatchInfo = document.getElementById('current-match-info');
+    currentMatchInfo.innerHTML
+        = `ディビジョン${currentMatch1[3]} 第${currentMatch1[1]}節　${currentMatch1[0].replace(/^0/, '').replace(/\/0/, '/')}開催`;
+
+    [currentMatch1, currentMatch2, currentMatch3].forEach((currentMatch, index) => {
+        document.getElementById(`current-match-${index + 1}-away-team`).innerText = currentMatch[4];
+        document.getElementById(`current-match-${index + 1}-home-team`).innerText = currentMatch[5];
+    });
+
+    document.querySelectorAll('.script-init').forEach((element) => element.style['visibility'] = 'visible');
+
+    document.querySelectorAll('h2').forEach((element) => {
+        element.classList.add('down');
+        element.onclick = function () {
+            if (element.classList.contains('right')) {
+                element.classList.replace('right', 'down');
+                element.nextElementSibling.classList.replace('hide', 'show');
+            } else {
+                element.classList.replace('down', 'right');
+                element.nextElementSibling.classList.replace('show', 'hide');
+            }
+        }
+    });
+
+    function drawTables(array) {
+        for (let n = 0; n < 2; n++) {
+            const value = array[n];
+            for (let i = 0; i < 6; i++) {
+                value[i].push(value[i][1] + value[i][2] + value[i][3]);
+            }
+            value.sort((a, b) => b[15] - a[15]);
+            for (let i = 0; i < 6; i++) {
+                for (let j = 0; j < 16; j++) {
+                    const rawData = value[i][j];
+                    let textData = rawData.toString();
+                    if ([1, 2, 3, 4, 5, 6, 15].indexOf(j) !== -1) {
+                        let rounded = Math.round(rawData / 10).toString();
+                        if (rounded < 10) {
+                            textData = rounded.replace(/(.)$/, '0.$1%');
+                        } else {
+                            textData = rounded.replace(/(.)$/, '.$1%');
+                        }
+                    }
+                    if ([8, 10].indexOf(j) !== -1) {
+                        if (Math.abs(rawData) < 10000) {
+                            textData = (Math.round(rawData / 1000)).toString().replace(/(.)$/, '0.$1');
+                        } else {
+                            textData = (Math.round(rawData / 1000)).toString().replace(/(.)$/, '.$1');
+                        }
+                    }
+                    if ([11, 12, 13, 14].indexOf(j) !== -1) {
+                        textData = Math.round(rawData * 10).toString().replace(/(.)$/, '.$1');
+                    }
+                    document.getElementById(`${n === 0 ? 's' : 'f'}-${i}-${j}`).innerText = textData;
+                    if (j === 0) {
+                        document.querySelectorAll(`.${n === 0 ? 's' : 'f'}-${i}-${j}`).forEach((element) => {
+                            element.innerText = textData;
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    drawTables(array);
+
+    function inputOnchangeFunc() {
+        const inputtedGameResults = [];
+        [1, 2, 3].forEach((n) => {
+            let pointAway = 0;
+            let pointHome = 0;
+            // 先鋒
+            const van1 = document.querySelector(`input[name="${n}-van-1"]:checked`);
+            document.querySelectorAll(`input[name="${n}-van-2"]`).forEach((element) => {
+                if (!van1) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const van2 = document.querySelector(`input[name="${n}-van-2"]:checked`);
+            document.querySelectorAll(`input[name="${n}-van-3"]`).forEach((element) => {
+                if (!van1 || !van2) {
+                    element.disabled = 'disabled';
+                } else if (van1.value === van2.value) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const van3 = document.querySelector(`input[name="${n}-van-3"]:checked`);
+            if (van1 && van2) {
+                if (van1.value === van2.value) {
+                    pointAway += van1.value === '1' ? 10 : 0;
+                    pointHome += van1.value === '0' ? 10 : 0;
+                } else {
+                    if (van3) {
+                        pointAway += van3.value === '1' ? 10 : 0;
+                        pointHome += van3.value === '0' ? 10 : 0;
+                    }
+                }
+            }
+
+            // 中堅
+            document.querySelectorAll(`input[name="${n}-mid-1"]`).forEach((element) => {
+                // TODO 落ち着いて直す
+                if (pointAway + pointHome < 10) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const mid1 = document.querySelector(`input[name="${n}-mid-1"]:checked`);
+            document.querySelectorAll(`input[name="${n}-mid-2"]`).forEach((element) => {
+                if (!mid1) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const mid2 = document.querySelector(`input[name="${n}-mid-2"]:checked`);
+            document.querySelectorAll(`input[name="${n}-mid-3"]`).forEach((element) => {
+                if (!mid1 || !mid2) {
+                    element.disabled = 'disabled';
+                } else if (mid1.value === mid2.value) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const mid3 = document.querySelector(`input[name="${n}-mid-3"]:checked`);
+            if (mid1 && mid2) {
+                if (mid1.value === mid2.value) {
+                    pointAway += mid1.value === '1' ? 10 : 0;
+                    pointHome += mid1.value === '0' ? 10 : 0;
+                } else {
+                    if (mid3) {
+                        pointAway += mid3.value === '1' ? 10 : 0;
+                        pointHome += mid3.value === '0' ? 10 : 0;
+                    }
+                }
+            }
+            // 大将
+            document.querySelectorAll(`input[name="${n}-general-1"]`).forEach((element) => {
+                // TODO 落ち着いて直す
+                if (pointAway + pointHome < 20) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const general1 = document.querySelector(`input[name="${n}-general-1"]:checked`);
+            document.querySelectorAll(`input[name="${n}-general-2"]`).forEach((element) => {
+                if (!general1) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const general2 = document.querySelector(`input[name="${n}-general-2"]:checked`);
+            document.querySelectorAll(`input[name="${n}-general-3"]`).forEach((element) => {
+                if (!general2) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const general3 = document.querySelector(`input[name="${n}-general-3"]:checked`);
+            document.querySelectorAll(`input[name="${n}-general-4"]`).forEach((element) => {
+                if (!general1 || !general2 || !general3) {
+                    element.disabled = 'disabled';
+                } else if (general1.value === general2.value && general1.value === general3.value) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const general4 = document.querySelector(`input[name="${n}-general-4"]:checked`);
+            document.querySelectorAll(`input[name="${n}-general-5"]`).forEach((element) => {
+                if (!general1 || !general2 || !general3 || !general4) {
+                    element.disabled = 'disabled';
+                } else if ([general1.value, general2.value, general3.value, general4.value].filter((v) => v === '1').length !== 2) {
+                    // 4つのvalueを1でフィルタして長さが2ならフルセット
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const general5 = document.querySelector(`input[name="${n}-general-5"]:checked`);
+            if (general5) {
+                pointAway += general5.value === '1' ? 20 : 0;
+                pointHome += general5.value === '0' ? 20 : 0;
+            } else if (general4 && [general1.value, general2.value, general3.value].filter((v) => v === general4.value).length === 2) {
+                pointAway += general4.value === '1' ? 20 : 0;
+                pointHome += general4.value === '0' ? 20 : 0;
+            } else if (general3 && (general1.value === general2.value && general1.value === general3.value)) {
+                pointAway += general3.value === '1' ? 20 : 0;
+                pointHome += general3.value === '0' ? 20 : 0;
+            }
+
+            // 延長戦
+            document.querySelectorAll(`input[name="${n}-extra-1"]`).forEach((element) => {
+                if (pointAway !== 20 || pointHome !== 20) {
+                    element.disabled = 'disabled';
+                    element.checked = false;
+                } else {
+                    element.disabled = '';
+                }
+            });
+            const extra1 = document.querySelector(`input[name="${n}-extra-1"]:checked`);
+            if (extra1) {
+                pointAway += extra1.value === '1' ? 5 : 0;
+                pointHome += extra1.value === '0' ? 5 : 0;
+            }
+            document.getElementById(`${n}-point-away`).innerText = pointAway.toString();
+            document.getElementById(`${n}-point-home`).innerText = pointHome.toString();
+            const resultsObj = [van1, van2, [van3, mid1], mid1, mid2, [mid3, general1], general1, general2, general3, [general4, extra1], [general5, extra1], extra1].reduce((obj, element) => {
+                if (!obj.flag) {
+                    return obj;
+                }
+                if (Array.isArray(element)) {
+                    if (element[0]) {
+                        obj.results.push(element[0].value === '1');
+                        return obj;
+                    } else if (element[1]) {
+                        obj.results.push(false);
+                        return obj;
+                    } else {
+                        obj.flag = false;
+                        return obj;
+                    }
+                } else if (!element) {
+                    obj.flag = false;
+                    return obj;
+                } else {
+                    obj.results.push(element.value === '1');
+                    return obj;
+                }
+            }, {results: [], flag: true});
+            inputtedGameResults.push(resultsObj.results);
+        });
+        return inputtedGameResults
+    }
+
+    document.querySelectorAll('input[type="radio"]').forEach((element) => {
+        element.onchange = function () {
+            inputOnchangeFunc();
+        }
+    });
+    document.getElementById('simulate').onclick = function () {
+        const enableRate = document.querySelector('#disable-rate:checked') === null;
+        document.getElementById('loader').style['opacity'] = '70%';
+        document.getElementById('loader').style['z-index'] = '100';
+        setTimeout(() => {
+            const divisionSResults = getDivisionSResults();
+            const divisionFResults = getDivisionFResults();
+            if (currentMatch1[3] === 'S') {
+                divisionSResults.push(...inputOnchangeFunc());
+            } else {
+                divisionFResults.push(...inputOnchangeFunc());
+            }
+            const array = greet(divisionSResults, divisionFResults, enableRate);
+            drawTables(array);
+            document.getElementById('loader').style['opacity'] = '0';
+            document.getElementById('loader').style['z-index'] = '-1';
+            console.log(JSON.stringify(array));
+        }, 10);
+    }
+    document.getElementById('clear').onclick = function () {
+        const enableRate = document.querySelector('#disable-rate:checked') === null;
+        document.getElementById('loader').style['opacity'] = '70%';
+        document.getElementById('loader').style['z-index'] = '100';
+        setTimeout(() => {
+            [1, 2, 3].forEach((n) => {
+                let van1 = document.querySelector(`input[name="${n}-van-1"]:checked`);
+                if (van1) {
+                    van1.checked = '';
+                }
+            });
+            const divisionSResults = getDivisionSResults();
+            const divisionFResults = getDivisionFResults();
+            if (currentMatch1[3] === 'S') {
+                divisionSResults.push(...inputOnchangeFunc());
+            } else {
+                divisionFResults.push(...inputOnchangeFunc());
+            }
+            const array = greet(divisionSResults, divisionFResults, enableRate);
+            drawTables(array);
+            document.getElementById('loader').style['opacity'] = '0';
+            document.getElementById('loader').style['z-index'] = '-1';
+        }, 10);
+    }
+</script>
 </body>
 </html>
