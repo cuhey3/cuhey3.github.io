@@ -55,13 +55,12 @@ export function get_division_matches() {
 }
 
 /**
-* @param {Array<any>} division_s_raw_results
-* @param {Array<any>} division_f_raw_results
+* @param {Array<any>} division_raw_results
 * @param {boolean} enable_rate
 * @returns {any}
 */
-export function greet(division_s_raw_results, division_f_raw_results, enable_rate) {
-    const ret = wasm.greet(addHeapObject(division_s_raw_results), addHeapObject(division_f_raw_results), enable_rate);
+export function greet(division_raw_results, enable_rate) {
+    const ret = wasm.greet(addHeapObject(division_raw_results), enable_rate);
     return takeObject(ret);
 }
 
@@ -115,12 +114,12 @@ function __wbg_get_imports() {
         const ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
     };
+    imports.wbg.__wbg_log_660e26af40a70b5d = function(arg0, arg1) {
+        console.log(getStringFromWasm0(arg0, arg1));
+    };
     imports.wbg.__wbindgen_object_clone_ref = function(arg0) {
         const ret = getObject(arg0);
         return addHeapObject(ret);
-    };
-    imports.wbg.__wbg_log_660e26af40a70b5d = function(arg0, arg1) {
-        console.log(getStringFromWasm0(arg0, arg1));
     };
     imports.wbg.__wbg_length_ae22078168b726f5 = function(arg0) {
         const ret = getObject(arg0).length;

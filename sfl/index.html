@@ -1126,7 +1126,7 @@
 
     // サイト更新時修正1/3
     // 最新結果入力後にシミュレートを更新し、コンソールからコピーして貼り付け
-    const array = [[["SOL",2745,2238,1768,1411,1067,771,55,2235800,3,40350,1514.2416818275192,1500,1510.8133607687898,1500,6751],["G8S",2771,2193,1725,1415,1104,792,50,2224690,5,71319,1521.2276194093238,1500.048951438491,1522.9139101641008,1490.8328587945575,6689],["OJA",1508,1652,1813,1846,1706,1475,45,2085525,-3,-39457,1500,1459.1251266023057,1500,1521.6916510619317,4973],["DFM",1319,1498,1711,1851,1899,1722,35,2022155,2,29531,1521.9251020918703,1505.2276194093238,1501.0081489453887,1484.7032121731647,4528],["IBS",1033,1427,1601,1798,2028,2113,40,1997195,-2,-32484,1518.949771305824,1485.7093667339898,1477.3001999926796,1498.3537804366526,4061],["SNB",624,992,1382,1679,2196,3127,30,1886870,-5,-69259,1494.7723805906762,1478.7723805906762,1515.2967878268353,1477.0860898358992,2998]],[["CAG",4347,2808,1541,788,389,127,70,2458685,6,90347,1501.4043191566975,1529.9846999144884,1508.6708282327074,1509.7329814137588,8696],["IXA",3628,2943,1763,1013,482,171,70,2404505,4,53199,1500,1509.0943227519533,1500,1523.8351573127609,8334],["RC",1198,1977,2568,2042,1429,786,40,2097055,3,42389,1505.9251020918703,1498.5956808433025,1490.6603507217117,1522.9139101641008,5743],["CR",497,1243,1937,2467,2290,1566,30,1930555,-2,-28170,1471.4196192422091,1500,1513.180928750342,1500,3677],["VAR",229,679,1378,2173,2768,2773,20,1781745,-4,-55303,1501.4043191566975,1498.5956808433025,1477.0860898358992,1491.3291717672926,2286],["FAV",101,350,813,1517,2642,4577,10,1626955,-7,-102462,1484.9805751561764,1498.5956808433025,1485.5044919655274,1477.0860898358992,1264]]];
+    const array = [[["G8S", 2776, 2177, 1716, 1435, 1198, 698, 50, 2227195, 5, 71895, 1521.2276194093238, 1500.048951438491, 1522.9139101641008, 1490.8328587945575], ["DFM", 1303, 1578, 1670, 1757, 1933, 1759, 35, 2021950, 2, 28821, 1521.9251020918703, 1505.2276194093238, 1501.0081489453887, 1484.7032121731647], ["SOL", 2764, 2216, 1749, 1413, 1046, 812, 55, 2236440, 3, 40220, 1514.2416818275192, 1500, 1510.8133607687898, 1500], ["IBS", 1014, 1368, 1753, 1808, 1959, 2098, 40, 1996200, -2, -32043, 1518.949771305824, 1485.7093667339898, 1477.3001999926796, 1498.3537804366526], ["OJA", 1491, 1700, 1762, 1823, 1723, 1501, 45, 2081625, -3, -40297, 1500, 1459.1251266023057, 1500, 1521.6916510619317], ["SNB", 652, 961, 1350, 1764, 2141, 3132, 30, 1889040, -5, -68596, 1494.7723805906762, 1478.7723805906762, 1515.2967878268353, 1477.0860898358992]], [["CR", 520, 1259, 2000, 2411, 2292, 1518, 30, 1938935, -2, -26337, 1471.4196192422091, 1500, 1513.180928750342, 1500], ["CAG", 4383, 2699, 1603, 862, 352, 101, 70, 2460070, 6, 90254, 1501.4043191566975, 1529.9846999144884, 1508.6708282327074, 1509.7329814137588], ["IXA", 3459, 3013, 1830, 1006, 509, 183, 70, 2398780, 4, 52600, 1500, 1509.0943227519533, 1500, 1523.8351573127609], ["RC", 1307, 1982, 2432, 2075, 1429, 775, 40, 2103425, 3, 43333, 1505.9251020918703, 1498.5956808433025, 1490.6603507217117, 1522.9139101641008], ["VAR", 215, 720, 1323, 2147, 2779, 2816, 20, 1778220, -4, -56624, 1501.4043191566975, 1498.5956808433025, 1477.0860898358992, 1491.3291717672926], ["FAV", 116, 327, 812, 1499, 2639, 4607, 10, 1621155, -7, -103226, 1484.9805751561764, 1498.5956808433025, 1485.5044919655274, 1477.0860898358992]]];
 
     // サイト更新時修正2/3(対象のディビジョンに新節の分だけを貼り付けて追加)
     // 入力がない状態でシミュレートをした時に、シミュレート結果が変わらないことを確認する
@@ -1147,6 +1147,24 @@
         [false, false, false, true, true, false, false, true, false, true, true, false,],
         [false, false, false, true, true, false, true, true, true, false, false, false,],
         // 2節
+        [false, false, false, true, true, false, false, false, false],
+        [false, true, false, false, true, false, false, true, false, false],
+        [false, false, false, false, false, false, false, true, false, true, false]
+    ];
+    const getDivisionResults = () => [
+        // S-1節
+        [true, true, false, false, true, true, false, true, false, true, false, true,],
+        [true, true, false, true, false, true, true, true, true, false],
+        [true, false, true, true, false, true, false, false, true, true, false, true,],
+        // F-1節
+        [true, true, false, false, true, false, true, true, false, false, false, false,],
+        [false, false, false, true, true, false, false, true, false, true, true, false,],
+        [false, false, false, true, true, false, true, true, true, false, false, false,],
+        // S-2節
+        [false, false, false, false, true, true, true, false, true, true, false, false,],
+        [true, true, false, true, false, true, false, true, false, false, false, false,],
+        [false, true, false, false, true, true, false, false, true, true, true, false,],
+        // F-2節
         [false, false, false, true, true, false, false, false, false],
         [false, true, false, false, true, false, false, true, false, false],
         [false, false, false, false, false, false, false, true, false, true, false]
@@ -1428,14 +1446,9 @@
         document.getElementById('loader').style['opacity'] = '70%';
         document.getElementById('loader').style['z-index'] = '100';
         setTimeout(() => {
-            const divisionSResults = getDivisionSResults();
-            const divisionFResults = getDivisionFResults();
-            if (currentMatch1[3] === 'S') {
-                divisionSResults.push(...inputOnchangeFunc());
-            } else {
-                divisionFResults.push(...inputOnchangeFunc());
-            }
-            const array = greet(divisionSResults, divisionFResults, enableRate);
+            const divisionResults = getDivisionResults();
+            divisionResults.push(...inputOnchangeFunc());
+            const array = greet(divisionResults, enableRate);
             drawTables(array);
             document.getElementById('loader').style['opacity'] = '0';
             document.getElementById('loader').style['z-index'] = '-1';
@@ -1453,17 +1466,12 @@
                     van1.checked = '';
                 }
             });
-            const divisionSResults = getDivisionSResults();
-            const divisionFResults = getDivisionFResults();
-            if (currentMatch1[3] === 'S') {
-                divisionSResults.push(...inputOnchangeFunc());
-            } else {
-                divisionFResults.push(...inputOnchangeFunc());
-            }
-            const array = greet(divisionSResults, divisionFResults, enableRate);
+            const divisionResults = getDivisionResults();
+            const array = greet(divisionResults, enableRate);
             drawTables(array);
             document.getElementById('loader').style['opacity'] = '0';
             document.getElementById('loader').style['z-index'] = '-1';
+            console.log(JSON.stringify(array));
         }, 10);
     }
 </script>
