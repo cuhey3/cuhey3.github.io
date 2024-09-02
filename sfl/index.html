@@ -145,11 +145,90 @@
         }
 
         a[href] {
-            color: #999;
+            color: #99C3FF;
         }
 
         .script-init {
             visibility: hidden;
+        }
+
+        /* モーダルと背景の指定 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            color: #000;
+            background: rgba(0, 0, 0, 50%);
+            padding: 40px 20px;
+            overflow: auto;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s;
+            box-sizing: border-box;
+        }
+
+        /* モーダルの擬似要素の指定 */
+        .modal:before {
+            content: "";
+            display: inline-block;
+            vertical-align: middle;
+            height: 100%;
+            margin-left: -0.2em;
+        }
+
+        /* クラスが追加された時の指定 */
+        .modal.is-active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* モーダル内側の指定 */
+        .modal-container {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            min-width: 30em;
+            /*min-width: 65%;*/
+        }
+
+        /* モーダルを閉じるボタンの指定 */
+        .modal-close {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: -20px;
+            right: -20px;
+            width: 40px;
+            height: 40px;
+            color: #fff;
+            background: #000;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* モーダルのコンテンツ部分の指定 */
+        .modal-content {
+            background: #fff;
+            text-align: left;
+            line-height: 1.8;
+            padding: 20px;
+        }
+
+        /* モーダルのコンテンツ部分のテキストの指定 */
+        .modal-content p {
+            margin: 1em 0;
+        }
+
+        .modal-table tbody th {
+            text-align: left;
+        }
+
+        .modal-table tbody td {
+            padding: 0.3em;
         }
     </style>
     <meta name="google-site-verification" content="xHHEihBbGTkulHW5I_nPIqjB8Xnj8pitqNxMe-Wlvgo"/>
@@ -200,7 +279,7 @@
                 <th id="s-0-0"></th>
                 <th id="s-0-19" class="percent"></th>
                 <td id="s-0-7"></td>
-                <td id="s-0-8"></td>
+                <td><a href="" id="s-0-8" class="js-modal-open"></a></td>
                 <td id="s-0-9"></td>
                 <td id="s-0-10"></td>
                 <td id="s-0-1" class="percent"></td>
@@ -214,7 +293,7 @@
                 <th id="s-1-0"></th>
                 <th id="s-1-19" class="percent"></th>
                 <td id="s-1-7"></td>
-                <td id="s-1-8"></td>
+                <td><a href="" id="s-1-8" class="js-modal-open"></a></td>
                 <td id="s-1-9"></td>
                 <td id="s-1-10"></td>
                 <td id="s-1-1" class="percent"></td>
@@ -228,7 +307,7 @@
                 <th id="s-2-0"></th>
                 <th id="s-2-19" class="percent"></th>
                 <td id="s-2-7"></td>
-                <td id="s-2-8"></td>
+                <td><a href="" id="s-2-8" class="js-modal-open"></a></td>
                 <td id="s-2-9"></td>
                 <td id="s-2-10"></td>
                 <td id="s-2-1" class="percent"></td>
@@ -242,7 +321,7 @@
                 <th id="s-3-0"></th>
                 <th id="s-3-19" class="percent"></th>
                 <td id="s-3-7"></td>
-                <td id="s-3-8"></td>
+                <td><a href="" id="s-3-8" class="js-modal-open"></a></td>
                 <td id="s-3-9"></td>
                 <td id="s-3-10"></td>
                 <td id="s-3-1" class="percent"></td>
@@ -256,7 +335,7 @@
                 <th id="s-4-0"></th>
                 <th id="s-4-19" class="percent"></th>
                 <td id="s-4-7"></td>
-                <td id="s-4-8"></td>
+                <td><a href="" id="s-4-8" class="js-modal-open"></a></td>
                 <td id="s-4-9"></td>
                 <td id="s-4-10"></td>
                 <td id="s-4-1" class="percent"></td>
@@ -270,7 +349,7 @@
                 <th id="s-5-0"></th>
                 <th id="s-5-19" class="percent"></th>
                 <td id="s-5-7"></td>
-                <td id="s-5-8"></td>
+                <td><a href="" id="s-5-8" class="js-modal-open"></a></td>
                 <td id="s-5-9"></td>
                 <td id="s-5-10"></td>
                 <td id="s-5-1" class="percent"></td>
@@ -307,7 +386,7 @@
                 <th id="f-0-0"></th>
                 <th id="f-0-19" class="percent"></th>
                 <td id="f-0-7"></td>
-                <td id="f-0-8"></td>
+                <td><a href="" id="f-0-8" class="js-modal-open"></a></td>
                 <td id="f-0-9"></td>
                 <td id="f-0-10"></td>
                 <td id="f-0-1" class="percent"></td>
@@ -321,7 +400,7 @@
                 <th id="f-1-0"></th>
                 <th id="f-1-19" class="percent"></th>
                 <td id="f-1-7"></td>
-                <td id="f-1-8"></td>
+                <td><a href="" id="f-1-8" class="js-modal-open"></a></td>
                 <td id="f-1-9"></td>
                 <td id="f-1-10"></td>
                 <td id="f-1-1" class="percent"></td>
@@ -335,7 +414,7 @@
                 <th id="f-2-0"></th>
                 <th id="f-2-19" class="percent"></th>
                 <td id="f-2-7"></td>
-                <td id="f-2-8"></td>
+                <td><a href="" id="f-2-8" class="js-modal-open"></a></td>
                 <td id="f-2-9"></td>
                 <td id="f-2-10"></td>
                 <td id="f-2-1" class="percent"></td>
@@ -349,7 +428,7 @@
                 <th id="f-3-0"></th>
                 <th id="f-3-19" class="percent"></th>
                 <td id="f-3-7"></td>
-                <td id="f-3-8"></td>
+                <td><a href="" id="f-3-8" class="js-modal-open"></a></td>
                 <td id="f-3-9"></td>
                 <td id="f-3-10"></td>
                 <td id="f-3-1" class="percent"></td>
@@ -363,7 +442,7 @@
                 <th id="f-4-0"></th>
                 <th id="f-4-19" class="percent"></th>
                 <td id="f-4-7"></td>
-                <td id="f-4-8"></td>
+                <td><a href="" id="f-4-8" class="js-modal-open"></a></td>
                 <td id="f-4-9"></td>
                 <td id="f-4-10"></td>
                 <td id="f-4-1" class="percent"></td>
@@ -377,7 +456,7 @@
                 <th id="f-5-0"></th>
                 <th id="f-5-19" class="percent"></th>
                 <td id="f-5-7"></td>
-                <td id="f-5-8"></td>
+                <td><a href="" id="f-5-8" class="js-modal-open"></a></td>
                 <td id="f-5-9"></td>
                 <td id="f-5-10"></td>
                 <td id="f-5-1" class="percent"></td>
@@ -1213,9 +1292,166 @@
             ※プレイオフは70ポイント、グランドファイナルは90ポイント獲得で勝利となります。<br>
             ※グランドファイナルは、本節のポイント・バトル得失が多い方がHOMEとなります。</p>
     </div>
+    <!-- モーダル本体 -->
+    <div class="modal js-modal">
+        <div class="modal-container">
+            <!-- モーダルを閉じるボタン -->
+            <div class="modal-close js-modal-close">×</div>
+            <!-- モーダル内部のコンテンツ -->
+            <div class="modal-content">
+                <h3 id="modal-content-text"></h3>
+                <table class="modal-table">
+                    <thead>
+                    <tr>
+                        <td></td>
+                        <td>1節</td>
+                        <td>2節</td>
+                        <td>3節</td>
+                        <td>4節</td>
+                        <td>5節</td>
+                        <td>6節</td>
+                        <td>7節</td>
+                        <td>8節</td>
+                        <td>9節</td>
+                        <td>10節</td>
+                        <td>合計</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="opponent">
+                        <th>対戦相手</th>
+                        <td>IBS</td>
+                        <td>SNB</td>
+                        <td>3節</td>
+                        <td>4節</td>
+                        <td>5節</td>
+                        <td>6節</td>
+                        <td>7節</td>
+                        <td>8節</td>
+                        <td>9節</td>
+                        <td>10節</td>
+                        <td>合計</td>
+                    </tr>
+                    <tr class="home-away">
+                        <th>HOME / AWAY</th>
+                        <td>HOME</td>
+                        <td>AWAY</td>
+                        <td>3節</td>
+                        <td>4節</td>
+                        <td>5節</td>
+                        <td>6節</td>
+                        <td>7節</td>
+                        <td>8節</td>
+                        <td>9節</td>
+                        <td>10節</td>
+                        <td>合計</td>
+                    </tr>
+                    <tr class="point-total">
+                        <th>ポイント実績・予想</th>
+                        <td>20.8</td>
+                        <td>20.8</td>
+                        <td>3節</td>
+                        <td>4節</td>
+                        <td>5節</td>
+                        <td>6節</td>
+                        <td>7節</td>
+                        <td>8節</td>
+                        <td>9節</td>
+                        <td>10節</td>
+                        <td> -</td>
+                    </tr>
+                    <tr class="point-van">
+                        <th>先鋒戦・中堅戦</th>
+                        <td>10.4</td>
+                        <td>10.4</td>
+                        <td>3節</td>
+                        <td>4節</td>
+                        <td>5節</td>
+                        <td>6節</td>
+                        <td>7節</td>
+                        <td>8節</td>
+                        <td>9節</td>
+                        <td>10節</td>
+                        <td>合計</td>
+                    </tr>
+                    <tr class="point-general">
+                        <th>大将戦・延長戦</th>
+                        <td>10.4</td>
+                        <td>10.4</td>
+                        <td>3節</td>
+                        <td>4節</td>
+                        <td>5節</td>
+                        <td>6節</td>
+                        <td>7節</td>
+                        <td>8節</td>
+                        <td>9節</td>
+                        <td>10節</td>
+                        <td>合計</td>
+                    </tr>
+                    <tr class="team-van-rating">
+                        <th>SOLの先鋒戦レート</th>
+                        <td>10.4</td>
+                        <td>10.4</td>
+                        <td>3節</td>
+                        <td>4節</td>
+                        <td>5節</td>
+                        <td>6節</td>
+                        <td>7節</td>
+                        <td>8節</td>
+                        <td>9節</td>
+                        <td>10節</td>
+                        <td>合計</td>
+                    </tr>
+                    <tr class="opponent-van-rating">
+                        <th>相手の先鋒戦レート</th>
+                        <td>10.4</td>
+                        <td>10.4</td>
+                        <td>3節</td>
+                        <td>4節</td>
+                        <td>5節</td>
+                        <td>6節</td>
+                        <td>7節</td>
+                        <td>8節</td>
+                        <td>9節</td>
+                        <td>10節</td>
+                        <td>合計</td>
+                    </tr>
+                    <tr class="team-general-rating">
+                        <th>SOLの大将戦レート</th>
+                        <td>10.4</td>
+                        <td>10.4</td>
+                        <td>3節</td>
+                        <td>4節</td>
+                        <td>5節</td>
+                        <td>6節</td>
+                        <td>7節</td>
+                        <td>8節</td>
+                        <td>9節</td>
+                        <td>10節</td>
+                        <td>合計</td>
+                    </tr>
+                    <tr class="opponent-general-rating">
+                        <th>相手の大将戦レート</th>
+                        <td>1500.0</td>
+                        <td>1500.0</td>
+                        <td>1500.0</td>
+                        <td>1500.0</td>
+                        <td>1500.0</td>
+                        <td>1500.0</td>
+                        <td>1500.0</td>
+                        <td>1500.0</td>
+                        <td>1500.0</td>
+                        <td>1500.0</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="module">
-    import init, {greet, get_division_matches} from "./wasm/pkg/sfl_lib.js?t=202409021505";
+    import init, {greet, get_division_matches} from "./wasm/pkg/sfl_lib.js?t=202409021800";
 
     await init();
     // マッチ取得ロジック
@@ -1228,31 +1464,11 @@
 
     // サイト更新時修正1/3
     // 最新結果入力後にシミュレートを更新し、コンソールからコピーして貼り付け
-    const array = [[["SOL", 2754, 2249, 1810, 1342, 1089, 756, 55, 2235135, 3, 39966, 1514.2416818275192, 1500, 1510.8133607687898, 1500, 1259, 1342, 2322, 1890, 6813], ["G8S", 2727, 2195, 1746, 1439, 1133, 760, 50, 2223905, 5, 70855, 1521.2276194093238, 1500.048951438491, 1522.9139101641008, 1490.8328587945575, 1372, 1209, 2290, 1797, 6668], ["OJA", 1576, 1701, 1752, 1867, 1669, 1435, 45, 2090140, -3, -38237, 1500, 1459.1251266023057, 1500, 1521.6916510619317, 654, 876, 1726, 1773, 5029], ["DFM", 1205, 1508, 1713, 1855, 1902, 1817, 35, 2015790, 2, 27812, 1521.9251020918703, 1505.2276194093238, 1501.0081489453887, 1484.7032121731647, 631, 778, 1424, 1593, 4426], ["IBS", 1088, 1367, 1689, 1760, 1991, 2105, 40, 2001335, -2, -31335, 1518.949771305824, 1485.7093667339898, 1477.3001999926796, 1498.3537804366526, 415, 663, 1359, 1707, 4144], ["SNB", 650, 980, 1290, 1737, 2216, 3127, 30, 1887925, -5, -69061, 1494.7723805906762, 1478.7723805906762, 1515.2967878268353, 1477.0860898358992, 354, 447, 879, 1240, 2920]], [["CAG", 4403, 2715, 1562, 834, 361, 125, 70, 2456550, 6, 90889, 1501.4043191566975, 1529.9846999144884, 1508.6708282327074, 1509.7329814137588, 2103, 1700, 3079, 1798, 8680], ["IXA", 3541, 2911, 1803, 1049, 508, 188, 70, 2403640, 4, 52429, 1500, 1509.0943227519533, 1500, 1523.8351573127609, 1765, 1498, 2937, 2055, 8255], ["RC", 1153, 2071, 2491, 2082, 1454, 749, 40, 2095870, 3, 42135, 1505.9251020918703, 1498.5956808433025, 1490.6603507217117, 1522.9139101641008, 828, 716, 1809, 2362, 5715], ["CR", 582, 1284, 1956, 2416, 2267, 1495, 30, 1944035, -2, -25305, 1471.4196192422091, 1500, 1513.180928750342, 1500, 398, 460, 1194, 1770, 3822], ["VAR", 226, 690, 1377, 2093, 2819, 2795, 20, 1778995, -4, -55890, 1501.4043191566975, 1498.5956808433025, 1477.0860898358992, 1491.3291717672926, 156, 209, 647, 1281, 2293], ["FAV", 95, 329, 811, 1526, 2591, 4648, 10, 1620230, -7, -104258, 1484.9805751561764, 1498.5956808433025, 1485.5044919655274, 1477.0860898358992, 65, 102, 334, 734, 1235]]];
+    let array = [[["SOL", 2754, 2249, 1810, 1342, 1089, 756, 55, 2235135, 3, 39966, 1514.2416818275192, 1500, 1510.8133607687898, 1500, 1259, 1342, 2322, 1890, 6813], ["G8S", 2727, 2195, 1746, 1439, 1133, 760, 50, 2223905, 5, 70855, 1521.2276194093238, 1500.048951438491, 1522.9139101641008, 1490.8328587945575, 1372, 1209, 2290, 1797, 6668], ["OJA", 1576, 1701, 1752, 1867, 1669, 1435, 45, 2090140, -3, -38237, 1500, 1459.1251266023057, 1500, 1521.6916510619317, 654, 876, 1726, 1773, 5029], ["DFM", 1205, 1508, 1713, 1855, 1902, 1817, 35, 2015790, 2, 27812, 1521.9251020918703, 1505.2276194093238, 1501.0081489453887, 1484.7032121731647, 631, 778, 1424, 1593, 4426], ["IBS", 1088, 1367, 1689, 1760, 1991, 2105, 40, 2001335, -2, -31335, 1518.949771305824, 1485.7093667339898, 1477.3001999926796, 1498.3537804366526, 415, 663, 1359, 1707, 4144], ["SNB", 650, 980, 1290, 1737, 2216, 3127, 30, 1887925, -5, -69061, 1494.7723805906762, 1478.7723805906762, 1515.2967878268353, 1477.0860898358992, 354, 447, 879, 1240, 2920]], [["CAG", 4403, 2715, 1562, 834, 361, 125, 70, 2456550, 6, 90889, 1501.4043191566975, 1529.9846999144884, 1508.6708282327074, 1509.7329814137588, 2103, 1700, 3079, 1798, 8680], ["IXA", 3541, 2911, 1803, 1049, 508, 188, 70, 2403640, 4, 52429, 1500, 1509.0943227519533, 1500, 1523.8351573127609, 1765, 1498, 2937, 2055, 8255], ["RC", 1153, 2071, 2491, 2082, 1454, 749, 40, 2095870, 3, 42135, 1505.9251020918703, 1498.5956808433025, 1490.6603507217117, 1522.9139101641008, 828, 716, 1809, 2362, 5715], ["CR", 582, 1284, 1956, 2416, 2267, 1495, 30, 1944035, -2, -25305, 1471.4196192422091, 1500, 1513.180928750342, 1500, 398, 460, 1194, 1770, 3822], ["VAR", 226, 690, 1377, 2093, 2819, 2795, 20, 1778995, -4, -55890, 1501.4043191566975, 1498.5956808433025, 1477.0860898358992, 1491.3291717672926, 156, 209, 647, 1281, 2293], ["FAV", 95, 329, 811, 1526, 2591, 4648, 10, 1620230, -7, -104258, 1484.9805751561764, 1498.5956808433025, 1485.5044919655274, 1477.0860898358992, 65, 102, 334, 734, 1235]], [[200000, 0, 50000, 200000], [200000, 0, 200000, 0], [200000, 0, 50000, 200000], [100000, 100000, 0, 200000], [100000, 100000, 200000, 0], [100000, 100000, 200000, 0], [100000, 100000, 200000, 0], [200000, 0, 0, 250000], [100000, 100000, 200000, 0], [100000, 100000, 0, 200000], [0, 200000, 0, 200000], [0, 200000, 0, 200000], [100900, 99100, 107640, 105065], [106860, 93140, 127605, 84215], [104360, 95640, 118010, 94485], [98680, 101320, 107135, 105510], [102530, 97470, 99905, 112665], [102530, 97470, 106005, 106540], [125960, 74040, 108615, 104855], [97010, 102990, 115275, 97435], [106260, 93740, 102695, 110150], [96220, 103780, 96555, 115880], [99750, 100250, 93265, 119685], [93520, 106480, 85830, 126235], [108750, 91250, 99260, 113525], [109890, 90110, 106195, 106525], [107690, 92310, 120185, 92305], [80220, 119780, 92920, 119215], [102150, 97850, 99385, 113120], [99570, 100430, 112310, 100115], [107470, 92530, 94315, 118120], [96400, 103600, 120485, 92325], [97880, 102120, 116875, 95760], [92650, 107350, 97400, 115120], [87110, 112890, 87225, 124985], [99970, 100030, 94870, 117230], [108830, 91170, 118465, 93825], [118160, 81840, 119995, 92245], [105550, 94450, 105655, 107150], [100660, 99340, 110825, 101540], [101740, 98260, 106805, 105950], [100290, 99710, 120060, 92280], [117110, 82890, 105520, 107660], [122960, 77040, 99700, 113765], [109080, 90920, 111705, 100850], [94120, 105880, 101425, 111025], [83940, 116060, 99450, 112875], [89490, 110510, 97505, 114860], [100080, 99920, 111310, 101245], [114870, 85130, 108680, 104220], [115020, 84980, 126375, 85815], [86350, 113650, 101995, 110555], [102940, 97060, 112680, 100180], [89120, 110880, 120965, 92075], [114740, 85260, 101600, 111415], [104390, 95610, 119820, 92480], [114620, 85380, 119315, 93500], [96920, 103080, 81575, 130735], [88160, 111840, 101315, 111225], [100640, 99360, 122770, 89545]]];
 
     // サイト更新時修正2/3(対象のディビジョンに新節の分だけを貼り付けて追加)
     // 入力がない状態でシミュレートをした時に、シミュレート結果が変わらないことを確認する
     // 合わなければ1/3からやり直す
-    const getDivisionSResults = () => [
-        // 1節
-        [true, true, false, false, true, true, false, true, false, true, false, true,],
-        [true, true, false, true, false, true, true, true, true, false],
-        [true, false, true, true, false, true, false, false, true, true, false, true,],
-        // 2節
-        [false, false, false, false, true, true, true, false, true, true, false, false,],
-        [true, true, false, true, false, true, false, true, false, false, false, false,],
-        [false, true, false, false, true, true, false, false, true, true, true, false,]
-    ];
-    const getDivisionFResults = () => [
-        // 1節
-        [true, true, false, false, true, false, true, true, false, false, false, false,],
-        [false, false, false, true, true, false, false, true, false, true, true, false,],
-        [false, false, false, true, true, false, true, true, true, false, false, false,],
-        // 2節
-        [false, false, false, true, true, false, false, false, false],
-        [false, true, false, false, true, false, false, true, false, false],
-        [false, false, false, false, false, false, false, true, false, true, false]
-    ];
     const getDivisionResults = () => [
         // S-1節
         [true, true, false, false, true, true, false, true, false, true, false, true,],
@@ -1337,10 +1553,18 @@
                         }
                     }
                     if ([11, 12, 13, 14].indexOf(j) !== -1) {
-                        textData = Math.round(rawData * 10).toString().replace(/(.)$/, '.$1');
+                        textData = formatRating(rawData);
                     }
                     if ([15, 16, 17, 18].indexOf(j) === -1) {
                         document.getElementById(`${n === 0 ? 's' : 'f'}-${i}-${j}`).innerText = textData;
+                        if (j === 8) {
+                            document.getElementById(`${n === 0 ? 's' : 'f'}-${i}-${j}`).onclick = function (event) {
+                                event.preventDefault();
+                                modal.classList.add('is-active');
+                                document.getElementById('modal-content-text').innerText = `${value[i][0]}のポイント実績・予想`;
+                                drawModal(value[i][0]);
+                            }
+                        }
                     }
                     if (j === 0) {
                         document.querySelectorAll(`.${n === 0 ? 's' : 'f'}-${i}-${j}`).forEach((element) => {
@@ -1366,6 +1590,92 @@
                 document.getElementById(`gf-${index}-${i}`).innerText = textData;
             })
         });
+    }
+
+    function formatRating(rawRating) {
+        return Math.round(rawRating * 10).toString().replace(/(.)$/, '.$1');
+    }
+
+    function formatPoint(rawPoint) {
+        if (Math.abs(rawPoint) < 10000) {
+            rawPoint = (Math.round(rawPoint / 1000)).toString().replace(/(.)$/, '0.$1');
+        } else {
+            rawPoint = (Math.round(rawPoint / 1000)).toString().replace(/(.)$/, '.$1');
+        }
+        return rawPoint;
+    }
+
+    function drawModal(teamName) {
+        const teamMatches = matches.map((m, index) => [m, index]).filter((m) => m[0][4] === teamName || m[0][5] === teamName);
+        const opponentTeams = teamMatches.map((m) => m[0][4] === teamName ? m[0][5] : m[0][4]);
+        const homeAwayArray = teamMatches.map((m) => m[0][4] === teamName ? 'AWAY' : 'HOME');
+        document.querySelectorAll('.modal-table .opponent td').forEach((element, index) => {
+            element.innerText = opponentTeams[index] || '-';
+        });
+        document.querySelectorAll('.modal-table .home-away td').forEach((element, index) => {
+            element.innerText = homeAwayArray[index] || '-';
+        });
+        let pointTotalAll = 0;
+        document.querySelectorAll('.modal-table .point-total td').forEach((element, index) => {
+            const isHome = homeAwayArray[index] === 'HOME';
+            if (index < 10) {
+                const matchIndex = teamMatches[index][1];
+                const points = array[2][matchIndex];
+                let point = isHome ? points[1] + points[3] : points[0] + points[2];
+                pointTotalAll += point;
+                element.innerText = formatPoint(point);
+            } else {
+                element.innerText = formatPoint(pointTotalAll);
+            }
+        });
+        let pointVanAll = 0;
+        document.querySelectorAll('.modal-table .point-van td').forEach((element, index) => {
+            const isHome = homeAwayArray[index] === 'HOME';
+            if (index < 10) {
+                const matchIndex = teamMatches[index][1];
+                const points = array[2][matchIndex];
+                let point = isHome ? points[1] : points[0];
+                pointVanAll += point;
+                element.innerText = formatPoint(point);
+            } else {
+                element.innerText = formatPoint(pointVanAll);
+            }
+        });
+        let pointGeneralAll = 0;
+        document.querySelectorAll('.modal-table .point-general td').forEach((element, index) => {
+            const isHome = homeAwayArray[index] === 'HOME';
+            if (index < 10) {
+                const matchIndex = teamMatches[index][1];
+                const points = array[2][matchIndex];
+                let point = isHome ? points[3] : points[2];
+                pointGeneralAll += point;
+                element.innerText = formatPoint(point);
+            } else {
+                element.innerText = formatPoint(pointGeneralAll);
+            }
+        });
+        const ratingKey = [[12, 11], [11, 12], [14, 13], [13, 14]];
+        ['team-van-rating', 'opponent-van-rating', 'team-general-rating', 'opponent-general-rating'].forEach((query, queryIndex) => {
+            document.querySelectorAll(`.modal-table .${query} td`).forEach((element, index) => {
+                if (index < 10) {
+                    const isHome = homeAwayArray[index] === 'HOME';
+                    const opponentTeamName = isHome ? teamMatches[index][0][4] : teamMatches[index][0][5];
+                    const teamInfo = (teamMatches[index][0][3] === 'S' ? array[0] : array[1]).find((info) => {
+                        return info[0] === teamName
+                    });
+                    const opponentTeamInfo = (teamMatches[index][0][3] === 'S' ? array[0] : array[1]).find((info) => {
+                        return info[0] === opponentTeamName
+                    });
+                    const infoIndex = isHome ? ratingKey[queryIndex][0] : ratingKey[queryIndex][1];
+                    const targetInfo = query.startsWith('team') ? teamInfo : opponentTeamInfo
+                    element.innerText = formatRating(targetInfo[infoIndex]);
+                } else {
+                    element.innerText = '-';
+                }
+            });
+        });
+        document.querySelector(`.modal-table .team-van-rating th`).innerText = `${teamName}の先鋒戦レート`;
+        document.querySelector(`.modal-table .team-general-rating th`).innerText = `${teamName}の大将戦レート`;
     }
 
     drawTables(array);
@@ -1570,7 +1880,7 @@
         setTimeout(() => {
             const divisionResults = getDivisionResults();
             divisionResults.push(...inputOnchangeFunc());
-            const array = greet(divisionResults, enableRate);
+            array = greet(divisionResults, enableRate);
             drawTables(array);
             document.getElementById('loader').style['opacity'] = '0';
             document.getElementById('loader').style['z-index'] = '-1';
@@ -1589,13 +1899,33 @@
                 }
             });
             const divisionResults = getDivisionResults();
-            const array = greet(divisionResults, enableRate);
+            array = greet(divisionResults, enableRate);
             drawTables(array);
             document.getElementById('loader').style['opacity'] = '0';
             document.getElementById('loader').style['z-index'] = '-1';
             console.log(JSON.stringify(array));
         }, 10);
     }
+    //要素を取得
+    const modal = document.querySelector('.js-modal'),
+        open = document.querySelector('.js-modal-open'),
+        close = document.querySelector('.js-modal-close');
+
+    //「閉じるボタン」をクリックしてモーダルを閉じる
+    function modalClose() {
+        modal.classList.remove('is-active');
+    }
+
+    close.addEventListener('click', modalClose);
+
+    //「モーダルの外側」をクリックしてモーダルを閉じる
+    function modalOut(e) {
+        if (e.target == modal) {
+            modal.classList.remove('is-active');
+        }
+    }
+
+    addEventListener('click', modalOut);
 </script>
 </body>
 </html>
