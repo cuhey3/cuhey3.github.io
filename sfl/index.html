@@ -1558,7 +1558,7 @@
                     const rawData = value[i][j];
                     let textData = rawData.toString();
                     if ([1, 2, 3, 4, 5, 6, 15, 19].indexOf(j) !== -1) {
-                        let rounded = Math.round(rawData / 10).toString();
+                        const rounded = Math.round(rawData / 10).toString();
                         if (rounded < 10) {
                             textData = rounded.replace(/(.)$/, '0.$1%');
                         } else {
@@ -1566,10 +1566,11 @@
                         }
                     }
                     if ([8, 10].indexOf(j) !== -1) {
-                        if (Math.abs(rawData) < 10000) {
-                            textData = (Math.round(rawData / 1000)).toString().replace(/(.)$/, '0.$1');
+                        const rounded = Math.round(rawData / 1000);
+                        if (Math.abs(rounded) < 10) {
+                            textData = rounded.toString().replace(/(.)$/, '0.$1');
                         } else {
-                            textData = (Math.round(rawData / 1000)).toString().replace(/(.)$/, '.$1');
+                            textData = rounded.toString().replace(/(.)$/, '.$1');
                         }
                     }
                     if ([11, 12, 13, 14].indexOf(j) !== -1) {
