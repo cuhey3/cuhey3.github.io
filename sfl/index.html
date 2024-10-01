@@ -1688,10 +1688,9 @@
     }
 
     drawTables();
-
     function applyRecordToForm() {
         [1, 2, 3].forEach((n) => {
-            const records = simulation.get_match_records(9 * 3 - 1 + n);
+            const records = simulation.get_match_records(getDivisionResults().length - 1 + n);
             let pointAway = 0;
             let pointHome = 0;
             records.forEach((record) => {
