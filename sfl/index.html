@@ -1452,7 +1452,7 @@
     </div>
 </div>
 <script type="module">
-    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202410012300";
+    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202410042300";
 
     await init();
     const {JP2024DivisionS, JP2024DivisionF, JP2024AllDivision} = SflStage;
@@ -1500,6 +1500,10 @@
         [true, false, false, false, false, false, true, true, true, false, false, false],
         [true, false, true, false, true, false, true, true, true],
         [false, false, false, false, false, false, false, true, true, false, true, false],
+        // S-6節
+        [true, false, false, false, false, false, true, true, false, false, false, false],
+        [true, false, true, true, true, false, false, true, true, true],
+        [true, true, false, false, false, false, true, false, false, true, true],
     ];
 
     const simulation = new SflSimulation(true);
