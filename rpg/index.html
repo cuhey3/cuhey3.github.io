@@ -59,6 +59,9 @@
     </g>
     <rect x="360" y="280" fill="white" height="40" width="40" class="character"></rect>
     <text x="360" y="315" fill="black" font-size="40" class="character direction">↓</text>
+    <text x="650" y="30" fill="black" font-size="20">Enter: 決定</text>
+    <text x="650" y="60" fill="black" font-size="20">Esc: 取消</text>
+    <text x="650" y="90" fill="black" font-size="20">方向キー: 移動</text>
 </svg>
 <svg width="800" height="600" id="menu" display="none" style="position: absolute; top:0; left:0">
     <g transform="translate(0, 0)">
@@ -89,25 +92,16 @@
         <text x="40" y="564" fill="white" font-size="30" id="message-2"></text>
     </g>
 </svg>
-<svg width="800" height="600" id="description" display="block" style="position: absolute; top:0; left: 0;">
-    <text x="650" y="30" fill="black" font-size="20">Enter: 決定</text>
-    <text x="650" y="60" fill="black" font-size="20">Esc: 取消</text>
-    <text x="650" y="90" fill="black" font-size="20">方向キー: 移動</text>
-</svg>
 <svg width="800" height="600" id="fader" display="block" style="position: absolute; top:0; left: 0;">
     <rect x="0" y="0" width="800" height="600" fill="black" fill-opacity="0"></rect>
 </svg>
 <script type="module">
-    import init, {Engine} from "./pkg/rpg_lib.js";
+    import init, {Engine} from "./pkg/rpg_lib.js?t=202410071700";
 
     await init();
     const engine = new Engine();
     engine.init();
-    // let now = performance.now();
     window.onkeydown = (event) => {
-        // let new_now = performance.now();
-        // console.log(new_now - now);
-        // now = new_now;
         engine.keydown(event.key);
     }
 
