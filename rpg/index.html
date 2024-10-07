@@ -47,21 +47,25 @@
     </g>
 </svg>
 <svg width="800" height="600" id="title" display="none">
-    <g transform="translate(0, 30)">
-        <text x="400" y="200" font-size="60" fill="white" text-anchor="middle">SVG QUEST</text>
-        <text x="400" y="300" fill="white" font-size="30" text-anchor="middle">START</text>
-        <text x="400" y="360" fill="white" font-size="30" text-anchor="middle">EXIT</text>
-        <text x="305" y="309" fill="white" font-size="50" text-anchor="middle" id="title-cursor">👉</text>
+    <g transform="translate(0, 50)">
+        <text x="400" y="180" font-size="60" fill="white" text-anchor="middle">SVG QUEST</text>
+        <text x="320" y="280" fill="white" font-size="30">NEW GAME</text>
+        <text x="320" y="340" fill="white" font-size="30">CONTINUE</text>
+        <text x="320" y="400" fill="white" font-size="30">EXIT</text>
+        <text x="265" y="289" fill="white" font-size="50" text-anchor="middle" id="title-cursor">👉</text>
     </g>
+    <text x="610" y="30" fill="white" font-size="20">Aキー: 決定</text>
+    <text x="610" y="60" fill="white" font-size="20">Esc: 取消・メニュー</text>
+    <text x="610" y="90" fill="white" font-size="20">方向キー: 移動</text>
 </svg>
 <svg width="800" height="600" id="field" display="none">
     <g id="field-wrapper" transform="translate(0, 0)">
     </g>
     <rect x="360" y="280" fill="white" height="40" width="40" class="character"></rect>
     <text x="360" y="315" fill="black" font-size="40" class="character direction">↓</text>
-    <text x="650" y="30" fill="black" font-size="20">Enter: 決定</text>
-    <text x="650" y="60" fill="black" font-size="20">Esc: 取消</text>
-    <text x="650" y="90" fill="black" font-size="20">方向キー: 移動</text>
+    <text x="610" y="30" fill="black" font-size="20">Aキー: 決定</text>
+    <text x="610" y="60" fill="black" font-size="20">Esc: 取消・メニュー</text>
+    <text x="610" y="90" fill="black" font-size="20">方向キー: 移動</text>
 </svg>
 <svg width="800" height="600" id="menu" display="none" style="position: absolute; top:0; left:0">
     <g transform="translate(0, 0)">
@@ -96,7 +100,7 @@
     <rect x="0" y="0" width="800" height="600" fill="black" fill-opacity="0"></rect>
 </svg>
 <script type="module">
-    import init, {Engine} from "./pkg/rpg_lib.js?t=202410071700";
+    import init, {Engine} from "./pkg/rpg_lib.js?t=202410080100";
 
     await init();
     const engine = new Engine();
