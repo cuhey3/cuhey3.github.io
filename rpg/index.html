@@ -129,9 +129,11 @@
             event.preventDefault();
         }
     }
+    document.addEventListener("dblclick", function(e){ e.preventDefault();}, { passive: false });
+
     keys.forEach((key) => {
         Array.from(document.querySelectorAll(`#controller .${key}`)).forEach((element) => {
-            element.onclick = () => {
+            element.ontouchstart = () => {
                 engine.keydown(key);
             };
         });
