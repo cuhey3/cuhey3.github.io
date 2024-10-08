@@ -1504,6 +1504,10 @@
         [true, false, false, false, false, false, true, true, false, false, false, false],
         [true, false, true, true, true, false, false, true, true, true],
         [true, true, false, false, false, false, true, false, false, true, true],
+        // F-6節
+        [false, true, true, true, true, false, false, false, true, true, false, false],
+        [true, true, false, false, true, true, true, true, true],
+        [false, false, false, true, false, true, false, true, true, false, false],
     ];
 
     const simulation = new SflSimulation(true);
@@ -1692,6 +1696,7 @@
     }
 
     drawTables();
+
     function applyRecordToForm() {
         [1, 2, 3].forEach((n) => {
             const records = simulation.get_match_records(getDivisionResults().length - 1 + n);
@@ -1771,9 +1776,9 @@
             gameResults.length = maxInputIndex + 1;
             inputtedGameResults.push(gameResults);
         });
+        console.log(inputtedGameResults);
         const results = getDivisionResults();
         results.push(...inputtedGameResults);
-        console.log(inputtedGameResults);
         results.forEach((result, index) => {
             simulation.set_match_result(index, result);
         });
