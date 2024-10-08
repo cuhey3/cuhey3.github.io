@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
+        html {
+            touch-action: manipulation;
+        }
         body {
             background-color: black;
         }
 
         body, svg {
+            font-family: "Hiragino Kaku Gothic ProN";
             margin: 0;
             padding: 0;
         }
@@ -129,7 +133,6 @@
             event.preventDefault();
         }
     }
-    document.addEventListener("dblclick", function(e){ e.preventDefault();}, { passive: false });
 
     keys.forEach((key) => {
         Array.from(document.querySelectorAll(`#controller .${key}`)).forEach((element) => {
