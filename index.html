@@ -143,6 +143,10 @@ main:
         dslThisObject.value = '';
       };
       document.getElementById('clear-console').onclick = console.clear;
+      const ws = new WebSocket("https://rust-server-956911707039.asia-northeast1.run.app/ws");
+      ws.onopen = () => {
+        ws.send(JSON.stringify({user_name:"foo", channel_name: "rpg"}));
+      }
     })();
   </script>
 </body>
