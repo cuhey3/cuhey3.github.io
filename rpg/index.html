@@ -120,11 +120,19 @@
     <rect x="218" y="63" width="80" height="80" fill="gray" class="ArrowRight"></rect>
 </svg>
 <script type="module">
-    import init, {Engine} from "./pkg/rpg_lib.js?t=202410082000";
+    import init, {Engine} from "./pkg/rpg_lib.js?t=202410091800";
 
     await init();
+
     const engine = new Engine();
     engine.init();
+    const ws = new WebSocket("https://rust-server-956911707039.asia-northeast1.run.app/ws");
+    ws.onmessage = (message) => {
+        engine.receive_channel_message(message.data);
+    }
+    ws.onopen = () => {
+        engine.set_web_socket_instance(ws);
+    }
     document.getElementById("controller").setAttribute('display', 'block');
     const keys = ['a', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
     window.onkeydown = (event) => {
