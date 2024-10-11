@@ -68,6 +68,10 @@
     <text x="610" y="60" fill="white" font-size="20">Esc: 取消・メニュー</text>
     <text x="610" y="90" fill="white" font-size="20">方向キー: 移動</text>
 </svg>
+<svg width="800" height="600" id="event" display="none">
+    <g transform="translate(0, 0)">
+    </g>
+</svg>
 <svg width="800" height="600" id="field" display="none">
     <g id="field-wrapper" transform="translate(0, 0)">
     </g>
@@ -104,6 +108,7 @@
         <rect x="20" y="475" stroke="white" height="110" width="760"></rect>
         <text x="40" y="519" fill="white" font-size="30" id="message-1"></text>
         <text x="40" y="564" fill="white" font-size="30" id="message-2"></text>
+        <polygon points="737 560, 750 575, 763 560" fill="white" id="has-continuous-message" display="none" />
     </g>
 </svg>
 <svg width="800" height="600" id="fader" display="block" style="position: absolute; top:0; left: 0;">
@@ -120,20 +125,12 @@
     <rect x="218" y="63" width="80" height="80" fill="gray" class="ArrowRight"></rect>
 </svg>
 <script type="module">
-    import init, {Engine} from "./pkg/rpg_lib.js?t=202410091830";
+    import init, {create_rpg_engine} from "./pkg/rpg_lib.js?t=202410111500";
 
     await init();
-
-    const engine = new Engine();
-    engine.init();
-    const ws = new WebSocket("https://rust-server-956911707039.asia-northeast1.run.app/ws");
-    ws.onmessage = (message) => {
-        engine.receive_channel_message(message.data);
-    }
-    ws.onopen = () => {
-        engine.set_web_socket_instance(ws);
-    }
+    const engine = create_rpg_engine();
     document.getElementById("controller").setAttribute('display', 'block');
+
     const keys = ['a', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
     window.onkeydown = (event) => {
         engine.keydown(event.key);
