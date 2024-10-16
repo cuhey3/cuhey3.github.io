@@ -72,9 +72,9 @@
         <text x="320" y="400" fill="white" font-size="30">EXIT</text>
         <text x="265" y="289" fill="white" font-size="50" text-anchor="middle" id="title-cursor">👉</text>
     </g>
-    <text x="610" y="30" fill="white" font-size="20">Aキー: 決定</text>
-    <text x="610" y="60" fill="white" font-size="20">Esc: 取消・メニュー</text>
-    <text x="610" y="90" fill="white" font-size="20">方向キー: 移動</text>
+    <text x="590" y="30" fill="white" font-size="20">Aキー: 決定</text>
+    <text x="590" y="60" fill="white" font-size="20">Zキー: 取消・メニュー</text>
+    <text x="590" y="90" fill="white" font-size="20">方向キー: 移動</text>
 </svg>
 <svg width="800" height="600" id="event" display="none">
     <g transform="translate(0, 0)">
@@ -85,9 +85,9 @@
     </g>
     <rect x="360" y="280" fill="white" height="40" width="40" class="character"></rect>
     <text x="360" y="315" fill="black" font-size="40" class="character direction">↓</text>
-    <text x="610" y="30" fill="black" font-size="20">Aキー: 決定</text>
-    <text x="610" y="60" fill="black" font-size="20">Esc: 取消・メニュー</text>
-    <text x="610" y="90" fill="black" font-size="20">方向キー: 移動</text>
+    <text x="590" y="30" fill="black" font-size="20">Aキー: 決定</text>
+    <text x="590" y="60" fill="black" font-size="20">Zキー: 取消・メニュー</text>
+    <text x="590" y="90" fill="black" font-size="20">方向キー: 移動</text>
 </svg>
 <svg width="800" height="600" id="menu" display="none" style="position: absolute; top:0; left:0">
     <g transform="translate(28, 0)" id="render-menu-wrapper" display="none">
@@ -144,21 +144,21 @@
 <svg width="800" height="180" id="controller" display="none">
     <circle cx="560" cy="120" r="60" fill="#8f3842" class="a"></circle>
     <text x="544" y="135" fill="black" font-size="45" class="a">A</text>
-    <circle cx="700" cy="80" r="60" fill="#8f3842" class="Escape"></circle>
-    <text x="665" y="95" fill="black" font-size="40" class="Escape">Esc</text>
+    <circle cx="700" cy="80" r="60" fill="#8f3842" class="z"></circle>
+    <text x="685" y="95" fill="black" font-size="40" class="z">Z</text>
     <rect x="50" y="63" width="80" height="80" fill="gray" class="ArrowLeft"></rect>
     <rect x="134" y="23" width="80" height="80" fill="gray" class="ArrowUp"></rect>
     <rect x="134" y="107" width="80" height="80" fill="gray" class="ArrowDown"></rect>
     <rect x="218" y="63" width="80" height="80" fill="gray" class="ArrowRight"></rect>
 </svg>
 <script type="module">
-    import init, {create_rpg_engine} from "./pkg/rpg_lib.js?t=202410161600";
+    import init, {create_rpg_engine} from "./pkg/rpg_lib.js?t=202410162100";
 
     await init();
     const engine = create_rpg_engine();
     document.getElementById("controller").setAttribute('display', 'block');
 
-    const keys = ['a', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
+    const keys = ['a', 'z', 'ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
     window.onkeydown = (event) => {
         engine.keydown(event.key);
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
