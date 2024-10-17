@@ -976,7 +976,7 @@ async function __wbg_init(module_or_path) {
     console.warn('using deprecated parameters for the initialization function; pass a single object instead')
 
     if (typeof module_or_path === 'undefined') {
-        module_or_path = new URL('rpg_lib_bg.wasm?t=202410162100', import.meta.url);
+        module_or_path = new URL('rpg_lib_bg.wasm?t=202410171400', import.meta.url);
     }
     const imports = __wbg_get_imports();
 

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=block');
     </style>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=block');
     </style>
     <style>
         html {
@@ -19,8 +19,8 @@
         }
 
         body, svg {
-            font-family: "Noto Color Emoji", "Roboto", sans-serif;
-            font-weight: 100;
+            font-family: "Noto Color Emoji", "Noto Sans JP", sans-serif;
+            font-weight: 300;
             font-style: normal;
             margin: 0;
             padding: 0;
@@ -42,7 +42,7 @@
 <body>
 <svg width="800" height="600" id="battle" display="none">
     <text x="100" y="420" font-size="160">🟡</text>
-    <text x="600" y="200" font-size="170">🙎‍♀️</text>
+    <text x="550" y="200" font-size="160">🥺</text>
     <text x="50" y="65" fill="white" font-size="30">ピエン</text>
     <text x="60" y="110" fill="white" font-size="30">HP:</text>
     <line x1="40" y1="80" x2="40" y2="130" fill="white" stroke="white" stroke-width="5"></line>
@@ -55,7 +55,7 @@
         <rect x="580" y="475" stroke="white" height="110" width="200"></rect>
         <text x="640" y="520" fill="white" font-size="30">たたかう</text>
         <text x="640" y="560" fill="white" font-size="30">にげる</text>
-        <text x="613" y="525" fill="white" font-size="40" text-anchor="middle" id="command-cursor">👉</text>
+        <text x="595" y="520" fill="white" font-size="30" id="command-cursor">👉</text>
     </g>
     <g transform="translate(340, 300)">
         <text x="60" y="65" fill="white" font-size="30">スマイリー</text>
@@ -72,8 +72,7 @@
         <text x="400" y="180" font-size="60" fill="white" text-anchor="middle">SVG QUEST</text>
         <text x="320" y="280" fill="white" font-size="30">NEW GAME</text>
         <text x="320" y="340" fill="white" font-size="30">CONTINUE</text>
-        <text x="320" y="400" fill="white" font-size="30">EXIT</text>
-        <text x="265" y="289" fill="white" font-size="50" text-anchor="middle" id="title-cursor">👉</text>
+        <text x="260" y="285" fill="white" font-size="40" id="title-cursor">👉</text>
     </g>
     <text x="590" y="30" fill="white" font-size="20">Aキー: 決定</text>
     <text x="590" y="60" fill="white" font-size="20">Zキー: 取消・メニュー</text>
@@ -96,41 +95,40 @@
     <g transform="translate(28, 0)" id="render-menu-wrapper" display="none">
         <rect x="530" y="50" width="220" height="345" stroke="white" stroke-width="5" fill="black"></rect>
         <text x="595" y="100" fill="white" font-size="30" id="render-menu-item" display="none"></text>
-        <text x="568" y="105" fill="white" font-size="40" text-anchor="middle" id="render-menu-cursor" display="none">
-            👉
-        </text>
+        <text x="550" y="100" fill="white" font-size="30" id="render-menu-cursor" display="none">👉</text>
     </g>
     <g transform="translate(28, 0)" id="render-menu-inventory-wrapper" display="none">
         <rect x="350" y="120" width="400" height="300" stroke="white" stroke-width="5" fill="black"></rect>
         <text x="415" y="170" fill="white" font-size="30" id="render-menu-inventory-item" display="none"></text>
-        <text x="388" y="175" fill="white" font-size="40" text-anchor="middle" id="render-menu-inventory-cursor"
-              display="none">👉
-        </text>
+        <text x="370" y="170" fill="white" font-size="30" id="render-menu-inventory-cursor" display="none">👉</text>
     </g>
     <g transform="translate(28, 0)" id="render-menu-inventory-confirm-wrapper" display="none">
         <rect x="20" y="475" stroke="white" height="110" width="760" id="render-menu-inventory-confirm-message-wrapper"
               display="none"></rect>
         <text x="40" y="519" fill="white" font-size="30" id="render-menu-inventory-confirm-message"></text>
-        <rect x="570" y="305" width="180" height="115" stroke="white" stroke-width="5" fill="black"></rect>
+        <rect x="575" y="305" width="180" height="115" stroke="white" stroke-width="5" fill="black"></rect>
         <text x="640" y="350" fill="white" font-size="30" id="render-menu-inventory-confirm-item" display="none"></text>
-        <text x="603" y="355" fill="white" font-size="40" text-anchor="middle" id="render-menu-inventory-confirm-cursor"
-              display="none">👉
-        </text>
+        <text x="595" y="350" fill="white" font-size="30" id="render-menu-inventory-confirm-cursor" display="none">👉</text>
     </g>
     <g transform="translate(28, 52)" id="render-menu-common-confirm-wrapper" display="none">
         <rect x="-8" y="423" stroke="white" height="110" width="760" id="render-menu-common-confirm-message-wrapper"
               display="none"></rect>
         <text x="12" y="467" fill="white" font-size="30" id="render-menu-common-confirm-message"></text>
-        <rect x="570" y="305" width="180" height="115" stroke="white" stroke-width="5" fill="black"></rect>
+        <rect x="575" y="305" width="180" height="115" stroke="white" stroke-width="5" fill="black"></rect>
         <text x="640" y="350" fill="white" font-size="30" id="render-menu-common-confirm-item" display="none"></text>
-        <text x="603" y="355" fill="white" font-size="40" text-anchor="middle" id="render-menu-common-confirm-cursor"
+        <text x="595" y="350" fill="white" font-size="30" id="render-menu-common-confirm-cursor"
               display="none">👉
         </text>
     </g>
+    <!--    <clipPath id="cut-off-bottom">-->
+    <!--        <rect x="20" y="400" width="200" height="200" />-->
+    <!--    </clipPath>-->
+    <!--    <g clip-path="url(#cut-off-bottom)" transform="translate(0, 0)" id="render-menu-emote-wrapper" display="none">-->
     <g transform="translate(0, 0)" id="render-menu-emote-wrapper" display="none">
         <rect x="20" y="475" stroke="white" height="110" width="760"></rect>
-        <rect x="35" y="488" fill="white" width="40" height="40" class="always-blink" id="render-menu-emote-cursor"></rect>
-        <text x="40" y="520" fill="white" font-size="30" id="render-menu-emote-item"></text>
+        <rect x="35" y="488" fill="white" width="40" height="40" class="always-blink"
+              id="render-menu-emote-cursor"></rect>
+        <text x="36" y="519" fill="white" font-size="30" id="render-menu-emote-item"></text>
     </g>
 </svg>
 <svg width="800" height="600" id="message" display="none" style="position: absolute; top:0; left: 0;">
@@ -146,16 +144,16 @@
 </svg>
 <svg width="800" height="180" id="controller" display="none">
     <circle cx="560" cy="120" r="60" fill="#8f3842" class="a"></circle>
-    <text x="544" y="135" fill="black" font-size="45" class="a">A</text>
+    <text x="547" y="135" fill="black" font-size="45" class="a">A</text>
     <circle cx="700" cy="80" r="60" fill="#8f3842" class="z"></circle>
-    <text x="685" y="95" fill="black" font-size="40" class="z">Z</text>
+    <text x="687" y="95" fill="black" font-size="40" class="z">Z</text>
     <rect x="50" y="63" width="80" height="80" fill="gray" class="ArrowLeft"></rect>
     <rect x="134" y="23" width="80" height="80" fill="gray" class="ArrowUp"></rect>
     <rect x="134" y="107" width="80" height="80" fill="gray" class="ArrowDown"></rect>
     <rect x="218" y="63" width="80" height="80" fill="gray" class="ArrowRight"></rect>
 </svg>
 <script type="module">
-    import init, {create_rpg_engine} from "./pkg/rpg_lib.js?t=202410162100";
+    import init, {create_rpg_engine} from "./pkg/rpg_lib.js?t=202410171400";
 
     await init();
     const engine = create_rpg_engine();
