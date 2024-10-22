@@ -1,10 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table {
+            text-align: center;
+            margin-bottom: 1em;
+            border-collapse: collapse;
+        }
+
+        tbody tr, tbody th, tbody td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        /* モーダルと背景の指定 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            color: #000;
+            background: rgba(0, 0, 0, 50%);
+            padding: 40px 20px;
+            overflow: auto;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s;
+            box-sizing: border-box;
+        }
+
+        /* モーダルの擬似要素の指定 */
+        .modal:before {
+            content: "";
+            display: inline-block;
+            vertical-align: middle;
+            height: 100%;
+            margin-left: -0.2em;
+        }
+
+        /* クラスが追加された時の指定 */
+        .modal.is-active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* モーダル内側の指定 */
+        .modal-container {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            min-width: 30em;
+            /*min-width: 65%;*/
+        }
+
+        /* モーダルを閉じるボタンの指定 */
+        .modal-close {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: -20px;
+            right: -20px;
+            width: 40px;
+            height: 40px;
+            color: #fff;
+            background: #000;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* モーダルのコンテンツ部分の指定 */
+        .modal-content {
+            background: #fff;
+            text-align: left;
+            line-height: 1.8;
+            padding: 20px;
+        }
+
+        /* モーダルのコンテンツ部分のテキストの指定 */
+        .modal-content p {
+            margin: 1em 0;
+        }
+
+        .modal-table tbody th {
+            text-align: left;
+        }
+
+        .modal-table tbody td {
+            padding: 0.3em;
+        }
+    </style>
 </head>
 <body>
-$END$
+<h1>人狼内訳計算プログラム</h1>
+<h2>配役</h2>
+
+
+
+
+<table>
+    <tbody>
+    <tr>
+        <td><label for="wolf-count">狼の数(1以上):</label></td><td><input type="number" id="wolf-count" class="role-input" name="wolf-count" value="2" min="1" max="99" /></td>
+    </tr>
+    <tr>
+        <td><label for="fortune-teller-count">占い師の数:</label></td><td><input type="number" id="fortune-teller-count" class="role-input" name="fortune-teller-count" value="1" min="0" max="99" /></td>
+    </tr>
+    <tr>
+        <td><label for="medium-count">霊媒師の数:</label></td><td><input type="number" id="medium-count" class="role-input" name="medium-count" value="1" min="0" max="99" /></td>
+    </tr>
+    <tr>
+        <td><label for="villager-count">村人の数:</label></td><td><input type="number" id="villager-count" class="role-input" name="villager-count" value="1" min="0" max="99" /></td>
+    </tr>
+    <tr>
+        <td><label for="maniac-count">狂人の数:</label></td><td><input type="number" id="maniac-count" class="role-input" name="maniac-count" value="1" min="0" max="99" /></td>
+    </tr>
+    </tbody>
+</table>
+<button style="margin-top: 1em;" id="start-village">村を開始する</button>
+<button style="margin-top: 1em;" id="clear-village" disabled>村をやめる</button>
+<h2>イベント入力</h2>
+<table id="players-table">
+    <thead>
+    <tr>
+        <th>No.</th><th>プレイヤー名</th><th>CO</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<button id="executed-input">処刑入力</button>
+<button id="killed-input">噛まれ入力</button>
+<h2>内訳</h2>
+<table id="breakdown-table">
+    <thead>
+    <tr>
+        <th>プレイヤー1</th><th>プレイヤー2</th><th>プレイヤー3</th><th>プレイヤー4</th><th>プレイヤー5</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr><td>狼</td><td>占い師</td><td>霊媒師</td><td>狼</td><td>村人</td></tr>
+    <tr><td>狼</td><td>占い師</td><td>霊媒師</td><td>狼</td><td>村人</td></tr>
+    <tr><td>狼</td><td>占い師</td><td>霊媒師</td><td>狼</td><td>村人</td></tr>
+    <tr><td>狼</td><td>占い師</td><td>霊媒師</td><td>狼</td><td>村人</td></tr>
+    </tbody>
+</table>
+<!-- モーダル本体 -->
+<div class="modal js-modal">
+    <div class="modal-container">
+        <!-- モーダルを閉じるボタン -->
+        <div class="modal-close js-modal-close">×</div>
+        <!-- モーダル内部のコンテンツ -->
+        <div class="modal-content">
+            <h3 id="modal-content-text"></h3>
+            <div id="modal-co-role-input" style="margin-bottom: 1em;">
+            </div>
+            <div style="text-align: right; padding-right: 2em;">
+            <button id="modal-co-button">COする</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module">
+    import init, {expect_wolf} from "./wasm/pkg/jinro_lib.js";
+    await init();
+    const roleToJpWord = {
+        wolf: '狼',
+        'fortune-teller': '占い師',
+        medium: '霊媒師',
+        villager: '村人',
+        maniac: '狂人',
+        'has-position': '役職あり',
+    };
+    const roleToJpWordShort = {
+        wolf: '狼',
+        'fortune-teller': '占い',
+        medium: '霊媒',
+        villager: '素村',
+        maniac: '狂人',
+        'has-position': '役職',
+    }
+    const tellList = [];
+    let roles = [];
+    // expect_wolf([], []);
+    function roleInputOnChangeFunc() {
+        const roleArray = [];
+        ['wolf', 'fortune-teller', 'medium', 'villager', 'maniac'].forEach((roleString) => {
+           const count = Number(document.getElementById(`${roleString}-count`).value);
+           if (!isNaN(count) && count > 0) {
+               roleArray.push(...new Array(count).fill(roleString));
+           }
+        });
+        return roleArray;
+    }
+    const modal = document.querySelector('.js-modal');
+    close = document.querySelector('.js-modal-close');
+
+    //「閉じるボタン」をクリックしてモーダルを閉じる
+    function modalClose() {
+        modal.classList.remove('is-active');
+    }
+
+    close.addEventListener('click', modalClose);
+
+    //「モーダルの外側」をクリックしてモーダルを閉じる
+    function modalOut(e) {
+        if (e.target === modal) {
+            modal.classList.remove('is-active');
+        }
+    }
+
+    addEventListener('click', modalOut);
+    const startVillageElement = document.getElementById('start-village');
+    const clearVillageElement = document.getElementById('clear-village');
+    startVillageElement.onclick = () => {
+        roles = roleInputOnChangeFunc();
+        console.log(roles);
+        document.querySelectorAll('.role-input').forEach((element) => element.disabled = 'disabled');
+        const tableTbody = document.querySelector('#players-table tbody');
+        Array.from(tableTbody.children).forEach((element) => tableTbody.removeChild(element));
+        for (let i = 1; i < roles.length + 1; i++) {
+            const tr = document.createElement('tr');
+            tr.classList.add('player-row');
+            tr.id = `player-${i}`;
+            const playerName = `プレイヤー${i}`;
+            {
+                const td = document.createElement('td');
+                td.innerText = i;
+                tr.appendChild(td);
+                tableTbody.appendChild(tr);
+            }
+            {
+                const td = document.createElement('td');
+                td.innerText = playerName;
+                tr.appendChild(td);
+                tableTbody.appendChild(tr);
+            }
+            {
+                const td = document.createElement('td');
+                const button = document.createElement('button');
+                button.classList.add('player-co-button');
+                button.innerText = 'COする';
+                button.onclick = () => {
+                    const modalTitle = document.getElementById('modal-content-text');
+                    modalTitle.innerHTML = `${playerName}さん、何をCOしますか？`
+                    const parent = document.getElementById('modal-co-role-input');
+                    Array.from(parent.children).forEach((element) => parent.removeChild(element));
+                    new Set(roles).forEach((role) => {
+                        const label = document.createElement('label');
+                        label.style['margin-right'] ='1.5em';
+                        const input = document.createElement('input');
+                        input.type = 'radio';
+                        input.name = 'co-role-input';
+                        input.value = role;
+                        label.appendChild(input);
+                        const span = document.createElement('span');
+                        span.innerText = roleToJpWord[role] + (role === 'villager' ? '(役職なし)' : '');
+                        label.appendChild(span);
+                        parent.appendChild(label);
+                    });
+                    const label = document.createElement('label');
+                    label.style['margin-right'] ='1.5em';
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = 'co-role-input';
+                    input.value = 'has-position';
+                    label.appendChild(input);
+                    const span = document.createElement('span');
+                    span.innerText = '役職あり';
+                    label.appendChild(span);
+                    parent.appendChild(label);
+                    const modalCoButton = document.getElementById('modal-co-button');
+                    modalCoButton.value = i - 1;
+                    modal.classList.add('is-active');
+                };
+                td.appendChild(button);
+                tr.appendChild(td);
+                tableTbody.appendChild(tr);
+            }
+        }
+        const modalCoButton = document.getElementById('modal-co-button');
+        modalCoButton.onclick = () => {
+            const roleChecked = document.querySelector('input[type=radio][name=co-role-input]:checked');
+            if (!roleChecked) {
+                modal.classList.remove('is-active');
+                return;
+            }
+            const playerIndex = Number(modalCoButton.value);
+            const roleValue = roleChecked.value;
+            // 撤回処理
+            tellList.filter((tell) =>
+                tell[0] === playerIndex && ['CO', 'HasPosition'].indexOf(tell[1]) !== -1 && tell[3] !== roleValue
+            ).forEach((tell) => {
+                tell[2] = false;
+            })
+            if (roleValue === 'has-position') {
+                tellList.push([playerIndex, 'HasPosition', true, 'has-position']);
+            } else {
+                tellList.push([playerIndex, 'CO', true, roleValue]);
+            }
+            document.querySelector(`#player-${playerIndex + 1} .player-co-button`).innerText = `${roleToJpWordShort[roleValue]}CO`;
+            modal.classList.remove('is-active');
+            console.log(tellList);
+            setTimeout(() => {
+                expect_wolf(roles, tellList);
+            }, 10);
+        }
+        startVillageElement.disabled = 'disabled';
+        clearVillageElement.disabled = '';
+    }
+
+    clearVillageElement.onclick = () => {
+        if (window.confirm('これまでの進行が失われますがよろしいですか？')) {
+            startVillageElement.disabled = '';
+            clearVillageElement.disabled = 'disabled';
+            tellList.splice(0);
+            document.querySelectorAll('.role-input').forEach((element) => element.disabled = '');
+            const tableTbody = document.querySelector('#players-table tbody');
+            Array.from(tableTbody.children).forEach((element) => tableTbody.removeChild(element));
+        }
+    }
+    ['executed-input', 'killed-input'].forEach((elementId, i) => {
+        document.getElementById(elementId).onclick = () => {
+            const input = window.prompt('処刑されたプレイヤーのNo.を入力してください');
+            const rawIndex = Number(input);
+            if (!input || isNaN(rawIndex) || rawIndex === 0) {
+                return;
+            }
+            // TODO index のバリデーションを別でチェックしましょう
+            tellList.push([rawIndex - 1, i === 0 ? 'Executed': 'Killed', true]);
+            console.log(tellList);
+            expect_wolf(roles, tellList);
+        }
+    });
+
+</script>
 </body>
 </html>

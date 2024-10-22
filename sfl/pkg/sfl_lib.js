@@ -147,7 +147,7 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     return real;
 }
 function __wbg_adapter_22(arg0, arg1, arg2) {
-    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__ha3752d4d5ec1f8cf(arg0, arg1, addHeapObject(arg2));
+    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hcd6b2a7833efe83f(arg0, arg1, addHeapObject(arg2));
 }
 
 let cachedUint32ArrayMemory0 = null;
@@ -302,7 +302,7 @@ export function __wbgtest_cov_dump() {
 }
 
 function __wbg_adapter_125(arg0, arg1, arg2, arg3, arg4) {
-    wasm.wasm_bindgen__convert__closures__invoke3_mut__h85ce4cafcd9027a3(arg0, arg1, addHeapObject(arg2), arg3, addHeapObject(arg4));
+    wasm.wasm_bindgen__convert__closures__invoke3_mut__h76fc2733cdc4598e(arg0, arg1, addHeapObject(arg2), arg3, addHeapObject(arg4));
 }
 
 function handleError(f, args) {
@@ -313,7 +313,7 @@ function handleError(f, args) {
     }
 }
 function __wbg_adapter_138(arg0, arg1, arg2, arg3) {
-    wasm.wasm_bindgen__convert__closures__invoke2_mut__h32acbfbd188d5554(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
+    wasm.wasm_bindgen__convert__closures__invoke2_mut__h7b4e580c9e88c407(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
 }
 
 /**
@@ -1096,6 +1096,10 @@ function __wbg_get_imports() {
         getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
         getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
     };
+    imports.wbg.__wbg_static_accessor_DOCUMENT_c9d3ded98505f352 = function() {
+        const ret = document;
+        return addHeapObject(ret);
+    };
     imports.wbg.__wbg_settextcontent_f5ce03c2d5452fdb = function(arg0, arg1, arg2) {
         getObject(arg0).textContent = getStringFromWasm0(arg1, arg2);
     };
@@ -1112,10 +1116,6 @@ function __wbg_get_imports() {
     };
     imports.wbg.__wbg_getElementById_8e651e19b1db8af4 = function(arg0, arg1, arg2) {
         const ret = getObject(arg0).getElementById(getStringFromWasm0(arg1, arg2));
-        return addHeapObject(ret);
-    };
-    imports.wbg.__wbg_static_accessor_DOCUMENT_c9d3ded98505f352 = function() {
-        const ret = document;
         return addHeapObject(ret);
     };
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
@@ -1151,6 +1151,14 @@ function __wbg_get_imports() {
             wasm.__wbindgen_free(deferred0_0, deferred0_1, 1);
         }
     };
+    imports.wbg.__wbg_queueMicrotask_48421b3cc9052b68 = function(arg0) {
+        const ret = getObject(arg0).queueMicrotask;
+        return addHeapObject(ret);
+    };
+    imports.wbg.__wbindgen_is_function = function(arg0) {
+        const ret = typeof(getObject(arg0)) === 'function';
+        return ret;
+    };
     imports.wbg.__wbindgen_cb_drop = function(arg0) {
         const obj = takeObject(arg0).original;
         if (obj.cnt-- == 1) {
@@ -1162,14 +1170,6 @@ function __wbg_get_imports() {
     };
     imports.wbg.__wbg_queueMicrotask_12a30234db4045d3 = function(arg0) {
         queueMicrotask(getObject(arg0));
-    };
-    imports.wbg.__wbg_queueMicrotask_48421b3cc9052b68 = function(arg0) {
-        const ret = getObject(arg0).queueMicrotask;
-        return addHeapObject(ret);
-    };
-    imports.wbg.__wbindgen_is_function = function(arg0) {
-        const ret = typeof(getObject(arg0)) === 'function';
-        return ret;
     };
     imports.wbg.__wbg_newnoargs_76313bd6ff35d0f2 = function(arg0, arg1) {
         const ret = new Function(getStringFromWasm0(arg0, arg1));
@@ -1257,7 +1257,7 @@ function __wbg_get_imports() {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper740 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper697 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 60, __wbg_adapter_22);
         return addHeapObject(ret);
     };
@@ -1314,7 +1314,7 @@ async function __wbg_init(module_or_path) {
     console.warn('using deprecated parameters for the initialization function; pass a single object instead')
 
     if (typeof module_or_path === 'undefined') {
-        module_or_path = new URL('sfl_lib_bg.wasm?t=202410082200', import.meta.url);
+        module_or_path = new URL('sfl_lib_bg.wasm?t=202410222200', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
