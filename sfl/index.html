@@ -363,6 +363,10 @@
             </tbody>
         </table>
     </div>
+    <h2 class="right">試合結果を入力（ディビジョンS 第8節〜）</h2>
+    <div class="hide expand-area" id="simulation-parent-s">
+        <p>試合結果が当サイトに反映される前でも、ご自身で任意の試合結果を入力し、シミュレーションを行うことができます。</p>
+    </div>
     <h2>ディビジョンF</h2>
     <div class="show expand-area">
         <table>
@@ -470,504 +474,8 @@
             </tbody>
         </table>
     </div>
-    <h2>最新の試合結果を入力</h2>
-    <div class="show expand-area">
-        <h3><span id="current-match-info" class="script-init" style="display: inline-block; width: 17em;">ディビジョンN 第0節　0/00開催</span>
-            <button id="simulate">シミュレーション</button>
-            <button id="clear" style="margin-right: 1em;">クリア</button>
-            <label style="font-weight: normal;">
-                <input type="checkbox" id="disable-rate" style="margin-right: 0">
-                シミュレーションにレートを利用しない
-            </label>
-        </h3>
-        <!--        <ul style="list-style: none; margin: 0">-->
-        <!--            <li>-->
-        <!--            </li>-->
-        <!--            &lt;!&ndash;        <li>&ndash;&gt;-->
-        <!--            &lt;!&ndash;            <ul>&ndash;&gt;-->
-        <!--            &lt;!&ndash;                <li>&ndash;&gt;-->
-        <!--            &lt;!&ndash;                    <label>&ndash;&gt;-->
-        <!--            &lt;!&ndash;                        <input type="checkbox">&ndash;&gt;-->
-        <!--            &lt;!&ndash;                        AWAY / HOMEを区別してレートを計算する&ndash;&gt;-->
-        <!--            &lt;!&ndash;                    </label>&ndash;&gt;-->
-        <!--            &lt;!&ndash;                </li>&ndash;&gt;-->
-        <!--            &lt;!&ndash;                <li>&ndash;&gt;-->
-        <!--            &lt;!&ndash;                    <label>&ndash;&gt;-->
-        <!--            &lt;!&ndash;                        <input type="checkbox">&ndash;&gt;-->
-        <!--            &lt;!&ndash;                        先鋒戦・中堅戦と大将戦・延長戦を区別してレートを計算する&ndash;&gt;-->
-        <!--            &lt;!&ndash;                    </label>&ndash;&gt;-->
-        <!--            &lt;!&ndash;                </li>&ndash;&gt;-->
-        <!--            &lt;!&ndash;            </ul>&ndash;&gt;-->
-        <!--            &lt;!&ndash;        </li>&ndash;&gt;-->
-        <!--        </ul>-->
-        <table>
-            <thead>
-            </thead>
-            <tbody>
-            <tr>
-                <th colspan="2" style="width:8em;">第1試合</th>
-                <td colspan="3">先鋒戦</td>
-                <td colspan="3">中堅戦</td>
-                <td colspan="5">大将戦</td>
-                <td colspan="1">延長戦</td>
-                <td>ポイント</td>
-            </tr>
-            <tr>
-                <th id="current-match-1-away-team" class="script-init">
-                    AAA
-                </th>
-                <th>
-                    AWAY
-                </th>
-                <td>
-                    <label>
-                        <input type="radio" name="1-van-1" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-van-2" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-van-3" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-mid-1" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-mid-2" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-mid-3" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-general-1" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-general-2" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-general-3" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-general-4" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-general-5" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-extra-1" value="1">
-                    </label>
-                </td>
-                <td id="1-point-away">
-                    0
-                </td>
-            </tr>
-            <tr>
-                <th id="current-match-1-home-team" class="script-init">
-                    BBB
-                </th>
-                <th>
-                    HOME
-                </th>
-                <td>
-                    <label>
-                        <input type="radio" name="1-van-1" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-van-2" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-van-3" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-mid-1" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-mid-2" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-mid-3" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-general-1" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-general-2" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-general-3" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-general-4" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-general-5" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="1-extra-1" value="0">
-                    </label>
-                </td>
-                <td id="1-point-home">
-                    0
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <table style="margin-top: 1em;">
-            <thead>
-            </thead>
-            <tbody>
-            <tr>
-                <th colspan="2" style="width:8em;">第2試合</th>
-                <td colspan="3">先鋒戦</td>
-                <td colspan="3">中堅戦</td>
-                <td colspan="5">大将戦</td>
-                <td colspan="1">延長戦</td>
-                <td>ポイント</td>
-            </tr>
-            <tr>
-                <th id="current-match-2-away-team" class="script-init">
-                    CCC
-                </th>
-                <th>
-                    AWAY
-                </th>
-                <td>
-                    <label>
-                        <input type="radio" name="2-van-1" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-van-2" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-van-3" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-mid-1" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-mid-2" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-mid-3" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-general-1" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-general-2" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-general-3" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-general-4" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-general-5" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-extra-1" value="1">
-                    </label>
-                </td>
-                <td id="2-point-away">
-                    0
-                </td>
-            </tr>
-            <tr>
-                <th id="current-match-2-home-team" class="script-init">
-                    DDD
-                </th>
-                <th>
-                    HOME
-                </th>
-                <td>
-                    <label>
-                        <input type="radio" name="2-van-1" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-van-2" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-van-3" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-mid-1" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-mid-2" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-mid-3" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-general-1" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-general-2" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-general-3" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-general-4" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-general-5" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="2-extra-1" value="0">
-                    </label>
-                </td>
-                <td id="2-point-home">
-                    0
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <table>
-            <thead>
-            </thead>
-            <tbody>
-            <tr>
-                <th colspan="2" style="width:8em;">第3試合</th>
-                <td colspan="3">先鋒戦</td>
-                <td colspan="3">中堅戦</td>
-                <td colspan="5">大将戦</td>
-                <td colspan="1">延長戦</td>
-                <td>ポイント</td>
-            </tr>
-            <tr>
-                <th id="current-match-3-away-team" class="script-init">
-                    EEE
-                </th>
-                <th>
-                    AWAY
-                </th>
-                <td>
-                    <label>
-                        <input type="radio" name="3-van-1" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-van-2" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-van-3" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-mid-1" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-mid-2" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-mid-3" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-general-1" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-general-2" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-general-3" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-general-4" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-general-5" value="1">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-extra-1" value="1">
-                    </label>
-                </td>
-                <td id="3-point-away">
-                    0
-                </td>
-            </tr>
-            <tr>
-                <th id="current-match-3-home-team" class="script-init">
-                    FFF
-                </th>
-                <th>
-                    HOME
-                </th>
-                <td>
-                    <label>
-                        <input type="radio" name="3-van-1" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-van-2" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-van-3" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-mid-1" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-mid-2" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-mid-3" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-general-1" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-general-2" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-general-3" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-general-4" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-general-5" value="0">
-                    </label>
-                </td>
-                <td>
-                    <label>
-                        <input type="radio" name="3-extra-1" value="0">
-                    </label>
-                </td>
-                <td id="3-point-home">
-                    0
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <h2 class="right">試合結果を入力（ディビジョンF 第8節〜）</h2>
+    <div class="hide expand-area" id="simulation-parent-f">
         <p>試合結果が当サイトに反映される前でも、ご自身で任意の試合結果を入力し、シミュレーションを行うことができます。</p>
     </div>
     <h2 style="margin-bottom:0">レーティング</h2>
@@ -1372,7 +880,7 @@
     </div>
 </div>
 <script type="module">
-    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202410252200";
+    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202410222200";
 
     await init();
     const {JP2024DivisionS, JP2024DivisionF, JP2024AllDivision} = SflStage;
@@ -1443,33 +951,19 @@
     getDivisionResults().forEach((results, index) => {
         simulation.set_match_result(index, results);
     });
-    applyRecordToForm();
 
     const matches = simulation.get_matches();
-    const lastMatchData = matches.map((match, index) => [match, index]).findLast((data) => simulation.get_match_records(data[1])[0].is_valid);
-    const lastMatchIndex = lastMatchData ? lastMatchData[1] : 0;
+    // 残り3節固定
+    const lastMatchIndex = getDivisionResults().length - 1;
     const beforeMatch1 = matches[lastMatchIndex - 2];
     let beforeMatchInfo = document.getElementById('before-match-info');
     beforeMatchInfo.innerHTML
         = `${beforeMatch1.date_expression.replace(/^0/, '').replace(/\/0/, '/')} ディビジョン${beforeMatch1.team < 6 ? 'S' : 'F'} 第${beforeMatch1.section}節の結果を反映`;
 
-    const currentMatch1 = matches[lastMatchIndex + 1];
-    const currentMatch2 = matches[lastMatchIndex + 2];
-    const currentMatch3 = matches[lastMatchIndex + 3];
-
-    let currentMatchInfo = document.getElementById('current-match-info');
-    currentMatchInfo.innerHTML
-        = `ディビジョン${currentMatch1.team < 6 ? 'S' : 'F'} 第${currentMatch1.section}節　${currentMatch1.date_expression.replace(/^0/, '').replace(/\/0/, '/')}開催`;
-
-    [currentMatch1, currentMatch2, currentMatch3].forEach((currentMatch, index) => {
-        document.getElementById(`current-match-${index + 1}-away-team`).innerText = allTeamNames[currentMatch.team];
-        document.getElementById(`current-match-${index + 1}-home-team`).innerText = allTeamNames[currentMatch.opponent_team];
-    });
-
-    document.querySelectorAll('.script-init').forEach((element) => element.style['visibility'] = 'visible');
-
     document.querySelectorAll('h2').forEach((element) => {
-        element.classList.add('down');
+        if (!element.classList.contains('right')) {
+            element.classList.add('down');
+        }
         element.onclick = function () {
             if (element.classList.contains('right')) {
                 element.classList.replace('right', 'down');
@@ -1625,8 +1119,8 @@
     drawTables();
 
     function applyRecordToForm() {
-        [1, 2, 3].forEach((n) => {
-            const records = simulation.get_match_records(getDivisionResults().length - 1 + n);
+        for (let n = lastMatchIndex + 1; n < 60; n++) {
+            const records = simulation.get_match_records(n);
             let pointAway = 0;
             let pointHome = 0;
             records.forEach((record) => {
@@ -1681,12 +1175,86 @@
                 document.getElementById(`${n}-point-away`).innerText = pointAway.toString();
                 document.getElementById(`${n}-point-home`).innerText = pointHome.toString();
             });
+        }
+    }
+
+    function drawSimulationInputTable(matchIndex) {
+        const currentMatchInfo = matches[matchIndex + 1];
+        const simulationParent = document.getElementById(`simulation-parent-${currentMatchInfo.team < 6 ? 's' : 'f'}`);
+        const h3 = document.createElement('h3');
+        h3.innerHTML = `
+            <span class="script-init" style="display: inline-block; width: 17em;">ディビジョン${currentMatchInfo.team < 6 ? 'S' : 'F'} 第${currentMatchInfo.section}節　${currentMatchInfo.date_expression.replace(/^0/, '').replace(/\/0/, '/')}開催</span>
+            <button class="simulate">シミュレーション</button>
+            <button class="simulation-clear" style="margin-right: 1em;" value="${matchIndex}">節をクリア</button>
+            <label style="font-weight: normal;">
+                <input type="checkbox" name="disable-rate" style="margin-right: 0">
+                シミュレーションにレートを利用しない
+            </label>
+        `;
+        simulationParent.appendChild(h3);
+        [1, 2, 3].forEach((index) => {
+            const matchInfo = matches[matchIndex + index];
+
+            const setNames = [['van', 3], ['mid', 3], ['general', 5], ['extra', 1]];
+            const table = document.createElement('table');
+            simulationParent.appendChild(table);
+            table.appendChild(document.createElement('thead'));
+            const tbody = document.createElement('tbody');
+            table.appendChild(tbody);
+            {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+        <tr>
+            <th colspan="2" style="width:8em;">第${index}試合</th>
+            <td colspan="3">先鋒戦</td>
+            <td colspan="3">中堅戦</td>
+            <td colspan="5">大将戦</td>
+            <td colspan="1">延長戦</td>
+            <td>ポイント</td>
+        </tr>`
+                tbody.appendChild(tr);
+            }
+            ['away', 'home'].forEach((awayHome) => {
+
+                let trHtml = `
+            <th class="script-init">
+                ${allTeamNames[awayHome === 'away' ? matchInfo.team : matchInfo.opponent_team]}
+            </th>
+            <th>
+                ${awayHome === 'away' ? 'AWAY' : 'HOME'}
+            </th>
+            `;
+                setNames.forEach((pair) => {
+                    for (let i = 0; i < pair[1]; i++) {
+                        trHtml += `
+             <td>
+                <label>
+                    <input type="radio" name="${matchIndex + index}-${pair[0]}-${i + 1}" value="${awayHome === 'away' ? 1 : 0}">
+                </label>
+            </td>`
+                    }
+                });
+                trHtml += `
+            <td id="${matchIndex + index}-point-${awayHome}">
+                0
+            </td>`;
+                const tr = document.createElement('tr');
+                tr.innerHTML = trHtml;
+                tbody.appendChild(tr);
+            });
         });
     }
 
+    for (let i = lastMatchIndex; i < 57; i = i + 3) {
+        drawSimulationInputTable(i);
+    }
+    applyRecordToForm();
+
+    document.querySelectorAll('.script-init').forEach((element) => element.style['visibility'] = 'visible');
+
     function inputOnchangeFunc() {
         const inputtedGameResults = [];
-        [1, 2, 3].forEach((n) => {
+        for (let n = lastMatchIndex + 1; n < 60; n++) {
             let maxInputIndex = -1;
             const gameResults = [];
             ['van-1', 'van-2', 'van-3', 'mid-1', 'mid-2', 'mid-3', 'general-1', 'general-2', 'general-3', 'general-4', 'general-5', 'extra-1'].forEach((inputName, inputIndex) => {
@@ -1702,7 +1270,7 @@
             });
             gameResults.length = maxInputIndex + 1;
             inputtedGameResults.push(gameResults);
-        });
+        }
         console.log(inputtedGameResults);
         const results = getDivisionResults();
         results.push(...inputtedGameResults);
@@ -1718,48 +1286,64 @@
             inputOnchangeFunc();
         }
     });
-    document.getElementById('simulate').onclick = function () {
-        const enableRate = document.querySelector('#disable-rate:checked') === null;
-        document.getElementById('loader').style['opacity'] = '70%';
-        document.getElementById('loader').style['z-index'] = '100';
-        setTimeout(() => {
-            simulation.enable_rate(enableRate);
-            const divisionResults = getDivisionResults();
-            divisionResults.push(...inputOnchangeFunc());
-            divisionResults.forEach((results, index) => {
-                simulation.set_match_result(index, results);
+    document.querySelectorAll('[name=disable-rate]').forEach((element) => {
+        element.onchange = function () {
+            document.querySelectorAll('[name=disable-rate]').forEach((nested) => {
+                nested.checked = element.checked;
             });
-            simulation.simulate();
+        }
+    })
+    document.querySelectorAll('.simulate').forEach((element) => {
+        element.onclick = function () {
+            const enableRate = document.querySelector('[name=disable-rate]:checked') === null;
+            document.getElementById('loader').style['opacity'] = '70%';
+            document.getElementById('loader').style['z-index'] = '100';
+            setTimeout(() => {
+                simulation.enable_rate(enableRate);
+                const divisionResults = getDivisionResults();
+                divisionResults.push(...inputOnchangeFunc());
+                divisionResults.forEach((results, index) => {
+                    simulation.set_match_result(index, results);
+                });
+                simulation.simulate();
 
-            drawTables();
-            document.getElementById('loader').style['opacity'] = '0';
-            document.getElementById('loader').style['z-index'] = '-1';
-        }, 10);
-    }
-    document.getElementById('clear').onclick = function () {
-        const enableRate = document.querySelector('#disable-rate:checked') === null;
-        document.getElementById('loader').style['opacity'] = '70%';
-        document.getElementById('loader').style['z-index'] = '100';
-        setTimeout(() => {
-            [1, 2, 3].forEach((n) => {
-                let van1 = document.querySelector(`input[name="${n}-van-1"]:checked`);
-                if (van1) {
-                    van1.checked = '';
+                drawTables();
+                document.getElementById('loader').style['opacity'] = '0';
+                document.getElementById('loader').style['z-index'] = '-1';
+            }, 10);
+        }
+    })
+    document.querySelectorAll('.simulation-clear').forEach((element) => {
+        element.onclick = function () {
+            const matchIndex = Number(element.value);
+            const enableRate = document.querySelector('#disable-rate:checked') === null;
+            document.getElementById('loader').style['opacity'] = '70%';
+            document.getElementById('loader').style['z-index'] = '100';
+            setTimeout(() => {
+                [1, 2, 3].forEach((n) => {
+                    let van1 = document.querySelector(`input[name="${matchIndex + n}-van-1"]:checked`);
+                    if (van1) {
+                        console.log(van1);
+                        van1.checked = '';
+                    }
+                });
+                simulation.enable_rate(enableRate);
+                const divisionResults = getDivisionResults();
+                while (divisionResults.length < 60) {
+                    divisionResults.push([]);
                 }
-            });
-            simulation.enable_rate(enableRate);
-            const divisionResults = getDivisionResults();
-            divisionResults.push([], [], []);
-            divisionResults.forEach((results, index) => {
-                simulation.set_match_result(index, results);
-            });
-            applyRecordToForm();
-            simulation.simulate();
-            drawTables();
-            document.getElementById('loader').style['opacity'] = '0';
-            document.getElementById('loader').style['z-index'] = '-1';
-        }, 10);
-    }
+                divisionResults.forEach((results, index) => {
+                    simulation.set_match_result(index, results);
+                });
+                applyRecordToForm();
+                simulation.simulate();
+                drawTables();
+                document.getElementById('loader').style['opacity'] = '0';
+                document.getElementById('loader').style['z-index'] = '-1';
+            }, 10);
+        }
+    });
+
     //要素を取得
     const modal = document.querySelector('.js-modal'),
         open = document.querySelector('.js-modal-open'),
