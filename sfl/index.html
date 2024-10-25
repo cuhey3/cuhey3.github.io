@@ -1320,18 +1320,15 @@
             document.getElementById('loader').style['opacity'] = '70%';
             document.getElementById('loader').style['z-index'] = '100';
             setTimeout(() => {
+                simulation.enable_rate(enableRate);
+                const divisionResults = inputOnchangeFunc();
                 [1, 2, 3].forEach((n) => {
                     let van1 = document.querySelector(`input[name="${matchIndex + n}-van-1"]:checked`);
                     if (van1) {
-                        console.log(van1);
                         van1.checked = '';
                     }
+                    divisionResults[matchIndex + n - 1] = [];
                 });
-                simulation.enable_rate(enableRate);
-                const divisionResults = getDivisionResults();
-                while (divisionResults.length < 60) {
-                    divisionResults.push([]);
-                }
                 divisionResults.forEach((results, index) => {
                     simulation.set_match_result(index, results);
                 });
