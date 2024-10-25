@@ -970,87 +970,7 @@
         </table>
         <p>試合結果が当サイトに反映される前でも、ご自身で任意の試合結果を入力し、シミュレーションを行うことができます。</p>
     </div>
-    <!--    <h2>シミュレーション設定</h2>-->
-    <!--    <div class="show expand-area">-->
-
-    <!--    </div>-->
     <h2 style="margin-bottom:0">レーティング</h2>
-    <!--<h2>レート表示用レイアウト検討</h2>-->
-    <!--<table>-->
-    <!--    <thead>-->
-    <!--    <tr>-->
-    <!--        <th>チーム</th>-->
-    <!--        <th>レート</th>-->
-    <!--    </tr>-->
-    <!--    </thead>-->
-    <!--    <tbody>-->
-    <!--    <tr>-->
-    <!--        <td>DFM</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    <tr>-->
-    <!--        <td>OJA</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    <tr>-->
-    <!--        <td>DFM</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    <tr>-->
-    <!--        <td>OJA</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    <tr>-->
-    <!--        <td>DFM</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    <tr>-->
-    <!--        <td>OJA</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    </tbody>-->
-    <!--</table>-->
-    <!--<table>-->
-    <!--    <thead>-->
-    <!--    <tr>-->
-    <!--        <th>チーム</th>-->
-    <!--        <th>先鋒・中堅</th>-->
-    <!--        <th>大将・延長</th>-->
-    <!--    </tr>-->
-    <!--    </thead>-->
-    <!--    <tbody>-->
-    <!--    <tr>-->
-    <!--        <td>DFM</td>-->
-    <!--        <td>1500</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    <tr>-->
-    <!--        <td>OJA</td>-->
-    <!--        <td>1500</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    <tr>-->
-    <!--        <td>DFM</td>-->
-    <!--        <td>1500</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    <tr>-->
-    <!--        <td>OJA</td>-->
-    <!--        <td>1500</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    <tr>-->
-    <!--        <td>DFM</td>-->
-    <!--        <td>1500</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    <tr>-->
-    <!--        <td>OJA</td>-->
-    <!--        <td>1500</td>-->
-    <!--        <td>1500</td>-->
-    <!--    </tr>-->
-    <!--    </tbody>-->
-    <!--</table>-->
     <div class="show expand-area">
         <div style="float:left;margin-right: 1.8em;">
             <h3 style="margin-top: 0;margin-bottom: 0.5em">ディビジョンS</h3>
@@ -1452,7 +1372,7 @@
     </div>
 </div>
 <script type="module">
-    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202410222200";
+    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202410252200";
 
     await init();
     const {JP2024DivisionS, JP2024DivisionF, JP2024AllDivision} = SflStage;
@@ -1512,11 +1432,14 @@
         [false, false, false, true, true, false, false, true, true, true],
         [false, true, false, false, true, false, true, true, false, false, true, true],
         [false, false, false, false, false, false, true, false, true, false, false],
+        // F-7節
+        [false, false, false, false, true, false, false, true, false, false],
+        [true, true, false, true, true, false, false, true, false, true, true],
+        [false, false, false, false, true, false, true, true, true, false, false, true],
     ];
 
     const simulation = new SflSimulation(true);
     const allTeamNames = simulation.get_team_names(JP2024AllDivision);
-
     getDivisionResults().forEach((results, index) => {
         simulation.set_match_result(index, results);
     });
