@@ -301,7 +301,7 @@ export function __wbgtest_cov_dump() {
     }
 }
 
-function __wbg_adapter_125(arg0, arg1, arg2, arg3, arg4) {
+function __wbg_adapter_136(arg0, arg1, arg2, arg3, arg4) {
     wasm.wasm_bindgen__convert__closures__invoke3_mut__h76fc2733cdc4598e(arg0, arg1, addHeapObject(arg2), arg3, addHeapObject(arg4));
 }
 
@@ -312,7 +312,7 @@ function handleError(f, args) {
         wasm.__wbindgen_exn_store(addHeapObject(e));
     }
 }
-function __wbg_adapter_138(arg0, arg1, arg2, arg3) {
+function __wbg_adapter_149(arg0, arg1, arg2, arg3) {
     wasm.wasm_bindgen__convert__closures__invoke2_mut__h7b4e580c9e88c407(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
 }
 
@@ -325,6 +325,86 @@ export const SflStage = Object.freeze({ JP2024DivisionS:0,"0":"JP2024DivisionS",
 /**
 */
 export const SflTeam = Object.freeze({ G8S:0,"0":"G8S",DFM:1,"1":"DFM",SOL:2,"2":"SOL",IBS:3,"3":"IBS",OJA:4,"4":"OJA",SNB:5,"5":"SNB",CR:6,"6":"CR",CAG:7,"7":"CAG",IXA:8,"8":"IXA",RC:9,"9":"RC",VAR:10,"10":"VAR",FAV:11,"11":"FAV", });
+
+const DivisionPlaceDetailFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_divisionplacedetail_free(ptr >>> 0, 1));
+/**
+*/
+export class DivisionPlaceDetail {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(DivisionPlaceDetail.prototype);
+        obj.__wbg_ptr = ptr;
+        DivisionPlaceDetailFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        DivisionPlaceDetailFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_divisionplacedetail_free(ptr, 0);
+    }
+    /**
+    * @returns {number}
+    */
+    get first() {
+        const ret = wasm.__wbg_get_divisionplacedetail_first(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set first(arg0) {
+        wasm.__wbg_set_divisionplacedetail_first(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @returns {number}
+    */
+    get second() {
+        const ret = wasm.__wbg_get_divisionplacedetail_second(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set second(arg0) {
+        wasm.__wbg_set_divisionplacedetail_second(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @returns {number}
+    */
+    get third() {
+        const ret = wasm.__wbg_get_divisionplacedetail_third(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set third(arg0) {
+        wasm.__wbg_set_divisionplacedetail_third(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @returns {number}
+    */
+    get time() {
+        const ret = wasm.__wbg_get_divisionplacedetail_time(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set time(arg0) {
+        wasm.__wbg_set_divisionplacedetail_time(this.__wbg_ptr, arg0);
+    }
+}
 
 const SflMatchFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
@@ -787,6 +867,23 @@ export class SflSimulation {
     }
     /**
     * @param {number} team_index
+    * @returns {(DivisionPlaceDetail)[]}
+    */
+    get_division_places_detail(team_index) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.sflsimulation_get_division_places_detail(retptr, this.__wbg_ptr, team_index);
+            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+            var v1 = getArrayJsValueFromWasm0(r0, r1).slice();
+            wasm.__wbindgen_free(r0, r1 * 4, 4);
+            return v1;
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @param {number} team_index
     * @returns {number}
     */
     get_expect_point(team_index) {
@@ -1048,6 +1145,10 @@ function __wbg_get_imports() {
         const ret = SflMatch.__wrap(arg0);
         return addHeapObject(ret);
     };
+    imports.wbg.__wbg_divisionplacedetail_new = function(arg0) {
+        const ret = DivisionPlaceDetail.__wrap(arg0);
+        return addHeapObject(ret);
+    };
     imports.wbg.__wbindgen_string_get = function(arg0, arg1) {
         const obj = getObject(arg1);
         const ret = typeof(obj) === 'string' ? obj : undefined;
@@ -1202,7 +1303,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_125(a, state0.b, arg0, arg1, arg2);
+                    return __wbg_adapter_136(a, state0.b, arg0, arg1, arg2);
                 } finally {
                     state0.a = a;
                 }
@@ -1235,7 +1336,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_138(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_149(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -1257,7 +1358,7 @@ function __wbg_get_imports() {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper697 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper737 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 60, __wbg_adapter_22);
         return addHeapObject(ret);
     };
@@ -1314,7 +1415,7 @@ async function __wbg_init(module_or_path) {
     console.warn('using deprecated parameters for the initialization function; pass a single object instead')
 
     if (typeof module_or_path === 'undefined') {
-        module_or_path = new URL('sfl_lib_bg.wasm?t=202410252200', import.meta.url);
+        module_or_path = new URL('sfl_lib_bg.wasm?t=202410281500', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
