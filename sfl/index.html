@@ -1489,7 +1489,8 @@
             document.getElementById('loader').style['z-index'] = '100';
             setTimeout(() => {
                 simulation.enable_rate(enableRate);
-                const divisionResults = inputOnchangeFunc();
+                const divisionResults = getDivisionResults();
+                divisionResults.push(...inputOnchangeFunc());
                 [1, 2, 3].forEach((n) => {
                     let van1 = document.querySelector(`input[name="${matchIndex + n}-van-1"]:checked`);
                     if (van1) {
