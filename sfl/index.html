@@ -250,6 +250,16 @@
         <dd>
             また1バトル（1セット）ごとにイロレーティングを算出し、今後の試合結果のランダム生成に反映しています。
         </dd>
+        <br>
+        <dt>
+            [10/28 ディビジョン終盤について追記]
+        </dt>
+        <dd>
+            10000回のシミュレーションで一度も発生しない場合を0%、全てで発生する場合を100%と表記するようにしました。
+        </dd>
+        <dd>
+            現状0%、100%であっても、その後に予測より大きく勝ったり負けたりすることで予想確率は変動します。
+        </dd>
     </dl>
     <div style="height: 2em;">
         <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large"
@@ -728,6 +738,17 @@
             <div class="modal-close js-modal-close">×</div>
             <!-- モーダル内部のコンテンツ -->
             <div class="modal-content">
+                <h3 id="modal-content-text-3">ディビジョン終了時の順位とポイントの予想</h3>
+                <table class="modal-table-border">
+                    <thead>
+                    <tr>
+                        <td></td><td>発生確率</td><td>最高得点</td><td>平均得点</td><td>最低得点</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <br>
                 <h3 id="modal-content-text"></h3>
                 <table class="modal-table">
                     <thead>
@@ -883,12 +904,12 @@
             <!-- モーダルを閉じるボタン -->
             <div class="modal-close js-modal-close-2">×</div>
             <div class="modal-content">
-                <h3 id="modal-content-text-2"></h3>合算
+                <h3 id="modal-content-text-2"></h3>
                 <table class="modal-table-sum-2" style="margin-left: 20px;margin-bottom:30px;">
                     <thead>
                     <tr>
-                        <td>他チーム名</td>
-                        <td>1万回試行時の発生回数</td>
+                        <td>チーム名</td>
+                        <td>発生確率(1万回中)</td>
                     </tr>
                     </thead>
                     <tbody>
@@ -901,7 +922,7 @@
                         <td>1位</td>
                         <td>2位</td>
                         <td>3位</td>
-                        <td>1万回試行時の発生回数</td>
+                        <td>発生確率(1万回中)</td>
                     </tr>
                     </thead>
                     <tbody>
@@ -912,7 +933,7 @@
     </div>
 </div>
 <script type="module">
-    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202410281500";
+    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202410281800";
 
     await init();
     const {JP2024DivisionS, JP2024DivisionF, JP2024AllDivision} = SflStage;
@@ -1038,14 +1059,15 @@
                 document.getElementById(`${divisionSign}-${i}-8`).onclick = function (event) {
                     event.preventDefault();
                     modal.classList.add('is-active');
-                    document.getElementById('modal-content-text').innerText = `${teamName}のポイント実績・予想`;
+                    document.getElementById('modal-content-text').innerText = `[${teamName}] ポイント実績・予想`;
+                    document.getElementById('modal-content-text-3').innerText = `[${teamName}] ディビジョン終了時の順位とポイントの予想`;
                     drawModal(teamIndex);
                 }
                 document.querySelectorAll(`#${divisionSign}-${i}-19`).forEach((element) => {
                     element.onclick = function (event) {
                         event.preventDefault();
                         modal2.classList.add('is-active');
-                        document.getElementById('modal-content-text-2').innerText = `${teamName}プレイオフ進出時の他チーム予想`;
+                        document.getElementById('modal-content-text-2').innerText = `[${teamName}] プレイオフ進出時のチーム予想`;
                         drawModal2(teamIndex);
                     }
                 })
@@ -1081,6 +1103,18 @@
     }
 
     function formatPercent(rawNumber) {
+        if (rawNumber === 10000) {
+            return '100%';
+        }
+        if (rawNumber >= 9995) {
+            return '99.9%';
+        }
+        if (rawNumber === 0) {
+            return '0%';
+        }
+        if (rawNumber < 5) {
+            return `0.0${rawNumber}%`;
+        }
         const rounded = Math.round(rawNumber / 10).toString();
         if (rounded < 10) {
             return rounded.replace(/(.)$/, '0.$1%');
@@ -1090,6 +1124,7 @@
     }
 
     function drawModal(teamIndex) {
+        const currentPoint = simulation.sfl_stats.get_points()[teamIndex];
         const teamMatches = simulation.get_matches().map((m, index) => [m, index]).filter((m) => m[0].team === teamIndex || m[0].opponent_team === teamIndex);
         const opponentTeams = teamMatches.map((m) => m[0].team === teamIndex ? m[0].opponent_team : m[0].team);
         const homeAwayArray = teamMatches.map((m) => m[0].team === teamIndex ? 'AWAY' : 'HOME');
@@ -1154,6 +1189,49 @@
         });
         document.querySelector(`.modal-table .team-van-rating th`).innerText = `${allTeamNames[teamIndex]}の先鋒戦レート`;
         document.querySelector(`.modal-table .team-general-rating th`).innerText = `${allTeamNames[teamIndex]}の大将戦レート`;
+        const placeToPoints = simulation.get_place_to_point_detail(teamIndex);
+        const tbody = document.querySelector('.modal-table-border tbody');
+        tbody.innerHTML = '';
+        placeToPoints.forEach((placeToPoint, nth) => {
+            const tr = document.createElement('tr');
+            console.log(placeToPoint);
+            tbody.appendChild(tr);
+            {
+                const td = document.createElement(nth < 3 ? 'th': 'td');
+                tr.appendChild(td);
+                td.innerHTML = `${nth + 1}位`;
+            }
+            if (placeToPoint.time === 0) {
+                for (let n = 0; n < 4; n++) {
+                    const td = document.createElement('td');
+                    td.innerHTML = '-';
+                    tr.appendChild(td);
+                }
+                return;
+            }
+            {
+                const td = document.createElement('td');
+                tr.appendChild(td);
+                td.innerHTML = formatPercent(placeToPoint.time).toString();
+            }
+            {
+                const td = document.createElement('td');
+                tr.appendChild(td);
+                td.innerHTML = `${placeToPoint.highest_pont} (+${placeToPoint.highest_pont - currentPoint})`
+            }
+            {
+                const td = document.createElement('td');
+                tr.appendChild(td);
+                const averagePoint = placeToPoint.sum_point / placeToPoint.time;
+                const addPoint = averagePoint - currentPoint;
+                td.innerHTML = `${(Math.round(averagePoint * 10).toString()).replace(/(.)$/, '.$1')} (+${(Math.round(addPoint * 10).toString()).replace(/(.)$/, '.$1')})`;
+            }
+            {
+                const td = document.createElement('td');
+                tr.appendChild(td);
+                td.innerHTML = `${placeToPoint.lowest_point} (+${placeToPoint.lowest_point - currentPoint})`
+            }
+        });
     }
 
     function drawModal2(teamIndex) {
@@ -1185,7 +1263,7 @@
             }
             {
                 const td = document.createElement('td');
-                td.innerHTML = detail[1].toString();
+                td.innerHTML = formatPercent(detail[1]);
                 tr.appendChild(td);
             }
         })
@@ -1198,7 +1276,7 @@
                 const td = document.createElement('td');
                 tr.appendChild(td);
                 if (key === 'time') {
-                    td.innerHTML = detail[key].toString();
+                    td.innerHTML = formatPercent(detail[key]);
                 } else {
                     td.innerHTML = allTeamNames[detail[key]];
                 }
