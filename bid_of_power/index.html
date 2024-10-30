@@ -43,10 +43,10 @@
 <svg width="800" height="800" id="title" display="none">
     <g transform="translate(0, 50)">
         <text x="200" y="180" font-size="60" fill="white">BID OF POWER</text>
-        <text x="310" y="280" fill="white" font-size="30" text-decoration="line-through">CPUと遊ぶ</text>
+        <text x="310" y="280" fill="white" font-size="30">CPUと遊ぶ</text>
         <text x="310" y="340" fill="white" font-size="30">一緒に遊ぶ</text>
         <text x="310" y="400" fill="white" font-size="30">オンライン対戦</text>
-        <text x="250" y="345" fill="white" font-size="40" id="title-cursor">👉</text>
+        <text x="250" y="285" fill="white" font-size="40" id="title-cursor">👉</text>
     </g>
     <text x="590" y="30" fill="white" font-size="20">Aキー: 決定</text>
     <text x="590" y="60" fill="white" font-size="20">Zキー: 取消・メニュー</text>
@@ -228,6 +228,9 @@
 <svg width="800" height="800" id="fader" display="block" style="position: absolute; top:0; left: 0;">
     <rect x="0" y="0" width="800" height="800" fill="black" fill-opacity="0"></rect>
 </svg>
+<svg width="800" height="800" id="clip" display="block" style="position: absolute; top:0; left: 781px;">
+    <rect x="0" y="0" width="100" height="800" fill="black"></rect>
+</svg>
 <svg width="800" height="180" id="controller" display="none">
     <circle cx="560" cy="120" r="60" fill="#8f3842" class="a"></circle>
     <text x="547" y="135" fill="black" font-size="45" class="a">A</text>
@@ -238,9 +241,8 @@
     <rect x="134" y="107" width="80" height="80" fill="gray" class="ArrowDown"></rect>
     <rect x="218" y="63" width="80" height="80" fill="gray" class="ArrowRight"></rect>
 </svg>
-</g>
 <script type="module">
-    import init, {create_rpg_engine} from "./pkg/bid_of_power_lib.js?t=202410241845";
+    import init, {create_rpg_engine} from "./pkg/bid_of_power_lib.js?t=202410301630";
 
     await init();
     const engine = create_rpg_engine();
