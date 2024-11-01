@@ -484,7 +484,7 @@
             </tbody>
         </table>
     </div>
-    <h2 class="right">試合結果を入力（ディビジョンF 第8節〜）</h2>
+    <h2 class="right">試合結果を入力（ディビジョンF 第9節〜）</h2>
     <div class="hide expand-area" id="simulation-parent-f">
         <p>試合結果が当サイトに反映される前でも、ご自身で任意の試合結果を入力し、シミュレーションを行うことができます。</p>
     </div>
@@ -742,7 +742,11 @@
                 <table class="modal-table-border">
                     <thead>
                     <tr>
-                        <td></td><td>発生確率</td><td>最高得点</td><td>平均得点</td><td>最低得点</td>
+                        <td></td>
+                        <td>発生確率</td>
+                        <td>最高得点</td>
+                        <td>平均得点</td>
+                        <td>最低得点</td>
                     </tr>
                     </thead>
                     <tbody>
@@ -933,7 +937,7 @@
     </div>
 </div>
 <script type="module">
-    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202410292200";
+    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202410222200";
 
     await init();
     const {JP2024DivisionS, JP2024DivisionF, JP2024AllDivision} = SflStage;
@@ -1001,6 +1005,10 @@
         [true, true, false, false, false, false, true, false, true, false, true],
         [true, true, false, true, true, false, true, true, false, true],
         [true, false, false, false, false, false, true, true, false, true, false, true],
+        // F-8節
+        [false, true, true, false, true, false, false, false, true, false],
+        [true, false, true, true, false, true, true, false, true, true],
+        [false, true, true, false, true, true, true, true, false, true],
     ];
 
     const simulation = new SflSimulation(true);
@@ -1201,7 +1209,7 @@
             console.log(placeToPoint);
             tbody.appendChild(tr);
             {
-                const td = document.createElement(nth < 3 ? 'th': 'td');
+                const td = document.createElement(nth < 3 ? 'th' : 'td');
                 tr.appendChild(td);
                 td.innerHTML = `${nth + 1}位`;
             }
