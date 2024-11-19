@@ -373,7 +373,7 @@
             </tbody>
         </table>
     </div>
-    <h2 class="right">試合結果を入力（ディビジョンS 第10節）</h2>
+    <h2 class="right" style="display: none;">試合結果を入力（ディビジョンS 第10節）</h2>
     <div class="hide expand-area" id="simulation-parent-s">
         <p>試合結果が当サイトに反映される前でも、ご自身で任意の試合結果を入力し、シミュレーションを行うことができます。</p>
     </div>
@@ -485,7 +485,7 @@
         </table>
     </div>
     <h2 class="right">試合結果を入力（ディビジョンF 第10節）</h2>
-    <div class="hide expand-area" id="simulation-parent-f">
+    <div class="show expand-area" id="simulation-parent-f">
         <p>試合結果が当サイトに反映される前でも、ご自身で任意の試合結果を入力し、シミュレーションを行うことができます。</p>
     </div>
     <h2 style="margin-bottom:0">レーティング</h2>
@@ -937,7 +937,7 @@
     </div>
 </div>
 <script type="module">
-    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202411191700";
+    import init, {SflSimulation, SflStage} from "./pkg/sfl_lib.js?t=202411192300";
 
     await init();
     const {JP2024DivisionS, JP2024DivisionF, JP2024AllDivision} = SflStage;
@@ -1017,6 +1017,10 @@
         [true, true, false, true, true, false, false, false, true, true, false, false],
         [true, true, false, true, false, true, false, true, true, true],
         [true, true, false, true, false, false, false, false, false],
+        // S-10節
+        [true, true, false, true, false, false, true, false, true, false, false],
+        [false, false, false, false, false, false, true, true, true, false, false, false],
+        [false, true, false, false, false, false, true, true, false, true, false, false],
     ];
 
     const simulation = new SflSimulation(true);
