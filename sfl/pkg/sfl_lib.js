@@ -318,13 +318,13 @@ function __wbg_adapter_160(arg0, arg1, arg2, arg3) {
 
 /**
 */
-export const SflStage = Object.freeze({ JP2024DivisionS:0,"0":"JP2024DivisionS",JP2024DivisionF:1,"1":"JP2024DivisionF",JP2024AllDivision:2,"2":"JP2024AllDivision",JP2024Playoff:3,"3":"JP2024Playoff",JP2024GrandFinal:4,"4":"JP2024GrandFinal", });
+export const GameType = Object.freeze({ VAN:0,"0":"VAN",MID:1,"1":"MID",GENERAL:2,"2":"GENERAL",EXTRA:3,"3":"EXTRA",PlayoffExtra:4,"4":"PlayoffExtra", });
 /**
 */
 export const SflTeam = Object.freeze({ G8S:0,"0":"G8S",DFM:1,"1":"DFM",SOL:2,"2":"SOL",IBS:3,"3":"IBS",OJA:4,"4":"OJA",SNB:5,"5":"SNB",CR:6,"6":"CR",CAG:7,"7":"CAG",IXA:8,"8":"IXA",RC:9,"9":"RC",VAR:10,"10":"VAR",FAV:11,"11":"FAV", });
 /**
 */
-export const GameType = Object.freeze({ VAN:0,"0":"VAN",MID:1,"1":"MID",GENERAL:2,"2":"GENERAL",EXTRA:3,"3":"EXTRA",PlayoffExtra:4,"4":"PlayoffExtra", });
+export const SflStage = Object.freeze({ JP2024DivisionS:0,"0":"JP2024DivisionS",JP2024DivisionF:1,"1":"JP2024DivisionF",JP2024AllDivision:2,"2":"JP2024AllDivision",JP2024Playoff:3,"3":"JP2024Playoff",JP2024GrandFinal:4,"4":"JP2024GrandFinal", });
 
 const DivisionPlaceDetailFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
@@ -1516,7 +1516,7 @@ async function __wbg_init(module_or_path) {
     console.warn('using deprecated parameters for the initialization function; pass a single object instead')
 
     if (typeof module_or_path === 'undefined') {
-        module_or_path = new URL('sfl_lib_bg.wasm?t=202411161900', import.meta.url);
+        module_or_path = new URL('sfl_lib_bg.wasm?t=202411191700', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
