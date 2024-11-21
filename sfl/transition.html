@@ -198,8 +198,10 @@
             }
         }
         for (let i = 0; i < sectionLength; i++) {
-            new SvgFigure('text').setPosition((85 - 15) / sectionLength * i + 15 + 7, 90).element.innerHTML = `${i + 1}節`;
+            new SvgFigure('text').setPosition((85 - 15) / sectionLength * i + 11.5 + 7, 90).element.innerHTML = `${i + 1}節`;
         }
+        const maxTeams = [];
+        const minTeams = [];
         teamColors.forEach((teamColor, i) => {
             const teamSimulations = [];
             newSimulations.forEach((sectionSimulation) => {
@@ -208,18 +210,43 @@
                     teamSimulations.push(targetTeamSimulation[0] + targetTeamSimulation[1] + targetTeamSimulation[2]);
                 }
             });
-            for (let i = 0; i < sectionLength - 1; i++) {
-                const startY = (85) - (teamSimulations[i] * (85 - 15)) / 10000;
-                const endY = (85) - (teamSimulations[i + 1] * (85 - 15)) / 10000;
-                const lineElement = new SvgFigure('line').setPosition((85 - 15) / sectionLength * (i + 0.5) + 15, startY, (85 - 15) / sectionLength * (i + 1.5) + 15, endY).element;
+            for (let j = 0; j < sectionLength - 1; j++) {
+                const startY = (85) - (teamSimulations[j] * (85 - 15)) / 10000;
+                const endY = (85) - (teamSimulations[j + 1] * (85 - 15)) / 10000;
+                const lineElement = new SvgFigure('line').setPosition((85 - 15) / sectionLength * (j + 0.5) + 15, startY, (85 - 15) / sectionLength * (j + 1.5) + 15, endY).element;
                 lineElement.setAttribute('stroke', teamColor[1]);
-                lineElement.setAttribute('stroke-width', '2');
-                if (i === sectionLength - 2) {
-                    const textElement = new SvgFigure('text').setPosition((85 - 15) / sectionLength * (i + 1.5) + 19, endY + 1.2).element;
+                lineElement.setAttribute('stroke-width', '3');
+                if (j === sectionLength - 2) {
+                    let teamEndY = endY;
+                    if (endY > 83) {
+                        teamEndY = endY + maxTeams.length * 4 - 4;
+                        maxTeams.push(i);
+                    } else if (endY < 17) {
+                        teamEndY = endY + minTeams.length * 4 - 4;
+                        minTeams.push(i);
+                    }
+                    const rectElement = new SvgFigure('rect').setPosition((85 - 17.3) / sectionLength * (j + 1.5) + 19, teamEndY -1.7).element;
+                    rectElement.setAttribute('width', 43);
+                    rectElement.setAttribute('height', 22);
+                    rectElement.setAttribute('stroke', teamColor[1]);
+                    rectElement.setAttribute('stroke-width', 2);
+                    rectElement.setAttribute('fill', 'white');
+                    const textElement = new SvgFigure('text').setPosition((85 - 15) / sectionLength * (j + 1.5) + 19, teamEndY + 1.2).element;
                     textElement.innerHTML = teamColor[0];
                     textElement.setAttribute('stroke', teamColor[1]);
+                    textElement.setAttribute('fill', teamColor[1]);
                 }
             }
+            const teamGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            const groupId = `team-${teamColor[1]}`;
+            teamGroup.setAttribute("id", groupId);
+            svgScene.appendChild(teamGroup);
+            Array.from(document.querySelectorAll(`[stroke="${teamColor[1]}"]`)).forEach((element) => {
+                element.onclick = function() {
+                    svgScene.appendChild(document.getElementById(groupId));
+                }
+                teamGroup.appendChild(element);
+            });
         });
     });
 </script>
