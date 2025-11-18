@@ -1,0 +1,147 @@
+<html lang="ja">
+<head>
+    <meta charset="utf-8"/>
+    <title></title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<h2>WebRTCチャット</h2>
+<label>
+    <input type="radio" name="join-type" value="host"/>ホスト
+</label>
+<label>
+    <input type="radio" name="join-type" value="guest"/>ゲスト
+</label>
+<label>
+</label>
+<div>
+    <label>
+        チャットルームトークン
+        <textarea id="offer-token-input" disabled></textarea>
+    </label>
+    <input type="button" id="offer-token-button" value="コピーする" disabled/>
+</div>
+<div>
+    <label>
+        チャットルーム参加トークン
+        <textarea id="answer-token-input" disabled></textarea>
+    </label>
+    <input type="button" id="answer-token-button" value="読み込む" disabled/>
+</div>
+<h3>チャット</h3>
+<table>
+    <thead>
+    <tr>
+        <th>time</th>
+        <th>user</th>
+        <th>comment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>11/18 23:00:00</td>
+        <td>cuhey</td>
+        <td>hello</td>
+    </tr>
+    </tbody>
+</table>
+<script>
+    const offerTokenButton = document.querySelector('#offer-token-button');
+    const offerTokenInput = document.querySelector('#offer-token-input');
+    const answerTokenButton = document.querySelector('#answer-token-button');
+    const answerTokenInput = document.querySelector('#answer-token-input');
+
+    const CONFIG_FOR_SENDER = {
+        iceServers: [
+            {
+                urls: "stun:stun.l.google.com:19302",
+            },
+        ],
+    };
+
+    const senderConnection = new RTCPeerConnection(CONFIG_FOR_SENDER);
+    let offerToken = '';
+    let answerToken = '';
+    function setOfferToken() {
+        if (offerToken) {
+            offerTokenInput.value = offerToken;
+        } else {
+            (async function () {
+                await (async () => {
+                    const offer = await senderConnection.createOffer();
+                    offerToken = JSON.stringify(offer);
+                    console.log(`offerToken created. ${offerToken}`);
+                    offerTokenInput.value = offerToken;
+                })();
+            })();
+        }
+    }
+    function setAnswerToken() {
+        (async function () {
+            await (async () => {
+                await senderConnection.setRemoteDescription(JSON.parse(offerToken));
+                const answer = await senderConnection.createAnswer();
+                answerToken = JSON.stringify(answer);
+                console.log(`answerToken created. ${answerToken}`);
+                answerTokenInput.value = answerToken;
+            })();
+        })();
+    }
+
+    const candidates = [];
+
+    function enableOfferTokenInput(isEnable) {
+        if (isEnable) {
+            if (offerTokenInput.value) {
+                offerTokenInput.value = '';
+            }
+            offerTokenButton.value = '読み込む';
+            offerTokenButton.onclick = setAnswerToken;
+            offerTokenButton.disabled = '';
+            offerTokenInput.disabled = '';
+            offerTokenInput.placeholder = 'トークンを貼り付ける';
+        } else {
+            setOfferToken();
+            offerTokenButton.value = 'コピーする';
+            offerTokenButton.onclick = () => {};
+            offerTokenInput.disabled = 'disabled';
+            offerTokenButton.disabled = '';
+            offerTokenInput.placeholder = '';
+        }
+    }
+
+    function enableAnswerTokenInput(isEnable) {
+        if (isEnable) {
+            answerTokenButton.value = '読み込む';
+            answerTokenInput.placeholder = '参加トークンを貼り付ける';
+        } else {
+            answerTokenButton.value = 'コピーする';
+            answerTokenButton.disabled = '';
+            answerTokenInput.placeholder = '';
+        }
+    }
+
+    Array.from(document.querySelectorAll('[name=join-type]')).forEach((element) => {
+        element.onchange = (event) => {
+            const isHost = event.target.value === 'host';
+            if (isHost) {
+                enableOfferTokenInput(false);
+                enableAnswerTokenInput(true);
+            } else {
+                enableOfferTokenInput(true);
+                enableAnswerTokenInput(false);
+            }
+        }
+    });
+</script>
+</body>
+</html>
