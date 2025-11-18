@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8" />
+<head>
+    <script>
+        const playersString = "[[\"ももち\",570], [\"こばやん\",500],[\"りゅうきち\",460],[\"Dual Kevin\",460],[\"板ザン\",440],[\"EndingWalker\",440],[\"きんぐすベガ\",350],[\"Punk\",350],[\"もけ\",320],[\"Zhen\",290],[\"Nephew\",270],[\"Mister Crimson\",250],[\"ときど\",240],[\"NoahTheProdigy\",200],[\"ひぐち\",190],[\"あきら\",160],[\"Kilzyou\",140],[\"DCQ\",130],[\"立川\",120],[\"ヤマグチ\",110],[\"カワノ\",100],[\"Xian\",100],[\"Shuto\",80],[\"Oil King\",80],[\"Armperor\",70],[\"竹内ジョン\",60],[\"MenaRD\",50],[\"Nyanpi\",50],[\"ひかる\",50],[\"Caba\",50],[\"ぷげら\",40],[\"マゴ\",40],[\"りゅうせい\",40],[\"Lexx\",30],[\"ウメハラ\",30],[\"cosa\",30],[\"Chris Wong\",30],[\"SURINI\",30],[\"あくあ\",20],[\"きんちょ\",20],[\"タンタンメン\",20],[\"Problem X\",20],[\"vWsym\",20],[\"ナウマン\",10],[\"tako\",10],[\"Yuto\",10],[\"Hope.\",10],[\"稲葉\",0],[\"うりょ\",0],[\"えいた\",0],[\"えだ\",0],[\"MOV\",0],[\"おらりん\",0],[\"工藤\",0],[\"KEI.B\",0],[\"サトル\",0],[\"しみそ\",0],[\"Seiya\",0],[\"Taisei\",0],[\"ハイタニ\",0],[\"はるみー\",0],[\"ひびき\",0],[\"水派\",0],[\"あしゅまる\",0],[\"アヤサカ\",0],[\"eguto\",0],[\"おろち\",0],[\"カクタス3\",0],[\"Katakuri\",0],[\"神木C\",0],[\"Campnouで無敗\",0],[\"ケンシロウ\",0],[\"GONDO\",0],[\"在宅TO\",0],[\"ざぶとん\",0],[\"しゃど\",0],[\"シュウジ\",0],[\"Jimmy1\",0],[\"ジョジョ太郎\",0],[\"ちょろぶー\",0],[\"テイエム\",0],[\"D4C\",0],[\"Nozomi\",0],[\"Noble\",0],[\"バルジ\",0],[\"ひなお\",0],[\"Beeell\",0],[\"ピーポーくん\",0],[\"ぶん蔵\",0],[\"べてぃ\",0],[\"Hoda\",0],[\"やし\",0],[\"U10101\",0],[\"よしと\",0],[\"らおやむやむハイハイ謝謝\",0],[\"Jiewa\",0],[\"Plaster King\",0],[\"Sunhui\",0],[\"Vxbao\",0],[\"XiaoZhai\",0],[\"YANGMIAN\",0],[\"z xiri\",0],[\"Zipninja\",0],[\"Space Boy\",0],[\"FREESER\",0],[\"ROF\",0],[\"Travis Styles\",0],[\"ZG\",0],[\"HotDog29\",0],[\"Humanbomb\",0],[\"Keekuma\",0],[\"JPKING\",0],[\"Ugang\",0]]";
+        //const playersString = "[[\"ももち\",570], [\"こばやん\",500],[\"りゅうきち\",460],[\"Dual Kevin\",460],[\"板ザン\",440],[\"EndingWalker\",440],[\"きんぐすベガ\",350],[\"Punk\",350],[\"もけ\",320],[\"Zhen\",290],[\"Nephew\",270],[\"Mister Crimson\",250],[\"ときど\",240],[\"NoahTheProdigy\",200],[\"ひぐち\",190],[\"あきら\",160],[\"Kilzyou\",140],[\"DCQ\",130],[\"立川\",120],[\"ヤマグチ\",110],[\"カワノ\",100],[\"Xian\",100],[\"Shuto\",80],[\"Oil King\",80],[\"Armperor\",70],[\"竹内ジョン\",60],[\"MenaRD\",50],[\"Nyanpi\",50],[\"ひかる\",50],[\"Caba\",50],[\"ぷげら\",40],[\"マゴ\",40],[\"りゅうせい\",40],[\"Lexx\",30],[\"ウメハラ\",30],[\"cosa\",30],[\"Chris Wong\",30],[\"SURINI\",30],[\"あくあ\",20],[\"きんちょ\",20],[\"タンタンメン\",20],[\"Problem X\",20],[\"vWsym\",20],[\"ナウマン\",10],[\"tako\",10],[\"Yuto\",10],[\"Hope.\",10]]";
+        const playersToSimCount = JSON.parse(playersString);
+        playersToSimCount.forEach((a) => a.push(0));
+        const alreadyCCPlayers = ["ぷげら", "カワノ", "MenaRD", "Lexx"];
+        let targetMaxPoint = 0;
+        let targetMinPoint = 1000;
+        for (let n = 0; n < 100000; n++) {
+            const tournamentResult = [];
+            const players = JSON.parse(playersString);
+            const grantPoints = [1000, 300, 250, 200, 150, 150, 100, 100, 50, 50, 50, 50, 30, 30, 30, 30, 20, 20, 20, 20, 20, 20, 20, 20, 10, 10, 10, 10, 10, 10, 10, 10];
+            const playersNumber = players.length;
+            const grantPointsNumber = grantPoints.length;
+            const grantPlayerIndexes = [];
+            for (let i = 0; i < grantPointsNumber; i++) {
+
+                let grantIndex = -1;
+                while(true) {
+                    grantIndex = Math.floor(Math.random() * (playersNumber -1) + 1);
+                    if (grantPlayerIndexes.indexOf(grantIndex) === -1) {
+                        grantPlayerIndexes.push(grantIndex);
+                        if (i > 0 && i < 7) {
+                            tournamentResult.push(`${players[grantIndex][0]}(${grantPoints[i]})`);
+                        }
+                        break;
+                    }
+                }
+                players[grantIndex][1] += grantPoints[i];
+                if (i === 0) {
+                    alreadyCCPlayers.push(players[grantIndex][0]);
+                }
+            }
+            players.sort((a, b) => {
+                if(b[1] === a[1]){return n%2*2 - 1}else{return b[1] - a[1]}}
+            );
+            const ccPointPlayers = [];
+            const ccPointPlayersPoints = [];
+            // 優勝した人を除外するので1から
+            for (let i = 1; i < players.length; i++) {
+                if (ccPointPlayers.length > 5) {
+                    break;
+                }
+                ccPointPlayers.push(players[i][0]);
+                ccPointPlayersPoints.push(players[i][1]);
+                playersToSimCount.find((a) => a[0] === players[i][0])[2]++;
+            }
+            playersToSimCount.find((a) => a[0] === players[0][0])[2]++;
+            // if (players[0][0] !== "こばやん" && ccPointPlayers.indexOf("こばやん") === -1) {
+            //     console.log(players[0][0], ccPointPlayers.map((p, index) => `${p}(${ccPointPlayersPoints[index]})`), tournamentResult, players.find((a) => a[0] === "こばやん")[1]);
+            // }
+            if (players[0][0] !== "NoahTheProdigy" && ccPointPlayers.indexOf("NoahTheProdigy") !== -1) {
+                const targetPoint = players.find((a) => a[0] === "NoahTheProdigy")[1];
+                if (targetPoint > targetMaxPoint || targetPoint < targetMinPoint) {
+                    console.log(players[0][0], ccPointPlayers.map((p, index) => `${p}(${ccPointPlayersPoints[index]})`), tournamentResult, targetPoint);
+                }
+                targetMaxPoint = Math.max(targetPoint, targetMaxPoint);
+                targetMinPoint = Math.min(targetPoint, targetMinPoint);
+            }
+        }
+        console.log(targetMaxPoint, targetMinPoint);
+        playersToSimCount.forEach((a) => a[2] = (Math.round(a[2] / 100000 * 10000) / 100) + "%");
+        console.log(playersToSimCount);
+    </script>
+</head>
+<body>
+<h3>
+    CPTシミュレーション
+</h3>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8" />
+<head>
+    <script>
+        const pointPlayersString = "[[\"ももち\",570], [\"こばやん\",500],[\"りゅうきち\",460],[\"Dual Kevin\",460],[\"板ザン\",440],[\"EndingWalker\",440],[\"きんぐすベガ\",350],[\"Punk\",350],[\"もけ\",320],[\"Zhen\",290],[\"Nephew\",270],[\"Mister Crimson\",250],[\"ときど\",240],[\"NoahTheProdigy\",200],[\"ひぐち\",190],[\"あきら\",160],[\"Kilzyou\",140],[\"DCQ\",130],[\"立川\",120],[\"ヤマグチ\",110],[\"カワノ\",100],[\"Xian\",100],[\"Shuto\",80],[\"Oil King\",80],[\"Armperor\",70],[\"竹内ジョン\",60],[\"MenaRD\",50],[\"Nyanpi\",50],[\"ひかる\",50],[\"Caba\",50],[\"ぷげら\",40],[\"マゴ\",40],[\"りゅうせい\",40],[\"Lexx\",30],[\"ウメハラ\",30],[\"cosa\",30],[\"Chris Wong\",30],[\"SURINI\",30],[\"あくあ\",20],[\"きんちょ\",20],[\"タンタンメン\",20],[\"Problem X\",20],[\"vWsym\",20],[\"ナウマン\",10],[\"tako\",10],[\"Yuto\",10],[\"Hope.\",10],[\"稲葉\",0],[\"うりょ\",0],[\"えいた\",0],[\"えだ\",0],[\"MOV\",0],[\"おらりん\",0],[\"工藤\",0],[\"KEI.B\",0],[\"サトル\",0],[\"しみそ\",0],[\"Seiya\",0],[\"Taisei\",0],[\"ハイタニ\",0],[\"はるみー\",0],[\"ひびき\",0],[\"水派\",0],[\"あしゅまる\",0],[\"アヤサカ\",0],[\"eguto\",0],[\"おろち\",0],[\"カクタス3\",0],[\"Katakuri\",0],[\"神木C\",0],[\"Campnouで無敗\",0],[\"ケンシロウ\",0],[\"GONDO\",0],[\"在宅TO\",0],[\"ざぶとん\",0],[\"しゃど\",0],[\"シュウジ\",0],[\"Jimmy1\",0],[\"ジョジョ太郎\",0],[\"ちょろぶー\",0],[\"テイエム\",0],[\"D4C\",0],[\"Nozomi\",0],[\"Noble\",0],[\"バルジ\",0],[\"ひなお\",0],[\"Beeell\",0],[\"ピーポーくん\",0],[\"ぶん蔵\",0],[\"べてぃ\",0],[\"Hoda\",0],[\"やし\",0],[\"U10101\",0],[\"よしと\",0],[\"らおやむやむハイハイ謝謝\",0],[\"Jiewa\",0],[\"Plaster King\",0],[\"Sunhui\",0],[\"Vxbao\",0],[\"XiaoZhai\",0],[\"YANGMIAN\",0],[\"z xiri\",0],[\"Zipninja\",0],[\"Space Boy\",0],[\"FREESER\",0],[\"ROF\",0],[\"Travis Styles\",0],[\"ZG\",0],[\"HotDog29\",0],[\"Humanbomb\",0],[\"Keekuma\",0],[\"JPKING\",0],[\"Ugang\",0]]";
+        const playersToSimCount = JSON.parse(pointPlayersString);
+        const alreadyCCPlayers = ["ぷげら", "カワノ", "MenaRD", "Lexx"];
+        let consoleCount = 0;
+        playersToSimCount.forEach((a) => a.push(0));
+        const itazanCount = {};
+        const losers = [
+            "eguto",
+            "りゅうきち",
+            "ナウマン",
+            "あきら",
+            "怪人王子",
+            "Punk",
+            "Kilzyou",
+            "tako",
+        ];
+        const defeat = [
+            "立川", "zabutonn", "KUDO", "Kuroasing", "Syuji", "plaster king", "Mister Crimson", "Yashi846", "こばやん", "cosa",
+            "しみそ", "あしゅまる", "Noble", "ヤマグチ", "Detritus", "ちょろぶー", "Problem X", "阳光男神", "Nephew", "りゅうせい",
+            "あくあ", "きんちょ", "kakarotto", "Mr.Rookie", "Jiewa", "カワノ", "丹阳大鸟", "泼墨写春秋", "Dual Kevin", "はるみー",
+            "Yuto", "稲葉", "XiaoXu", "Xian", "怀念", "火云邪神", "アヤサカ", "准时不早退的linn", "KEI.B", "Vxbao",
+            "おらりん", "えいた", "MiKuLa", "ハイタニ", "らおやむやむハイハイ謝謝", "Zhen", "XIAOHU", "Nyanpi", "Armperor", "Travis Styles",
+            "eda", "Okami", "D4C", "elieatscrayons", "サトル", "Seiya", "糖油果子", "ひびき", "cy小师",
+            "きんぐすベガ", "Humanbomb", "艾笠如初", "バルジ", "Zheng", "Taisei", "HEIMEILING", "小宅", "HotDog29", "Hope.",
+            "Sunhui", "Ugang", "乐乐乐乐乐", "泉此方", "Despairking", "テイエム", "骁自在", "MOV", "SURINI", "もけ",
+        ];
+        const players = [
+            // G1
+            ["Chris Wong", "立川", "eguto", "zabutonn", "cosa", "KUDO", "Kuroasing", "Syuji", "plaster king", "Mister Crimson", "こばやん", "Yashi846"],
+            // G2
+            ["りゅうきち", "ひなお", "Nephew", "りゅうせい", "しみそ", "あしゅまる", "Noble", "ヤマグチ", "Detritus", "ちょろぶー", "Problem X", "阳光男神"],
+            // G3
+            ["ナウマン", "はるみー", "ときど", "あくあ", "きんちょ", "kakarotto", "Mr.Rookie", "Jiewa", "カワノ", "丹阳大鸟", "Dual Kevin", "泼墨写春秋"],
+            // G4
+            ["ジョジョ太郎", "Yuto", "あきら", "Vxbao", "稲葉", "XiaoXu", "KEI.B", "Xian", "怀念", "火云邪神", "アヤサカ", "准时不早退的linn"],
+            // H1
+            ["怪人王子", "Oil King", "Travis Styles", "Armperor", "ハイタニ", "おらりん", "Zhen", "えいた", "Nyanpi", "MiKuLa", "XIAOHU", "らおやむやむハイハイ謝謝"],
+            // H2
+            ["Punk", "糖油果子", "DCQ", "Lexx", "ひびき", "eda", "Seiya", "Okami", "D4C", "cy小师", "サトル", "elieatscrayons"],
+            // H3
+            ["HotDog29", "FREESER", "小宅", "Hope.", "Taisei", "きんぐすベガ", "Zheng", "Humanbomb", "艾笠如初", "Kilzyou", "HEIMEILING", "バルジ"],
+            // H4
+            ["テイエム", "tako", "NoahTheProdigy", "骁自在", "Sunhui", "もけ", "Despairking", "Ugang", "乐乐乐乐乐", "MOV", "泉此方", "SURINI"],
+        ];
+        // const players = [["a", false], ["b", false], ["c", false], ["d", false], ["e", true], ["f", true], ["g", true], ["h", true], ["i", true], ["j", true], ["k", true], ["l", true]];
+        const addressesToPoints = [[27, 10], [29, 20]];
+        const top16AddressesToPoints = [];
+        top16AddressesToPoints[44] = 1000;
+        top16AddressesToPoints[45] = 300;
+        top16AddressesToPoints[46] = 250;
+        top16AddressesToPoints[47] = 200;
+        top16AddressesToPoints[48] = 150;
+        top16AddressesToPoints[49] = 150;
+        top16AddressesToPoints[50] = 100;
+        top16AddressesToPoints[51] = 100;
+        top16AddressesToPoints[52] = 50;
+        top16AddressesToPoints[53] = 50;
+        top16AddressesToPoints[54] = 50;
+        top16AddressesToPoints[55] = 50;
+        top16AddressesToPoints[56] = 30;
+        top16AddressesToPoints[57] = 30;
+        top16AddressesToPoints[58] = 30;
+        top16AddressesToPoints[59] = 30;
+
+        for (let m = 0; m < 100000; m++) {
+            const pointPlayers = JSON.parse(pointPlayersString);
+            const top16Addresses = [
+                "Chris Wong",
+                "ひなお",
+                "ときど",
+                "ジョジョ太郎",
+                "Oil King",
+                "DCQ",
+                "FREESER",
+                "NoahTheProdigy",
+                "eguto",
+                "りゅうきち",
+                "ナウマン",
+                "あきら",
+                "怪人王子",
+                "Punk",
+                "Kilzyou",
+                "tako",
+            ];
+        // for (let n = 0; n < 8; n++) {
+        //     // console.log(top16Addresses);
+        //     const addresses = players[n];
+        //     const matches = [[0, 1, 12, 19], [2, 3, 13, 21], [12, 13, 18, 25], [4, 5, 14, -1], [6, 7, 15, -1], [8, 9, 16, -1], [10, 11, 17, -1], [14, 15, 20, -1], [16, 17, 22, -1], [19, 20, 23, -1], [21, 22, 24, -1], [23, 24, 26, 27], [25, 26, 28, 29]];
+        //     for (let i = 0; i < matches.length; i++) {
+        //         const match = matches[i];
+        //         const player1 = addresses[match[0]];
+        //         const player1State = defeat.indexOf(player1) !== -1 ? 0 : losers.indexOf(player1) !== -1 ? 1: 2;
+        //         const player2 = addresses[match[1]];
+        //         const player2State = defeat.indexOf(player2) !== -1 ? 0 : losers.indexOf(player2) !== -1 ? 1: 2;
+        //         const randomResult = player1State === player2State ? Math.random() < 0.5: player1State > player2State;
+        //         const winner = randomResult ? player1 : player2;
+        //         const loser = randomResult ? player2 : player1;
+        //         if (!winner || !loser) {
+        //             console.log(match);
+        //         }
+        //         addresses[match[2]] = winner;
+        //         addresses[match[3]] = loser;
+        //     }
+        //     top16Addresses[n] = addresses[18];
+        //     top16Addresses[n + 8] = addresses[28];
+        //     addressesToPoints.forEach((array) => {
+        //         const name = addresses[array[0]];
+        //         const found = pointPlayers.find((p) => p[0] === name);
+        //         if (found) {
+        //             found[1] += array[1];
+        //         } else {
+        //             pointPlayers.push([name, array[1]]);
+        //         }
+        //     });
+        // }
+        // console.log(top16Addresses);
+        const top16Matches = [
+            [0, 7, 16, 26, 2], [3, 4, 17, 24, 1], [1, 6, 18, 22, 1], [2, 5, 19, 20, 1],
+            [16, 17, 32, 36], [18, 19, 33, 34], [32, 33, 38, 42],
+            // 13th(30) or more
+            [8, 15, 21, 59, 1],
+            [11, 12, 23, 58, 2],
+            [9, 14, 25, 57, 2],
+            [10, 13, 27, 56, 2],
+            // 9th(50) or more
+            [20, 21, 28, 55, 2],
+            [22, 23, 29, 54, 2],
+            [24, 25, 30, 53, 2],
+            [26, 27, 31, 52, 2],
+            // 7th(100) or more
+            [28, 29, 35, 51],
+            [30, 31, 37, 50],
+            // 5th(150) or more
+            [34, 35, 40, 49],
+            [36, 37, 41, 48],
+            // 4th(200) or more
+            [40, 41, 43, 47],
+            // 3rd(250) or more
+            [42, 43, 39, 46],
+            // 1st or 2nd(300)
+            [38, 39, 44, 45]];
+        for (let i = 0; i < top16Matches.length; i++) {
+            const match = top16Matches[i];
+            const player1 = top16Addresses[match[0]];
+            const player2 = top16Addresses[match[1]];
+            const randomResult = match[4] ? match[4] === 1 :  Math.random() < 0.5;
+            const winner = randomResult ? player1 : player2;
+            const loser = randomResult ? player2 : player1;
+            top16Addresses[match[2]] = winner;
+            top16Addresses[match[3]] = loser;
+        }
+        for (let i = 44; i < 60; i++) {
+            const name = top16Addresses[i];
+            const found = pointPlayers.find((p) => p[0] === name);
+            if (found) {
+                found[1] += top16AddressesToPoints[i];
+            } else {
+                pointPlayers.push([name, top16AddressesToPoints[i]]);
+            }
+        }
+        pointPlayers.sort((a, b) => {
+            //if(b[1] === a[1]){return m%2*2 - 1}else{return b[1] - a[1]}}
+            if(false){return m%2*2 - 1}else{return b[1] - a[1]}}
+        );
+        const ccPointPlayers = [];
+        const ccPointPlayersPoints = [];
+        // 優勝した人を除外するので1から
+        for (let i = 1; i < pointPlayers.length; i++) {
+            if (ccPointPlayers.length > 5) {
+                break;
+            }
+            if (alreadyCCPlayers.indexOf(pointPlayers[i][0]) !== -1) {
+                continue;
+            }
+            ccPointPlayers.push(pointPlayers[i][0]);
+            ccPointPlayersPoints.push(pointPlayers[i][1]);
+            const found = playersToSimCount.find((a) => a[0] === pointPlayers[i][0]);
+            if (found) {
+                found[2]++;
+            } else {
+                playersToSimCount.push([pointPlayers[i][0], 0, 1]);
+            }
+        }
+        // 優勝者のカウントアップ
+            if (alreadyCCPlayers.indexOf(pointPlayers[0][0]) !== -1) {
+                continue;
+            }
+        const found = playersToSimCount.find((a) => a[0] === pointPlayers[0][0]);
+        if (found) {
+            found[2]++;
+        } else {
+            playersToSimCount.push([pointPlayers[0][0], 0, 1]);
+        }
+            if (ccPointPlayers.indexOf("板ザン") !== -1
+                // && pointPlayers.find((p) => p[0] === "Kilzyou" && p[1] >= 440)
+            ) {
+                const count = itazanCount[pointPlayers[0][0]] || 0;
+                itazanCount[pointPlayers[0][0]] = count + 1;
+                pointPlayers.length = 8;
+                if (consoleCount < 50) {
+                    console.log(pointPlayers, ccPointPlayers);
+                    consoleCount++;
+                }
+            }
+    }
+        playersToSimCount.sort((a, b) => b[2] - a[2]);
+    playersToSimCount.forEach((a) => a[2] = (Math.round(a[2] * 100000000 / 100000) / 1000000) + "%");
+    console.log(playersToSimCount);
+    console.log(itazanCount);
+    </script>
+</head>
+<body>
+<h3>
+    CPTシミュレーション(TOP16)
+</h3>
+</body>
+</html>
