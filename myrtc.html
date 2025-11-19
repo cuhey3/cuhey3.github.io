@@ -186,7 +186,11 @@
         } else {
             setOfferToken();
             offerTokenButton.value = 'コピーする';
-            offerTokenButton.onclick = () => {};
+            offerTokenButton.onclick = function() {
+                (async function() {
+                    await navigator.clipboard.writeText(offerTokenInput.value);
+                })();
+            };
             offerTokenInput.disabled = 'disabled';
             offerTokenButton.disabled = '';
             offerTokenInput.placeholder = '';
@@ -197,9 +201,15 @@
         if (isEnable) {
             answerTokenButton.value = '読み込む';
             answerTokenButton.onclick = loadAnswerToken;
+            answerTokenInput.disabled = '';
             answerTokenInput.placeholder = '参加トークンを貼り付ける';
         } else {
             answerTokenButton.value = 'コピーする';
+            answerTokenButton.onclick = function() {
+                (async function() {
+                    await navigator.clipboard.writeText(answerTokenInput.value);
+                })();
+            };
             answerTokenButton.disabled = '';
             answerTokenInput.placeholder = '';
         }
