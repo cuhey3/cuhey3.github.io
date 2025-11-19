@@ -79,6 +79,23 @@
         offerTokenInput.value = offerToken;
     }
 
+    hostSendChannel = hostConnection.createDataChannel('sendDataChannel');
+    hostConnection.ondatachannel = function(event) {
+        event.channel.onopen = function() {
+            console.log('host send onopen');
+            event.channel.send('i am host');
+        }
+
+        event.channel.onmessage = function(event) {
+            console.log('from guest message', event);
+        }
+
+        event.channel.onerror = function(event) {
+            console.log('host send error', event);
+        }
+
+    }
+
     // ICE取得処理が重複してるのはおかしい
     guestConnection.onicecandidate = function(event) {
         console.log('guest ice', event);
@@ -88,34 +105,25 @@
         answerTokenInput.value = answerToken;
     }
 
-    hostSendChannel = hostConnection.createDataChannel('sendDataChannel');
     guestSendChannel = guestConnection.createDataChannel('sendDataChannel');
+    guestConnection.ondatachannel = function(event) {
+        event.channel.onopen = function() {
+            console.log('guest send onopen', event);
 
-    hostSendChannel.onopen = function(event) {
-        console.log('host send onopen', event);
-        console.log('host send channel state is: ' + hostSendChannel.readyState);
-        hostSendChannel.send('i am host');
+            event.channel.send('i am guest');
+        }
+
+        event.channel.onmessage = function(event) {
+            console.log('from host message', event);
+        }
+        event.channel.onerror = function(event) {
+            console.log('guest send error', event);
+        }
     }
-    guestSendChannel.onopen = function(event) {
-        console.log('guest send onopen', event);
-        console.log('guest send channel state is: ' + guestSendChannel.readyState);
-
-        guestSendChannel.send('i am guest');
-    }
-
-    hostSendChannel.onmessage = function(event) {
-        console.log('from guest message', event);
-    }
-
-    guestSendChannel.onmessage = function(event) {
-        console.log('from host message', event);
-    }
-
     document.querySelector('#test-send').onclick = function() {
         console.log('test-send');
         (async function(){
             await hostSendChannel.send('i am host');
-            await guestSendChannel.send('i am guest');
         })()
     }
     let offerToken = '';
