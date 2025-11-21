@@ -37,7 +37,13 @@
     </label>
     <input type="button" id="answer-token-button" value="読み込む" disabled/>
 </div>
-<input type="button" id="test-send" value="テスト送信">
+<div>
+    <label>
+        メッセージ
+        <textarea id="message-input"></textarea>
+    </label>
+    <input type="button" id="message-send-button" value="送信"/>
+</div>
 <h3>チャット</h3>
 <table>
     <thead>
@@ -47,12 +53,7 @@
         <th>comment</th>
     </tr>
     </thead>
-    <tbody>
-    <tr>
-        <td>11/18 23:00:00</td>
-        <td>cuhey</td>
-        <td>hello</td>
-    </tr>
+    <tbody id="chat-messages-tbody">
     </tbody>
 </table>
 <script>
@@ -60,6 +61,9 @@
     const offerTokenInput = document.querySelector('#offer-token-input');
     const answerTokenButton = document.querySelector('#answer-token-button');
     const answerTokenInput = document.querySelector('#answer-token-input');
+    const messageInput = document.querySelector('#message-input');
+    const messageSendButton = document.querySelector('#message-send-button');
+    const chatMessagesTbody = document.querySelector('#chat-messages-tbody');
     const CONFIG_FOR_SENDER = {
         iceServers: [
             {
@@ -83,11 +87,24 @@
     hostConnection.ondatachannel = function(event) {
         event.channel.onopen = function() {
             console.log('host send onopen');
-            event.channel.send('i am host');
+            messageSendButton.onclick = function () {
+                console.log('send message', messageInput.value);
+                (async function() {
+                    // なんでこの書き方をしないといけない？？？
+                    await hostSendChannel.send(messageInput.value);
+                    addMessageToTable('host', messageInput.value);
+                })();
+            };
+            (async function() {
+                // なんでこの書き方をしないといけない？？？
+                await hostSendChannel.send('joined.');
+                addMessageToTable('host', 'joined.');
+            })();
         }
 
         event.channel.onmessage = function(event) {
             console.log('from guest message', event);
+            addMessageToTable('guest', event.data);
         }
 
         event.channel.onerror = function(event) {
@@ -109,22 +126,30 @@
     guestConnection.ondatachannel = function(event) {
         event.channel.onopen = function() {
             console.log('guest send onopen', event);
-
             event.channel.send('i am guest');
+            messageSendButton.onclick = function() {
+                console.log('send message', messageInput.value);
+                (async function() {
+                    // なんでこの書き方をしないといけない？？？
+                    await guestSendChannel.send(messageInput.value);
+                    addMessageToTable('guest', messageInput.value);
+                })();
+            };
+            (async function() {
+                // なんでこの書き方をしないといけない？？？
+                await guestSendChannel.send('joined.');
+                addMessageToTable('guest', 'joined.');
+            })();
+
         }
 
         event.channel.onmessage = function(event) {
             console.log('from host message', event);
+            addMessageToTable('host', event.data);
         }
         event.channel.onerror = function(event) {
             console.log('guest send error', event);
         }
-    }
-    document.querySelector('#test-send').onclick = function() {
-        console.log('test-send');
-        (async function(){
-            await hostSendChannel.send('i am host');
-        })()
     }
     let offerToken = '';
     let answerToken = '';
@@ -222,6 +247,20 @@
             answerTokenButton.disabled = '';
             answerTokenInput.placeholder = '';
         }
+    }
+
+    function addMessageToTable(userName, message) {
+        const tr = document.createElement('tr');
+        const td1 = document.createElement('td');
+        td1.innerText = new Date().toLocaleString();
+        tr.appendChild(td1);
+        const td2 = document.createElement('td');
+        td2.innerText = userName;
+        tr.appendChild(td2);
+        const td3 = document.createElement('td');
+        td3.innerText = message;
+        tr.appendChild(td3);
+        chatMessagesTbody.appendChild(tr);
     }
 
     Array.from(document.querySelectorAll('[name=join-type]')).forEach((element) => {
