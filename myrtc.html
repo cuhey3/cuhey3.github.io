@@ -22,22 +22,15 @@
     <input type="radio" name="join-type" value="guest"/>ゲスト
 </label>
 <div>
-<label for="guest-select">ゲストは何人目?</label>
-<select name="guests" id="guest-select">
-    <option value="0">1人目</option>
-    <option value="1">2人目</option>
-</select>
-</div>
-<div>
     <label>
-        チャットルームトークン
+        参加リクエストトークン
         <textarea id="offer-token-input" disabled></textarea>
     </label>
     <input type="button" id="offer-token-button" value="コピーする" disabled/>
 </div>
 <div>
     <label>
-        チャットルーム参加トークン
+        参加許可トークン
         <textarea id="answer-token-input" disabled></textarea>
     </label>
     <input type="button" id="answer-token-button" value="読み込む" disabled/>
@@ -69,7 +62,6 @@
     const messageInput = document.querySelector('#message-input');
     const messageSendButton = document.querySelector('#message-send-button');
     const chatMessagesTbody = document.querySelector('#chat-messages-tbody');
-    const guestSelect = document.querySelector('#guest-select');
     const CONFIG_FOR_SENDER = {
         iceServers: [
             {
@@ -78,18 +70,56 @@
         ],
     };
 
-    const connections = [new RTCPeerConnection(CONFIG_FOR_SENDER), new RTCPeerConnection(CONFIG_FOR_SENDER)];
-    const offerTokens = [];
+    const connections = [];
+    let offerToken;
     const answerTokens = [];
     const hostSendChannels = [];
 
-    function addOfferedConnection(index) {
+    function addOfferedConnection() {
+        connections[0].onicecandidate = function (event) {
+            console.log('guest ice', event);
+            const offerTokenWithICE = JSON.parse(offerToken);
+            offerTokenWithICE.ice.push(event.candidate);
+            offerToken = JSON.stringify(offerTokenWithICE);
+            offerTokenInput.value = offerToken;
+        }
+
+        const guestSendChannel = connections[0].createDataChannel('sendDataChannel');
+        connections[0].ondatachannel = function (event) {
+            event.channel.onopen = function () {
+                console.log('guest send onopen', event);
+                event.channel.send('i am guest');
+                messageSendButton.onclick = function () {
+                    console.log('send message', messageInput.value);
+                    (async function () {
+                        await guestSendChannel.send(messageInput.value);
+                    })();
+                };
+                (async function () {
+                    await guestSendChannel.send('joined.');
+                })();
+            }
+
+            event.channel.onmessage = function (event) {
+                console.log('from host message', event);
+                const message = JSON.parse(event.data);
+                addMessageToTable(message.userName, message.data);
+            }
+
+            event.channel.onerror = function (event) {
+                console.log('guest send error', event);
+            }
+        }
+    }
+
+    function addAnsweredConnection(index) {
+        // ICE取得処理が重複してるのはおかしい
         connections[index].onicecandidate = function (event) {
             console.log('host ice', event);
-            const offerTokenWithICE = JSON.parse(offerTokens[index]);
-            offerTokenWithICE.ice.push(event.candidate);
-            offerTokens[index] = JSON.stringify(offerTokenWithICE);
-            offerTokenInput.value = offerTokens[index];
+            const answerTokenWithICE = JSON.parse(answerTokenInput.value);
+            answerTokenWithICE.ice.push(event.candidate);
+            answerTokens[index] = JSON.stringify(answerTokenWithICE);
+            answerTokenInput.value = answerTokens[index];
         }
 
         hostSendChannels[index] = connections[index].createDataChannel('sendDataChannel');
@@ -100,67 +130,31 @@
                     console.log('send message', messageInput.value);
                     (async function () {
                         for (let i = 0; i < hostSendChannels.length; i++) {
-                            await hostSendChannels[i].send(JSON.stringify({userName: 'host', data: messageInput.value}));
+                            await hostSendChannels[i].send(JSON.stringify({
+                                userName: 'host',
+                                data: messageInput.value
+                            }));
                         }
                         addMessageToTable('host', messageInput.value);
                     })();
                 };
                 (async function () {
-                    // なんでこの書き方をしないといけない？？？
                     await hostSendChannels[index].send(JSON.stringify({userName: 'host', data: 'joined.'}));
                     addMessageToTable('host', 'joined.');
                 })();
             }
 
             event.channel.onmessage = function (event) {
-                console.log('from guest message', event);
+                console.log('from host message', event);
                 addMessageToTable(`guest${index + 1}`, event.data);
-                (async function() {
+                (async function () {
                     for (let i = 0; i < hostSendChannels.length; i++) {
-                        await hostSendChannels[i].send(JSON.stringify({userName: `guest${index + 1}`, data: event.data}));
+                        await hostSendChannels[i].send(JSON.stringify({
+                            userName: `guest${index + 1}`,
+                            data: event.data
+                        }));
                     }
                 })();
-            }
-
-            event.channel.onerror = function (event) {
-                console.log('host send error', event);
-            }
-
-        }
-    }
-
-    function addAnsweredConnection(index) {
-        // ICE取得処理が重複してるのはおかしい
-        connections[index].onicecandidate = function (event) {
-            console.log('guest ice', event);
-            const answerTokenWithICE = JSON.parse(answerTokenInput.value);
-            answerTokenWithICE.ice.push(event.candidate);
-            answerTokens[index] = JSON.stringify(answerTokenWithICE);
-            answerTokenInput.value = answerTokens[index];
-        }
-
-        const guestSendChannel = connections[index].createDataChannel('sendDataChannel');
-        connections[index].ondatachannel = function (event) {
-            event.channel.onopen = function () {
-                console.log('guest send onopen', event);
-                event.channel.send('i am guest');
-                messageSendButton.onclick = function () {
-                    console.log('send message', messageInput.value);
-                    (async function () {
-                        // なんでこの書き方をしないといけない？？？
-                        await guestSendChannel.send(messageInput.value);
-                    })();
-                };
-                (async function () {
-                    // なんでこの書き方をしないといけない？？？
-                    await guestSendChannel.send('joined.');
-                })();
-            }
-
-            event.channel.onmessage = function (event) {
-                console.log('from host message', event);
-                const message = JSON.parse(event.data);
-                addMessageToTable(message.userName, message.data);
             }
             event.channel.onerror = function (event) {
                 console.log('guest send error', event);
@@ -169,26 +163,28 @@
     }
 
     function setOfferToken() {
-        const guestIndex = Number(guestSelect.value);
-        if (offerTokens[guestIndex]) {
-            offerTokenInput.value = offerTokens[guestIndex];
+        connections[0] = new RTCPeerConnection(CONFIG_FOR_SENDER);
+        if (offerToken) {
+            offerTokenInput.value = offerToken;
         } else {
-            addOfferedConnection(guestIndex);
+            addOfferedConnection();
             (async function () {
                 await (async () => {
-                    const offer = await connections[guestIndex].createOffer();
-                    await connections[guestIndex].setLocalDescription(offer);
+                    const offer = await connections[0].createOffer();
+                    await connections[0].setLocalDescription(offer);
                     offer.ice = [];
-                    offerTokens[guestIndex] = JSON.stringify(offer);
-                    console.log(`offerToken created. ${offerTokens[guestIndex]}`);
-                    offerTokenInput.value = offerTokens[guestIndex];
+                    offerToken = JSON.stringify(offer);
+                    console.log(`offerToken created. ${offerToken}`);
+                    offerTokenInput.value = offerToken;
                 })();
             })();
         }
     }
 
     function setAnswerToken() {
-        const guestIndex = Number(guestSelect.value);
+        connections.push(new RTCPeerConnection(CONFIG_FOR_SENDER));
+        // const guestIndex = Number(guestSelect.value);
+        const guestIndex = connections.length - 1;
         addAnsweredConnection(guestIndex);
         (async function () {
             await (async () => {
@@ -212,7 +208,7 @@
     function loadAnswerToken() {
         (async function () {
             await (async () => {
-                const guestIndex = Number(guestSelect.value);
+                const guestIndex = connections.length - 1;
                 answerTokens[guestIndex] = answerTokenInput.value;
                 const answerTokenWithICE = JSON.parse(answerTokens[guestIndex]);
                 await connections[guestIndex].setRemoteDescription(answerTokenWithICE);
@@ -234,7 +230,7 @@
             offerTokenButton.onclick = setAnswerToken;
             offerTokenButton.disabled = '';
             offerTokenInput.disabled = '';
-            offerTokenInput.placeholder = 'トークンを貼り付ける';
+            offerTokenInput.placeholder = '参加リクエストトークンを貼り付ける';
         } else {
             setOfferToken();
             offerTokenButton.value = 'コピーする';
@@ -255,7 +251,7 @@
             answerTokenButton.onclick = loadAnswerToken;
             answerTokenInput.disabled = '';
             answerTokenButton.disabled = '';
-            answerTokenInput.placeholder = '参加トークンを貼り付ける';
+            answerTokenInput.placeholder = '参加許可トークンを貼り付ける';
         } else {
             answerTokenButton.value = 'コピーする';
             answerTokenButton.onclick = function () {
@@ -284,8 +280,8 @@
 
     Array.from(document.querySelectorAll('[name=join-type]')).forEach((element) => {
         element.onchange = (event) => {
-            const isHost = event.target.value === 'host';
-            if (isHost) {
+            const isGuest = event.target.value === 'guest';
+            if (isGuest) {
                 enableOfferTokenInput(false);
                 enableAnswerTokenInput(true);
             } else {
@@ -294,20 +290,6 @@
             }
         }
     });
-    document.querySelector('#guest-select').onchange = () => {
-        console.log('guest select onchange');
-        const joinType = document.querySelector('[name=join-type]:checked');
-        if (!joinType) {
-            return;
-        }
-        const isHost = joinType.value === 'host';
-        if (isHost) {
-            enableOfferTokenInput(false);
-            enableAnswerTokenInput(true);
-        } else {
-            enableOfferTokenInput(true);
-            enableAnswerTokenInput(false);
-        }
-    }</script>
+</script>
 </body>
 </html>
