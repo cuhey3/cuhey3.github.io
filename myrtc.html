@@ -55,6 +55,54 @@
     </tbody>
 </table>
 <script>
+    class Message {
+        static JOINED_MESSAGE = 'joined';
+        static CREATE_SPARE_OFFER_MESSAGE = 'create_spare_offer';
+        static SPARE_OFFER_MESSAGE = 'spare_offer';
+        static CREATE_SPARE_ANSWER_MESSAGE = 'create_spare_answer';
+        static SPARE_ANSWER_MESSAGE = 'spare_answer';
+
+        constructor(body, userName, messageType) {
+            this.userName = userName;
+            this.messageType = messageType;
+            this.body = body;
+        }
+
+        static fromJson(str) {
+            const {userName, messageType, body} = JSON.parse(str);
+            return new Message(body, userName, messageType);
+        }
+
+        static toJson(messageObj) {
+            const {userName, messageType, body} = messageObj;
+            return JSON.stringify({body, userName, messageType});
+        }
+
+        getBody() {
+            return this.body;
+        }
+
+        isJoined() {
+            return this.messageType === Message.JOINED_MESSAGE;
+        }
+
+        isCreateSpareOffer() {
+            return this.messageType === Message.CREATE_SPARE_OFFER_MESSAGE;
+        }
+
+        isSpareOffer() {
+            return this.messageType === Message.SPARE_OFFER_MESSAGE;
+        }
+
+        isCreateSpareAnswer() {
+            return this.messageType === Message.CREATE_SPARE_ANSWER_MESSAGE;
+        }
+
+        isSpareAnswer() {
+            return this.messageType === Message.SPARE_ANSWER_MESSAGE;
+        }
+    }
+
     const offerTokenButton = document.querySelector('#offer-token-button');
     const offerTokenInput = document.querySelector('#offer-token-input');
     const answerTokenButton = document.querySelector('#answer-token-button');
@@ -73,43 +121,90 @@
     const connections = [];
     let offerToken;
     const answerTokens = [];
+    const guestSendChannels = [];
     const hostSendChannels = [];
+    const JOINED_MESSAGE = 'joined.';
+    let spareAnswerToken = '';
 
-    function addOfferedConnection() {
-        connections[0].onicecandidate = function (event) {
+    async function addOfferedConnection(index) {
+        connections[index] = new RTCPeerConnection(CONFIG_FOR_SENDER);
+        connections[index].onicecandidate = function (event) {
             console.log('guest ice', event);
             const offerTokenWithICE = JSON.parse(offerToken);
-            offerTokenWithICE.ice.push(event.candidate);
-            offerToken = JSON.stringify(offerTokenWithICE);
-            offerTokenInput.value = offerToken;
+            if (event.candidate) {
+                offerTokenWithICE.ice.push(event.candidate);
+                offerToken = JSON.stringify(offerTokenWithICE);
+                offerTokenInput.value = offerToken;
+            } else if (index > 0) {
+                (async function () {
+                    await guestSendChannels[0].send(Message.toJson({
+                        messageType: Message.SPARE_OFFER_MESSAGE,
+                        body: offerToken
+                    }));
+                })();
+            }
         }
 
-        const guestSendChannel = connections[0].createDataChannel('sendDataChannel');
-        connections[0].ondatachannel = function (event) {
+        guestSendChannels[index] = connections[index].createDataChannel('sendDataChannel');
+        connections[index].ondatachannel = function (event) {
             event.channel.onopen = function () {
                 console.log('guest send onopen', event);
-                event.channel.send('i am guest');
                 messageSendButton.onclick = function () {
                     console.log('send message', messageInput.value);
                     (async function () {
-                        await guestSendChannel.send(messageInput.value);
+                        await guestSendChannels[index].send(Message.toJson({body: messageInput.value}));
                     })();
                 };
                 (async function () {
-                    await guestSendChannel.send('joined.');
+                    await guestSendChannels[index].send(Message.toJson({
+                        messageType: Message.JOINED_MESSAGE,
+                        body: 'joined.'
+                    }));
                 })();
             }
 
             event.channel.onmessage = function (event) {
                 console.log('from host message', event);
-                const message = JSON.parse(event.data);
-                addMessageToTable(message.userName, message.data);
+                const message = Message.fromJson(event.data);
+                if (message.isCreateSpareOffer()) {
+                    (async function () {
+                        console.log('create spare offer logic start');
+                        await addOfferedConnection(connections.length);
+                        console.log('create spare offer logic end');
+                    })();
+                }
+                else if (message.isSpareAnswer()) {
+                    console.log('get spare answer', message.body);
+                    spareAnswerToken = message.body;
+                    return;
+                }
+                else if (message.isCreateSpareAnswer()) {
+                    console.log('get spare offer', message.body);
+                    console.log('create spare answer logic start');
+                    offerTokenInput.value = message.body;
+                    setAnswerToken();
+                    console.log('create spare answer logic end');
+                    return;
+                }
+                addMessageToTable(message.userName, message.body);
             }
-
+            event.channel.onclose = function (event) {
+                if (index === 0 && spareAnswerToken) {
+                    answerTokenInput.value = spareAnswerToken;
+                    spareAnswerToken = '';
+                    loadAnswerToken();
+                }
+            }
             event.channel.onerror = function (event) {
                 console.log('guest send error', event);
             }
         }
+        const offer = await connections[index].createOffer();
+        await connections[index].setLocalDescription(offer);
+        offer.ice = [];
+        offerToken = JSON.stringify(offer);
+        console.log(`offerToken created. ${offerToken}`);
+        offerTokenInput.value = offerToken;
     }
 
     function addAnsweredConnection(index) {
@@ -117,9 +212,18 @@
         connections[index].onicecandidate = function (event) {
             console.log('host ice', event);
             const answerTokenWithICE = JSON.parse(answerTokenInput.value);
+            if (event.candidate) {
             answerTokenWithICE.ice.push(event.candidate);
             answerTokens[index] = JSON.stringify(answerTokenWithICE);
-            answerTokenInput.value = answerTokens[index];
+                answerTokenInput.value = answerTokens[index];
+            } else if (guestSendChannels.length > 0) {
+                (async function () {
+                    await guestSendChannels[0].send(Message.toJson({
+                        messageType: Message.SPARE_ANSWER_MESSAGE,
+                        body: answerTokens[index]
+                    }));
+                })();
+            }
         }
 
         hostSendChannels[index] = connections[index].createDataChannel('sendDataChannel');
@@ -130,28 +234,63 @@
                     console.log('send message', messageInput.value);
                     (async function () {
                         for (let i = 0; i < hostSendChannels.length; i++) {
-                            await hostSendChannels[i].send(JSON.stringify({
+                            await hostSendChannels[i].send(Message.toJson({
                                 userName: 'host',
-                                data: messageInput.value
+                                body: messageInput.value
                             }));
                         }
                         addMessageToTable('host', messageInput.value);
                     })();
                 };
                 (async function () {
-                    await hostSendChannels[index].send(JSON.stringify({userName: 'host', data: 'joined.'}));
-                    addMessageToTable('host', 'joined.');
+                    await hostSendChannels[index].send(JSON.stringify({
+                        userName: 'host',
+                        messageType: JOINED_MESSAGE,
+                        body: 'joined.'
+                    }));
+                    addMessageToTable('host', Message.JOINED_MESSAGE);
                 })();
             }
 
             event.channel.onmessage = function (event) {
-                console.log('from host message', event);
-                addMessageToTable(`guest${index + 1}`, event.data);
+                console.log('from guest message', event);
+                const message = Message.fromJson(event.data);
+                addMessageToTable(`guest${index + 1}`, message.body);
+                // ゲスト二人目以降はスペアのoffer作成リクエストを送信する
+                if (message.isJoined() && index > 0) {
+                    (async function () {
+                        await hostSendChannels[index].send(Message.toJson({
+                            userName: 'host',
+                            messageType: Message.CREATE_SPARE_OFFER_MESSAGE,
+                            body: Message.CREATE_SPARE_OFFER_MESSAGE
+                        }));
+                        addMessageToTable('host', Message.CREATE_SPARE_OFFER_MESSAGE);
+                    })();
+                } else if (message.isSpareOffer()) {
+                    (async function(){
+                        await hostSendChannels[0].send(Message.toJson({
+                            userName: 'host',
+                            messageType: Message.CREATE_SPARE_ANSWER_MESSAGE,
+                            body: message.body
+                        }));
+                    })();
+                    return;
+                } else if (message.isSpareAnswer()) {
+                    (async function(){
+                        //
+                        await hostSendChannels[hostSendChannels.length - 1].send(Message.toJson({
+                            userName: 'host',
+                            messageType: Message.SPARE_ANSWER_MESSAGE,
+                            body: message.body
+                        }));
+                    })();
+                    return;
+                }
                 (async function () {
                     for (let i = 0; i < hostSendChannels.length; i++) {
-                        await hostSendChannels[i].send(JSON.stringify({
+                        await hostSendChannels[i].send(Message.toJson({
                             userName: `guest${index + 1}`,
-                            data: event.data
+                            body: message.body,
                         }));
                     }
                 })();
@@ -163,27 +302,18 @@
     }
 
     function setOfferToken() {
-        connections[0] = new RTCPeerConnection(CONFIG_FOR_SENDER);
         if (offerToken) {
             offerTokenInput.value = offerToken;
         } else {
-            addOfferedConnection();
             (async function () {
-                await (async () => {
-                    const offer = await connections[0].createOffer();
-                    await connections[0].setLocalDescription(offer);
-                    offer.ice = [];
-                    offerToken = JSON.stringify(offer);
-                    console.log(`offerToken created. ${offerToken}`);
-                    offerTokenInput.value = offerToken;
-                })();
+                const index = connections.length;
+                await addOfferedConnection(index);
             })();
         }
     }
 
     function setAnswerToken() {
         connections.push(new RTCPeerConnection(CONFIG_FOR_SENDER));
-        // const guestIndex = Number(guestSelect.value);
         const guestIndex = connections.length - 1;
         addAnsweredConnection(guestIndex);
         (async function () {
