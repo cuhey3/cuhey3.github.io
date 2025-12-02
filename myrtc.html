@@ -16,10 +16,10 @@
 <body>
 <h2>WebRTCチャット</h2>
 <label>
-    <input type="radio" name="join-type" value="host"/>ホスト
+    <input type="radio" name="join-type" value="child"/>新規参加
 </label>
 <label>
-    <input type="radio" name="join-type" value="guest"/>ゲスト
+    <input type="radio" name="join-type" value="parent"/>既存ユーザー
 </label>
 <div>
     <label>
@@ -55,6 +55,283 @@
     </tbody>
 </table>
 <script>
+    const CONFIG_FOR_SENDER = {
+        iceServers: [
+            {
+                urls: "stun:stun.l.google.com:19302",
+            },
+        ],
+    };
+
+    class Node {
+        userName;
+        parent;
+        parentConnectionInfo;
+        children;
+        childConnectionInfos;
+        level;
+
+        constructor() {
+            this.userName = Math.ceil(Math.random() * 1000);
+            this.childConnectionInfos = [];
+        }
+
+        buildConnectionAsParent(index) {
+            const self = this;
+            const info = self.childConnectionInfos[index];
+            info.connection.onicecandidate = function (event) {
+                console.log('parent ice', event);
+                const answerTokenWithICE = JSON.parse(answerTokenInput.value);
+                if (event.candidate) {
+                    answerTokenWithICE.ice.push(event.candidate);
+                    info.answerToken = JSON.stringify(answerTokenWithICE);
+                    answerTokenInput.value = info.answerToken;
+                }
+                // else if (self.isAutoAnswer) {
+                //     (async function () {
+                //         await guestSendChannels[0].send(Message.toJson({
+                //             messageType: Message.SPARE_ANSWER_MESSAGE,
+                //             body: self.answerToken
+                //         }));
+                //     })();
+                // }
+            }
+
+            info.dataChannel = info.connection.createDataChannel('sendDataChannel');
+            info.connection.ondatachannel = function (event) {
+                event.channel.onopen = function () {
+                    console.log('parent send onopen');
+                    messageSendButton.onclick = function () {
+                        if (self.parentConnectionInfo && !self.parentConnectionInfo.isClosed) {
+                            console.log('send message to parent', messageInput.value);
+                            (async function () {
+                                await self.parentConnectionInfo.dataChannel.send(Message.toJson({
+                                    userName: self.userName,
+                                    body: messageInput.value
+                                }));
+                            })();
+                        } else {
+                            console.log('send message to children', messageInput.value);
+                            (async function () {
+                                for (let i = 0; i < self.childConnectionInfos.length; i++) {
+                                    if (self.childConnectionInfos[i].isClosed) {
+                                        continue;
+                                    }
+                                    await self.childConnectionInfos[i].dataChannel.send(Message.toJson({
+                                        userName: self.userName,
+                                        body: messageInput.value
+                                    }));
+                                }
+                                addMessageToTable(self.userName, messageInput.value);
+                            })();
+                        }
+                    };
+                    // (async function () {
+                    //     await hostSendChannels[index].send(JSON.stringify({
+                    //         userName: 'host',
+                    //         messageType: JOINED_MESSAGE,
+                    //         body: 'joined.'
+                    //     }));
+                    //     addMessageToTable('host', Message.JOINED_MESSAGE);
+                    // })();
+                }
+
+                event.channel.onmessage = function (event) {
+                    console.log('from child message', event);
+                    const message = Message.fromJson(event.data);
+                    // // ゲスト二人目以降はスペアのoffer作成リクエストを送信する
+                    // if (message.isJoined() && index > 0) {
+                    //     (async function () {
+                    //         await hostSendChannels[index].send(Message.toJson({
+                    //             userName: 'host',
+                    //             messageType: Message.CREATE_SPARE_OFFER_MESSAGE,
+                    //             body: Message.CREATE_SPARE_OFFER_MESSAGE
+                    //         }));
+                    //         addMessageToTable('host', Message.CREATE_SPARE_OFFER_MESSAGE);
+                    //     })();
+                    // } else if (message.isSpareOffer()) {
+                    //     (async function(){
+                    //         await hostSendChannels[0].send(Message.toJson({
+                    //             userName: 'host',
+                    //             messageType: Message.CREATE_SPARE_ANSWER_MESSAGE,
+                    //             body: message.body
+                    //         }));
+                    //     })();
+                    //     return;
+                    // } else if (message.isSpareAnswer()) {
+                    //     (async function(){
+                    //         //
+                    //         await hostSendChannels[hostSendChannels.length - 1].send(Message.toJson({
+                    //             userName: 'host',
+                    //             messageType: Message.SPARE_ANSWER_MESSAGE,
+                    //             body: message.body
+                    //         }));
+                    //     })();
+                    //     return;
+                    // }
+                    (async function () {
+                        if (self.parentConnectionInfo && !self.parentConnectionInfo.isClosed) {
+                            await self.parentConnectionInfo.dataChannel.send(Message.toJson({
+                                userName: message.userName,
+                                body: message.body,
+                            }));
+                        } else {
+                            for (let i = 0; i < self.childConnectionInfos.length; i++) {
+                                if (self.childConnectionInfos[i].isClosed) {
+                                    continue;
+                                }
+                                await self.childConnectionInfos[i].dataChannel.send(Message.toJson({
+                                    userName: message.userName,
+                                    body: message.body,
+                                }));
+                            }
+                            addMessageToTable(message.userName, message.body);
+                        }
+                    })();
+                }
+                event.channel.onclose = function (event) {
+                    info.isClosed = true;
+                }
+                event.channel.onerror = function (event) {
+                    console.log('child connection error', event);
+                }
+            };
+            (async function () {
+                await (async () => {
+                    const offerTokenWithICE = JSON.parse(offerTokenInput.value);
+                    await info.connection.setRemoteDescription(JSON.parse(offerTokenInput.value));
+                    const answer = await info.connection.createAnswer();
+                    answer.ice = [];
+                    info.answerToken = JSON.stringify(answer);
+                    console.log(`answerToken created. ${info.answerToken}`);
+                    await info.connection.setLocalDescription(answer);
+                    answerTokenInput.value = info.answerToken;
+                    for (let i = 0; i < offerTokenWithICE.ice.length; i++) {
+                        if (offerTokenWithICE.ice[i]) {
+                            await info.connection.addIceCandidate(new RTCIceCandidate(offerTokenWithICE.ice[i]));
+                        }
+                    }
+                })();
+            })();
+        }
+
+        buildConnectionAsChild() {
+            const self = this;
+            const info = this.parentConnectionInfo;
+            info.connection.onicecandidate = function (event) {
+                console.log('child ice', event);
+                const offerTokenWithICE = JSON.parse(info.offerToken);
+                if (event.candidate) {
+                    offerTokenWithICE.ice.push(event.candidate);
+                    info.offerToken = JSON.stringify(offerTokenWithICE);
+                    offerTokenInput.value = info.offerToken;
+                }
+                // else if (index > 0) {
+                //     (async function () {
+                //         await guestSendChannels[0].send(Message.toJson({
+                //             messageType: Message.SPARE_OFFER_MESSAGE,
+                //             body: offerToken
+                //         }));
+                //     })();
+                // }
+            }
+
+            info.dataChannel = info.connection.createDataChannel('sendDataChannel');
+            info.connection.ondatachannel = function (event) {
+                event.channel.onopen = function () {
+                    console.log('child send onopen', event);
+                    messageSendButton.onclick = function () {
+                        console.log('send message', messageInput.value);
+                        (async function () {
+                            if (info.isClosed) {
+                                return;
+                            }
+                            await info.dataChannel.send(Message.toJson({
+                                userName: self.userName, body: messageInput.value
+                            }));
+                        })();
+                    };
+                    (async function () {
+                        await info.dataChannel.send(Message.toJson({
+                            messageType: Message.JOINED_MESSAGE,
+                            userName: self.userName,
+                            body: 'joined.'
+                        }));
+                    })();
+                }
+
+                event.channel.onmessage = function (event) {
+                    console.log('from parent message', event);
+                    const message = Message.fromJson(event.data);
+                    // if (message.isCreateSpareOffer()) {
+                    //     (async function () {
+                    //         console.log('create spare offer logic start');
+                    //         await addOfferedConnection(connections.length);
+                    //         console.log('create spare offer logic end');
+                    //     })();
+                    // }
+                    // else if (message.isSpareAnswer()) {
+                    //     console.log('get spare answer', message.body);
+                    //     spareAnswerToken = message.body;
+                    //     return;
+                    // }
+                    // else if (message.isCreateSpareAnswer()) {
+                    //     console.log('get spare offer', message.body);
+                    //     console.log('create spare answer logic start');
+                    //     offerTokenInput.value = message.body;
+                    //     setAnswerToken();
+                    //     console.log('create spare answer logic end');
+                    //     return;
+                    // }
+                    (async function () {
+                        for (let i = 0; i < self.childConnectionInfos.length; i++) {
+                            if (self.childConnectionInfos[i].isClosed) {
+                                continue;
+                            }
+                            await self.childConnectionInfos[i].dataChannel.send(Message.toJson({
+                                userName: message.userName,
+                                body: message.body,
+                            }));
+                        }
+                    })();
+                    addMessageToTable(message.userName, message.body);
+                }
+                event.channel.onclose = function (event) {
+                    info.isClosed = true;
+                    // if (index === 0 && spareAnswerToken) {
+                    //     answerTokenInput.value = spareAnswerToken;
+                    //     spareAnswerToken = '';
+                    //     loadAnswerToken();
+                    // }
+                }
+                event.channel.onerror = function (event) {
+                    console.log('connection to parent error', event);
+                }
+            };
+            (async function () {
+                const offer = await info.connection.createOffer();
+                await info.connection.setLocalDescription(offer);
+                offer.ice = [];
+                info.offerToken = JSON.stringify(offer);
+                console.log(`offerToken created. ${info.offerToken}`);
+                offerTokenInput.value = info.offerToken;
+            })();
+        }
+    }
+
+    class ConnectionInfo {
+        connection;
+        dataChannel;
+        offerToken;
+        answerToken;
+        isAutoAnswer;
+        isClosed;
+
+        constructor() {
+            this.connection = new RTCPeerConnection(CONFIG_FOR_SENDER);
+        }
+    }
+
     class Message {
         static JOINED_MESSAGE = 'joined';
         static CREATE_SPARE_OFFER_MESSAGE = 'create_spare_offer';
@@ -110,241 +387,32 @@
     const messageInput = document.querySelector('#message-input');
     const messageSendButton = document.querySelector('#message-send-button');
     const chatMessagesTbody = document.querySelector('#chat-messages-tbody');
-    const CONFIG_FOR_SENDER = {
-        iceServers: [
-            {
-                urls: "stun:stun.l.google.com:19302",
-            },
-        ],
-    };
 
-    const connections = [];
-    let offerToken;
-    const answerTokens = [];
-    const guestSendChannels = [];
-    const hostSendChannels = [];
-    const JOINED_MESSAGE = 'joined.';
-    let spareAnswerToken = '';
-
-    async function addOfferedConnection(index) {
-        connections[index] = new RTCPeerConnection(CONFIG_FOR_SENDER);
-        connections[index].onicecandidate = function (event) {
-            console.log('guest ice', event);
-            const offerTokenWithICE = JSON.parse(offerToken);
-            if (event.candidate) {
-                offerTokenWithICE.ice.push(event.candidate);
-                offerToken = JSON.stringify(offerTokenWithICE);
-                offerTokenInput.value = offerToken;
-            } else if (index > 0) {
-                (async function () {
-                    await guestSendChannels[0].send(Message.toJson({
-                        messageType: Message.SPARE_OFFER_MESSAGE,
-                        body: offerToken
-                    }));
-                })();
-            }
-        }
-
-        guestSendChannels[index] = connections[index].createDataChannel('sendDataChannel');
-        connections[index].ondatachannel = function (event) {
-            event.channel.onopen = function () {
-                console.log('guest send onopen', event);
-                messageSendButton.onclick = function () {
-                    console.log('send message', messageInput.value);
-                    (async function () {
-                        await guestSendChannels[index].send(Message.toJson({body: messageInput.value}));
-                    })();
-                };
-                (async function () {
-                    await guestSendChannels[index].send(Message.toJson({
-                        messageType: Message.JOINED_MESSAGE,
-                        body: 'joined.'
-                    }));
-                })();
-            }
-
-            event.channel.onmessage = function (event) {
-                console.log('from host message', event);
-                const message = Message.fromJson(event.data);
-                if (message.isCreateSpareOffer()) {
-                    (async function () {
-                        console.log('create spare offer logic start');
-                        await addOfferedConnection(connections.length);
-                        console.log('create spare offer logic end');
-                    })();
-                }
-                else if (message.isSpareAnswer()) {
-                    console.log('get spare answer', message.body);
-                    spareAnswerToken = message.body;
-                    return;
-                }
-                else if (message.isCreateSpareAnswer()) {
-                    console.log('get spare offer', message.body);
-                    console.log('create spare answer logic start');
-                    offerTokenInput.value = message.body;
-                    setAnswerToken();
-                    console.log('create spare answer logic end');
-                    return;
-                }
-                addMessageToTable(message.userName, message.body);
-            }
-            event.channel.onclose = function (event) {
-                if (index === 0 && spareAnswerToken) {
-                    answerTokenInput.value = spareAnswerToken;
-                    spareAnswerToken = '';
-                    loadAnswerToken();
-                }
-            }
-            event.channel.onerror = function (event) {
-                console.log('guest send error', event);
-            }
-        }
-        const offer = await connections[index].createOffer();
-        await connections[index].setLocalDescription(offer);
-        offer.ice = [];
-        offerToken = JSON.stringify(offer);
-        console.log(`offerToken created. ${offerToken}`);
-        offerTokenInput.value = offerToken;
-    }
-
-    function addAnsweredConnection(index) {
-        // ICE取得処理が重複してるのはおかしい
-        connections[index].onicecandidate = function (event) {
-            console.log('host ice', event);
-            const answerTokenWithICE = JSON.parse(answerTokenInput.value);
-            if (event.candidate) {
-            answerTokenWithICE.ice.push(event.candidate);
-            answerTokens[index] = JSON.stringify(answerTokenWithICE);
-                answerTokenInput.value = answerTokens[index];
-            } else if (guestSendChannels.length > 0) {
-                (async function () {
-                    await guestSendChannels[0].send(Message.toJson({
-                        messageType: Message.SPARE_ANSWER_MESSAGE,
-                        body: answerTokens[index]
-                    }));
-                })();
-            }
-        }
-
-        hostSendChannels[index] = connections[index].createDataChannel('sendDataChannel');
-        connections[index].ondatachannel = function (event) {
-            event.channel.onopen = function () {
-                console.log('host send onopen');
-                messageSendButton.onclick = function () {
-                    console.log('send message', messageInput.value);
-                    (async function () {
-                        for (let i = 0; i < hostSendChannels.length; i++) {
-                            await hostSendChannels[i].send(Message.toJson({
-                                userName: 'host',
-                                body: messageInput.value
-                            }));
-                        }
-                        addMessageToTable('host', messageInput.value);
-                    })();
-                };
-                (async function () {
-                    await hostSendChannels[index].send(JSON.stringify({
-                        userName: 'host',
-                        messageType: JOINED_MESSAGE,
-                        body: 'joined.'
-                    }));
-                    addMessageToTable('host', Message.JOINED_MESSAGE);
-                })();
-            }
-
-            event.channel.onmessage = function (event) {
-                console.log('from guest message', event);
-                const message = Message.fromJson(event.data);
-                addMessageToTable(`guest${index + 1}`, message.body);
-                // ゲスト二人目以降はスペアのoffer作成リクエストを送信する
-                if (message.isJoined() && index > 0) {
-                    (async function () {
-                        await hostSendChannels[index].send(Message.toJson({
-                            userName: 'host',
-                            messageType: Message.CREATE_SPARE_OFFER_MESSAGE,
-                            body: Message.CREATE_SPARE_OFFER_MESSAGE
-                        }));
-                        addMessageToTable('host', Message.CREATE_SPARE_OFFER_MESSAGE);
-                    })();
-                } else if (message.isSpareOffer()) {
-                    (async function(){
-                        await hostSendChannels[0].send(Message.toJson({
-                            userName: 'host',
-                            messageType: Message.CREATE_SPARE_ANSWER_MESSAGE,
-                            body: message.body
-                        }));
-                    })();
-                    return;
-                } else if (message.isSpareAnswer()) {
-                    (async function(){
-                        //
-                        await hostSendChannels[hostSendChannels.length - 1].send(Message.toJson({
-                            userName: 'host',
-                            messageType: Message.SPARE_ANSWER_MESSAGE,
-                            body: message.body
-                        }));
-                    })();
-                    return;
-                }
-                (async function () {
-                    for (let i = 0; i < hostSendChannels.length; i++) {
-                        await hostSendChannels[i].send(Message.toJson({
-                            userName: `guest${index + 1}`,
-                            body: message.body,
-                        }));
-                    }
-                })();
-            }
-            event.channel.onerror = function (event) {
-                console.log('guest send error', event);
-            }
-        }
-    }
+    const node = new Node();
 
     function setOfferToken() {
-        if (offerToken) {
-            offerTokenInput.value = offerToken;
-        } else {
-            (async function () {
-                const index = connections.length;
-                await addOfferedConnection(index);
-            })();
-        }
+        (async function () {
+            node.parentConnectionInfo = new ConnectionInfo();
+            node.buildConnectionAsChild();
+        })();
     }
 
     function setAnswerToken() {
-        connections.push(new RTCPeerConnection(CONFIG_FOR_SENDER));
-        const guestIndex = connections.length - 1;
-        addAnsweredConnection(guestIndex);
-        (async function () {
-            await (async () => {
-                const offerTokenWithICE = JSON.parse(offerTokenInput.value);
-                await connections[guestIndex].setRemoteDescription(JSON.parse(offerTokenInput.value));
-                const answer = await connections[guestIndex].createAnswer();
-                answer.ice = [];
-                answerTokens[guestIndex] = JSON.stringify(answer);
-                console.log(`answerToken created. ${answerTokens[guestIndex]}`);
-                await connections[guestIndex].setLocalDescription(answer);
-                answerTokenInput.value = answerTokens[guestIndex];
-                for (let i = 0; i < offerTokenWithICE.ice.length; i++) {
-                    if (offerTokenWithICE.ice[i]) {
-                        await connections[guestIndex].addIceCandidate(new RTCIceCandidate(offerTokenWithICE.ice[i]));
-                    }
-                }
-            })();
-        })();
+        const connectionInfo = new ConnectionInfo();
+        const connectionNumber = node.childConnectionInfos.push(connectionInfo);
+        node.buildConnectionAsParent(connectionNumber - 1);
     }
 
     function loadAnswerToken() {
         (async function () {
             await (async () => {
-                const guestIndex = connections.length - 1;
-                answerTokens[guestIndex] = answerTokenInput.value;
-                const answerTokenWithICE = JSON.parse(answerTokens[guestIndex]);
-                await connections[guestIndex].setRemoteDescription(answerTokenWithICE);
+                const info = node.parentConnectionInfo;
+                info.answerToken = answerTokenInput.value;
+                const answerTokenWithICE = JSON.parse(info.answerToken);
+                await info.connection.setRemoteDescription(answerTokenWithICE);
                 for (let i = 0; i < answerTokenWithICE.ice.length; i++) {
                     if (answerTokenWithICE.ice[i]) {
-                        await connections[guestIndex].addIceCandidate(new RTCIceCandidate(answerTokenWithICE.ice[i]));
+                        await info.connection.addIceCandidate(new RTCIceCandidate(answerTokenWithICE.ice[i]));
                     }
                 }
             })();
@@ -410,8 +478,8 @@
 
     Array.from(document.querySelectorAll('[name=join-type]')).forEach((element) => {
         element.onchange = (event) => {
-            const isGuest = event.target.value === 'guest';
-            if (isGuest) {
+            const isChild = event.target.value === 'child';
+            if (isChild) {
                 enableOfferTokenInput(false);
                 enableAnswerTokenInput(true);
             } else {
