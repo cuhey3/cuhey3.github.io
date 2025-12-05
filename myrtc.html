@@ -64,6 +64,7 @@
     };
 
     class Node {
+        messages;
         userName;
         parent;
         parentConnectionInfos;
@@ -75,6 +76,7 @@
             this.userName = Math.ceil(Math.random() * 1000);
             this.parentConnectionInfos = [];
             this.childConnectionInfos = [];
+            this.messages = [];
         }
 
         getParentUserName() {
@@ -110,7 +112,6 @@
             info.dataChannel = info.connection.createDataChannel('sendDataChannel');
             info.connection.ondatachannel = function (event) {
                 event.channel.onopen = function () {
-                    info.isSpare = false;
                     console.log(`with ${info.connectedUserName} as parent onopen`);
                     // parent の場合は、より親に送るか、子供全員に送るかで、
                     // その処理を接続確立のたびにセットするのはおかしい
@@ -135,7 +136,7 @@
                                         body: messageInput.value,
                                     }));
                                 }
-                                addMessageToTable(self.userName, messageInput.value);
+                                addMessageToTable(self.userName, messageInput.value, null, self.messages);
                             })();
                         }
                     };
@@ -157,7 +158,23 @@
                             }));
                         })();
                     }
-
+                    if (!info.isSpare) {
+                        (async function () {
+                            await info.dataChannel.send(Message.toJson({
+                                messageType: Message.PAST_MESSAGES,
+                                body: self.messages,
+                            }));
+                            if (!self.parentConnectionInfos[0] && self.childConnectionInfos.length === 1) {
+                                await info.dataChannel.send(Message.toJson({
+                                    messageType: Message.JOINED_MESSAGE,
+                                    from: self.userName,
+                                    body: 'joined.'
+                                }));
+                                addMessageToTable(self.userName, 'joined.', null, self.messages);
+                            }
+                        })();
+                    }
+                    info.isSpare = false;
                 }
 
                 event.channel.onmessage = function (event) {
@@ -217,7 +234,7 @@
                                 }
                                 await self.childConnectionInfos[i].dataChannel.send(event.data);
                             }
-                            addMessageToTable(message.from, message.body);
+                            addMessageToTable(message.from, message.body, null, self.messages);
                         }
                     })();
                 }
@@ -285,13 +302,15 @@
                             }));
                         })();
                     };
-                    (async function () {
-                        await info.dataChannel.send(Message.toJson({
-                            messageType: Message.JOINED_MESSAGE,
-                            from: self.userName,
-                            body: 'joined.'
-                        }));
-                    })();
+                    if (self.messages.length === 0) {
+                        (async function () {
+                            await info.dataChannel.send(Message.toJson({
+                                messageType: Message.JOINED_MESSAGE,
+                                from: self.userName,
+                                body: 'joined.'
+                            }));
+                        })();
+                    }
                 }
 
                 event.channel.onmessage = function (event) {
@@ -300,12 +319,14 @@
                     if (message.isCreateSpareOffer()) {
                         (async function () {
                             console.log('create spare offer logic start');
+                            self.parentConnectionInfos = self.parentConnectionInfos.filter((i) => !i.isClosed && !i.isSpare);
                             const connectionInfo = new ConnectionInfo();
                             connectionInfo.isSpare = true;
                             const connectionNumber = node.parentConnectionInfos.push(connectionInfo);
                             node.buildConnectionAsChild(connectionNumber - 1);
                             console.log('create spare offer logic end');
                         })();
+                        return;
                     } else if (message.isSpareOffer()) {
                         console.log('get spare offer');
                         const tokenObj = JSON.parse(message.body);
@@ -316,6 +337,7 @@
                                 await self.parentConnectionInfos[0].dataChannel.send(JSON.stringify(message));
                             })();
                         }
+                        return;
                     } else if (message.isSpareAnswer() && message.to === self.userName) {
                         console.log('get spare answer', message);
                         const spareInfo = self.parentConnectionInfos.find((i) => i.isSpare);
@@ -323,7 +345,14 @@
                             spareInfo.answerToken = message.body;
                         }
                         return;
+                    } else if (message.isPastMessages()) {
+                        for (let i = 0; i < message.body.length; i++) {
+                            const m = message.body[i];
+                            addMessageToTable(m[0], m[1], m[2], self.messages);
+                        }
+                        return;
                     }
+
                     (async function () {
                         for (let i = 0; i < self.childConnectionInfos.length; i++) {
                             if (self.childConnectionInfos[i].isClosed || self.childConnectionInfos[i].isSpare) {
@@ -332,7 +361,9 @@
                             await self.childConnectionInfos[i].dataChannel.send(event.data);
                         }
                     })();
-                    addMessageToTable(message.from, message.body);
+                    if (!message.isSpareAnswer()) {
+                        addMessageToTable(message.from, message.body, null, self.messages);
+                    }
                 }
                 event.channel.onclose = function (event) {
                     console.log('connection to parent close', index, event);
@@ -345,14 +376,19 @@
                     ) {
                         self.parentConnectionInfos[0].isSpare = false;
                         console.log('reconnect start');
-                        loadAnswerToken();
+                        (async function () {
+                            await loadAnswerToken();
+                            for (let i = 0; i < self.childConnectionInfos.length; i++) {
+                                await self.childConnectionInfos[i].dataChannel.send(Message.toJson({
+                                    from: self.userName,
+                                    messageType: Message.CREATE_SPARE_OFFER_MESSAGE,
+                                    body: '',
+                                    args: [self.parentConnectionInfos[0].connectedUserName],
+                                }));
+                            }
+                        })();
                         console.log('reconnect end');
                     }
-                    // if (index === 0 && spareAnswerToken) {
-                    //     answerTokenInput.value = spareAnswerToken;
-                    //     spareAnswerToken = '';
-                    //     loadAnswerToken();
-                    // }
                 }
                 event.channel.onerror = function (event) {
                     console.log('connection to parent error', event);
@@ -391,6 +427,7 @@
         static SPARE_OFFER_MESSAGE = 'spare_offer';
         static CREATE_SPARE_ANSWER_MESSAGE = 'create_spare_answer';
         static SPARE_ANSWER_MESSAGE = 'spare_answer';
+        static PAST_MESSAGES = 'past_messages';
         messageType;
         body;
         from;
@@ -438,6 +475,10 @@
         isSpareAnswer() {
             return this.messageType === Message.SPARE_ANSWER_MESSAGE;
         }
+
+        isPastMessages() {
+            return this.messageType === Message.PAST_MESSAGES;
+        }
     }
 
     const offerTokenButton = document.querySelector('#offer-token-button');
@@ -456,27 +497,25 @@
     }
 
     function setAnswerToken() {
-        const connectionNumber = node.childConnectionInfos.push(new ConnectionInfo());
-        node.buildConnectionAsParent(connectionNumber - 1);
+        if (offerTokenInput.value) {
+            const connectionNumber = node.childConnectionInfos.push(new ConnectionInfo());
+            node.buildConnectionAsParent(connectionNumber - 1);
+        }
     }
 
-    function loadAnswerToken() {
-        (async function () {
-            await (async () => {
-                const info = node.parentConnectionInfos[0];
-                info.answerToken = info.answerToken || answerTokenInput.value;
-                console.log('load answer token', info.answerToken);
-                const answerTokenWithICE = JSON.parse(info.answerToken);
-                info.connectedUserName = answerTokenWithICE.userName;
-                await info.connection.setRemoteDescription(answerTokenWithICE);
-                for (let i = 0; i < answerTokenWithICE.ice.length; i++) {
-                    if (answerTokenWithICE.ice[i]) {
-                        console.log('hoge');
-                        await info.connection.addIceCandidate(new RTCIceCandidate(answerTokenWithICE.ice[i]));
-                    }
-                }
-            })();
-        })();
+    async function loadAnswerToken() {
+        const info = node.parentConnectionInfos[0];
+        info.answerToken = info.answerToken || answerTokenInput.value;
+        console.log('load answer token', info.answerToken);
+        const answerTokenWithICE = JSON.parse(info.answerToken);
+        info.connectedUserName = answerTokenWithICE.userName;
+        await info.connection.setRemoteDescription(answerTokenWithICE);
+        for (let i = 0; i < answerTokenWithICE.ice.length; i++) {
+            if (answerTokenWithICE.ice[i]) {
+                console.log('hoge');
+                await info.connection.addIceCandidate(new RTCIceCandidate(answerTokenWithICE.ice[i]));
+            }
+        }
     }
 
     function enableOfferTokenInput(isEnable) {
@@ -506,7 +545,9 @@
     function enableAnswerTokenInput(isEnable) {
         if (isEnable) {
             answerTokenButton.value = '読み込む';
-            answerTokenButton.onclick = loadAnswerToken;
+            answerTokenButton.onclick = (async function () {
+                await loadAnswerToken();
+            });
             answerTokenInput.disabled = '';
             answerTokenButton.disabled = '';
             answerTokenInput.placeholder = '参加許可トークンを貼り付ける';
@@ -522,10 +563,11 @@
         }
     }
 
-    function addMessageToTable(from, message) {
+    function addMessageToTable(from, message, dateString, messages) {
         const tr = document.createElement('tr');
         const td1 = document.createElement('td');
-        td1.innerText = new Date().toLocaleString();
+        dateString = dateString || new Date().toLocaleString();
+        td1.innerText = dateString;
         tr.appendChild(td1);
         const td2 = document.createElement('td');
         td2.innerText = from;
@@ -534,6 +576,7 @@
         td3.innerText = message;
         tr.appendChild(td3);
         chatMessagesTbody.appendChild(tr);
+        messages.push([from, message, dateString]);
     }
 
     Array.from(document.querySelectorAll('[name=join-type]')).forEach((element) => {
