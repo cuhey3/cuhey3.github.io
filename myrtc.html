@@ -16,10 +16,10 @@
 <body>
 <h2>WebRTCチャット</h2>
 <label>
-    <input type="radio" name="join-type" value="child"/>新規参加
+    <input type="radio" name="join-type" value="parent"/>既存ユーザー
 </label>
 <label>
-    <input type="radio" name="join-type" value="parent"/>既存ユーザー
+    <input type="radio" name="join-type" value="child"/>新規参加
 </label>
 <div>
     <label>
@@ -66,14 +66,19 @@
     class Node {
         userName;
         parent;
-        parentConnectionInfo;
+        parentConnectionInfos;
         children;
         childConnectionInfos;
         level;
 
         constructor() {
             this.userName = Math.ceil(Math.random() * 1000);
+            this.parentConnectionInfos = [];
             this.childConnectionInfos = [];
+        }
+
+        getParentUserName() {
+            return this.parentConnectionInfos[0] && this.parentConnectionInfos[0].connectedUserName;
         }
 
         buildConnectionAsParent(index) {
@@ -86,27 +91,35 @@
                     answerTokenWithICE.ice.push(event.candidate);
                     info.answerToken = JSON.stringify(answerTokenWithICE);
                     answerTokenInput.value = info.answerToken;
+                } else if (info.isSpare) {
+                    (async function () {
+                        for (let i = 0; i < self.childConnectionInfos.length; i++) {
+                            if (self.childConnectionInfos[i].isClosed || self.childConnectionInfos[i].isSpare) {
+                                continue;
+                            }
+                            await self.childConnectionInfos[i].dataChannel.send(Message.toJson({
+                                messageType: Message.SPARE_ANSWER_MESSAGE,
+                                body: info.answerToken,
+                                to: info.connectedUserName,
+                            }));
+                        }
+                    })();
                 }
-                // else if (self.isAutoAnswer) {
-                //     (async function () {
-                //         await guestSendChannels[0].send(Message.toJson({
-                //             messageType: Message.SPARE_ANSWER_MESSAGE,
-                //             body: self.answerToken
-                //         }));
-                //     })();
-                // }
             }
 
             info.dataChannel = info.connection.createDataChannel('sendDataChannel');
             info.connection.ondatachannel = function (event) {
                 event.channel.onopen = function () {
-                    console.log('parent send onopen');
+                    info.isSpare = false;
+                    console.log(`with ${info.connectedUserName} as parent onopen`);
+                    // parent の場合は、より親に送るか、子供全員に送るかで、
+                    // その処理を接続確立のたびにセットするのはおかしい
                     messageSendButton.onclick = function () {
-                        if (self.parentConnectionInfo && !self.parentConnectionInfo.isClosed) {
+                        if (self.parentConnectionInfos[0] && !self.parentConnectionInfos[0].isClosed && !self.childConnectionInfos[0].isSpare) {
                             console.log('send message to parent', messageInput.value);
                             (async function () {
-                                await self.parentConnectionInfo.dataChannel.send(Message.toJson({
-                                    userName: self.userName,
+                                await self.parentConnectionInfos[0].dataChannel.send(Message.toJson({
+                                    from: self.userName,
                                     body: messageInput.value
                                 }));
                             })();
@@ -114,12 +127,12 @@
                             console.log('send message to children', messageInput.value);
                             (async function () {
                                 for (let i = 0; i < self.childConnectionInfos.length; i++) {
-                                    if (self.childConnectionInfos[i].isClosed) {
+                                    if (self.childConnectionInfos[i].isClosed || self.childConnectionInfos[i].isSpare) {
                                         continue;
                                     }
                                     await self.childConnectionInfos[i].dataChannel.send(Message.toJson({
-                                        userName: self.userName,
-                                        body: messageInput.value
+                                        from: self.userName,
+                                        body: messageInput.value,
                                     }));
                                 }
                                 addMessageToTable(self.userName, messageInput.value);
@@ -134,6 +147,17 @@
                     //     }));
                     //     addMessageToTable('host', Message.JOINED_MESSAGE);
                     // })();
+                    if (self.parentConnectionInfos[0]) {
+                        (async function () {
+                            await info.dataChannel.send(Message.toJson({
+                                from: self.userName,
+                                messageType: Message.CREATE_SPARE_OFFER_MESSAGE,
+                                body: '',
+                                args: [self.parentConnectionInfos[0].connectedUserName],
+                            }));
+                        })();
+                    }
+
                 }
 
                 event.channel.onmessage = function (event) {
@@ -149,16 +173,30 @@
                     //         }));
                     //         addMessageToTable('host', Message.CREATE_SPARE_OFFER_MESSAGE);
                     //     })();
-                    // } else if (message.isSpareOffer()) {
-                    //     (async function(){
-                    //         await hostSendChannels[0].send(Message.toJson({
-                    //             userName: 'host',
-                    //             messageType: Message.CREATE_SPARE_ANSWER_MESSAGE,
-                    //             body: message.body
-                    //         }));
-                    //     })();
-                    //     return;
-                    // } else if (message.isSpareAnswer()) {
+                    // } else
+                    if (message.isSpareOffer()) {
+                        (async function () {
+                            await self.parentConnectionInfos[0].dataChannel.send(Message.toJson({
+                                userName: self.userName,
+                                messageType: Message.CREATE_SPARE_ANSWER_MESSAGE,
+                                body: message.body,
+                                to: self.parentConnectionInfos[0].connectedUserName,
+                            }));
+                        })();
+                        return;
+                    } else if (message.isCreateSpareAnswer() && message.to === self.userName) {
+                        console.log('get spare offer', message.body);
+                        console.log('create spare answer logic start');
+                        offerTokenInput.value = message.body;
+                        const connectionInfo = new ConnectionInfo();
+                        connectionInfo.isSpare = true;
+                        connectionInfo.connectedUserName = JSON.parse(message.body).userName;
+                        const connectionNumber = node.childConnectionInfos.push(connectionInfo);
+                        node.buildConnectionAsParent(connectionNumber - 1);
+                        console.log('create spare answer logic end');
+                        return;
+                    }
+                    // else if (message.isSpareAnswer()) {
                     //     (async function(){
                     //         //
                     //         await hostSendChannels[hostSendChannels.length - 1].send(Message.toJson({
@@ -170,22 +208,16 @@
                     //     return;
                     // }
                     (async function () {
-                        if (self.parentConnectionInfo && !self.parentConnectionInfo.isClosed) {
-                            await self.parentConnectionInfo.dataChannel.send(Message.toJson({
-                                userName: message.userName,
-                                body: message.body,
-                            }));
+                        if (self.parentConnectionInfos[0] && !self.parentConnectionInfos[0].isClosed && !self.childConnectionInfos[0].isSpare) {
+                            await self.parentConnectionInfos[0].dataChannel.send(event.data);
                         } else {
                             for (let i = 0; i < self.childConnectionInfos.length; i++) {
-                                if (self.childConnectionInfos[i].isClosed) {
+                                if (self.childConnectionInfos[i].isClosed || self.childConnectionInfos[i].isSpare) {
                                     continue;
                                 }
-                                await self.childConnectionInfos[i].dataChannel.send(Message.toJson({
-                                    userName: message.userName,
-                                    body: message.body,
-                                }));
+                                await self.childConnectionInfos[i].dataChannel.send(event.data);
                             }
-                            addMessageToTable(message.userName, message.body);
+                            addMessageToTable(message.from, message.body);
                         }
                     })();
                 }
@@ -199,8 +231,10 @@
             (async function () {
                 await (async () => {
                     const offerTokenWithICE = JSON.parse(offerTokenInput.value);
+                    info.connectedUserName = offerTokenWithICE.userName;
                     await info.connection.setRemoteDescription(JSON.parse(offerTokenInput.value));
                     const answer = await info.connection.createAnswer();
+                    answer.userName = self.userName;
                     answer.ice = [];
                     info.answerToken = JSON.stringify(answer);
                     console.log(`answerToken created. ${info.answerToken}`);
@@ -215,9 +249,9 @@
             })();
         }
 
-        buildConnectionAsChild() {
+        buildConnectionAsChild(index) {
             const self = this;
-            const info = this.parentConnectionInfo;
+            const info = this.parentConnectionInfos[index];
             info.connection.onicecandidate = function (event) {
                 console.log('child ice', event);
                 const offerTokenWithICE = JSON.parse(info.offerToken);
@@ -225,36 +259,36 @@
                     offerTokenWithICE.ice.push(event.candidate);
                     info.offerToken = JSON.stringify(offerTokenWithICE);
                     offerTokenInput.value = info.offerToken;
+                } else if (info.isSpare) {
+                    (async function () {
+                        await self.parentConnectionInfos[0].dataChannel.send(Message.toJson({
+                            from: self.userName,
+                            messageType: Message.SPARE_OFFER_MESSAGE,
+                            body: info.offerToken,
+                        }));
+                    })();
                 }
-                // else if (index > 0) {
-                //     (async function () {
-                //         await guestSendChannels[0].send(Message.toJson({
-                //             messageType: Message.SPARE_OFFER_MESSAGE,
-                //             body: offerToken
-                //         }));
-                //     })();
-                // }
             }
 
             info.dataChannel = info.connection.createDataChannel('sendDataChannel');
             info.connection.ondatachannel = function (event) {
                 event.channel.onopen = function () {
-                    console.log('child send onopen', event);
+                    console.log(`with ${info.connectedUserName} as child onopen`, event);
                     messageSendButton.onclick = function () {
                         console.log('send message', messageInput.value);
                         (async function () {
-                            if (info.isClosed) {
+                            if (info.isClosed || info.isSpare) {
                                 return;
                             }
                             await info.dataChannel.send(Message.toJson({
-                                userName: self.userName, body: messageInput.value
+                                from: self.userName, body: messageInput.value
                             }));
                         })();
                     };
                     (async function () {
                         await info.dataChannel.send(Message.toJson({
                             messageType: Message.JOINED_MESSAGE,
-                            userName: self.userName,
+                            from: self.userName,
                             body: 'joined.'
                         }));
                     })();
@@ -263,41 +297,57 @@
                 event.channel.onmessage = function (event) {
                     console.log('from parent message', event);
                     const message = Message.fromJson(event.data);
-                    // if (message.isCreateSpareOffer()) {
-                    //     (async function () {
-                    //         console.log('create spare offer logic start');
-                    //         await addOfferedConnection(connections.length);
-                    //         console.log('create spare offer logic end');
-                    //     })();
-                    // }
-                    // else if (message.isSpareAnswer()) {
-                    //     console.log('get spare answer', message.body);
-                    //     spareAnswerToken = message.body;
-                    //     return;
-                    // }
-                    // else if (message.isCreateSpareAnswer()) {
-                    //     console.log('get spare offer', message.body);
-                    //     console.log('create spare answer logic start');
-                    //     offerTokenInput.value = message.body;
-                    //     setAnswerToken();
-                    //     console.log('create spare answer logic end');
-                    //     return;
-                    // }
+                    if (message.isCreateSpareOffer()) {
+                        (async function () {
+                            console.log('create spare offer logic start');
+                            const connectionInfo = new ConnectionInfo();
+                            connectionInfo.isSpare = true;
+                            const connectionNumber = node.parentConnectionInfos.push(connectionInfo);
+                            node.buildConnectionAsChild(connectionNumber - 1);
+                            console.log('create spare offer logic end');
+                        })();
+                    } else if (message.isSpareOffer()) {
+                        console.log('get spare offer');
+                        const tokenObj = JSON.parse(message.body);
+                        if (info.connectedUserName === tokenObj.userName) {
+                            message.to = self.parentConnectionInfos[0].connectedUserName;
+                            message.messageType = Message.CREATE_SPARE_ANSWER_MESSAGE;
+                            (async function () {
+                                await self.parentConnectionInfos[0].dataChannel.send(JSON.stringify(message));
+                            })();
+                        }
+                    } else if (message.isSpareAnswer() && message.to === self.userName) {
+                        console.log('get spare answer', message);
+                        const spareInfo = self.parentConnectionInfos.find((i) => i.isSpare);
+                        if (spareInfo) {
+                            spareInfo.answerToken = message.body;
+                        }
+                        return;
+                    }
                     (async function () {
                         for (let i = 0; i < self.childConnectionInfos.length; i++) {
-                            if (self.childConnectionInfos[i].isClosed) {
+                            if (self.childConnectionInfos[i].isClosed || self.childConnectionInfos[i].isSpare) {
                                 continue;
                             }
-                            await self.childConnectionInfos[i].dataChannel.send(Message.toJson({
-                                userName: message.userName,
-                                body: message.body,
-                            }));
+                            await self.childConnectionInfos[i].dataChannel.send(event.data);
                         }
                     })();
-                    addMessageToTable(message.userName, message.body);
+                    addMessageToTable(message.from, message.body);
                 }
                 event.channel.onclose = function (event) {
+                    console.log('connection to parent close', index, event);
                     info.isClosed = true;
+                    console.log(self.parentConnectionInfos);
+                    self.parentConnectionInfos = self.parentConnectionInfos.filter((i) => !i.isClosed);
+                    console.log(self.parentConnectionInfos);
+                    if (self.parentConnectionInfos[0]
+                        // && self.parentConnectionInfos[0].isSpare
+                    ) {
+                        self.parentConnectionInfos[0].isSpare = false;
+                        console.log('reconnect start');
+                        loadAnswerToken();
+                        console.log('reconnect end');
+                    }
                     // if (index === 0 && spareAnswerToken) {
                     //     answerTokenInput.value = spareAnswerToken;
                     //     spareAnswerToken = '';
@@ -311,6 +361,7 @@
             (async function () {
                 const offer = await info.connection.createOffer();
                 await info.connection.setLocalDescription(offer);
+                offer.userName = self.userName;
                 offer.ice = [];
                 info.offerToken = JSON.stringify(offer);
                 console.log(`offerToken created. ${info.offerToken}`);
@@ -320,12 +371,14 @@
     }
 
     class ConnectionInfo {
+        connectedUserName;
         connection;
         dataChannel;
         offerToken;
         answerToken;
         isAutoAnswer;
         isClosed;
+        isSpare;
 
         constructor() {
             this.connection = new RTCPeerConnection(CONFIG_FOR_SENDER);
@@ -338,21 +391,28 @@
         static SPARE_OFFER_MESSAGE = 'spare_offer';
         static CREATE_SPARE_ANSWER_MESSAGE = 'create_spare_answer';
         static SPARE_ANSWER_MESSAGE = 'spare_answer';
+        messageType;
+        body;
+        from;
+        to;
+        args;
 
-        constructor(body, userName, messageType) {
-            this.userName = userName;
+        constructor(body, from, to, messageType, args) {
+            this.from = from;
+            this.to = to;
             this.messageType = messageType;
             this.body = body;
+            this.args = args || [];
         }
 
         static fromJson(str) {
-            const {userName, messageType, body} = JSON.parse(str);
-            return new Message(body, userName, messageType);
+            const {from, to, messageType, body, args} = JSON.parse(str);
+            return new Message(body, from, to, messageType, args);
         }
 
         static toJson(messageObj) {
-            const {userName, messageType, body} = messageObj;
-            return JSON.stringify({body, userName, messageType});
+            const {from, to, messageType, body, args} = messageObj;
+            return JSON.stringify({body, from, to, messageType, args});
         }
 
         getBody() {
@@ -391,27 +451,27 @@
     const node = new Node();
 
     function setOfferToken() {
-        (async function () {
-            node.parentConnectionInfo = new ConnectionInfo();
-            node.buildConnectionAsChild();
-        })();
+        const connectionNumber = node.parentConnectionInfos.push(new ConnectionInfo());
+        node.buildConnectionAsChild(connectionNumber - 1);
     }
 
     function setAnswerToken() {
-        const connectionInfo = new ConnectionInfo();
-        const connectionNumber = node.childConnectionInfos.push(connectionInfo);
+        const connectionNumber = node.childConnectionInfos.push(new ConnectionInfo());
         node.buildConnectionAsParent(connectionNumber - 1);
     }
 
     function loadAnswerToken() {
         (async function () {
             await (async () => {
-                const info = node.parentConnectionInfo;
-                info.answerToken = answerTokenInput.value;
+                const info = node.parentConnectionInfos[0];
+                info.answerToken = info.answerToken || answerTokenInput.value;
+                console.log('load answer token', info.answerToken);
                 const answerTokenWithICE = JSON.parse(info.answerToken);
+                info.connectedUserName = answerTokenWithICE.userName;
                 await info.connection.setRemoteDescription(answerTokenWithICE);
                 for (let i = 0; i < answerTokenWithICE.ice.length; i++) {
                     if (answerTokenWithICE.ice[i]) {
+                        console.log('hoge');
                         await info.connection.addIceCandidate(new RTCIceCandidate(answerTokenWithICE.ice[i]));
                     }
                 }
@@ -462,13 +522,13 @@
         }
     }
 
-    function addMessageToTable(userName, message) {
+    function addMessageToTable(from, message) {
         const tr = document.createElement('tr');
         const td1 = document.createElement('td');
         td1.innerText = new Date().toLocaleString();
         tr.appendChild(td1);
         const td2 = document.createElement('td');
-        td2.innerText = userName;
+        td2.innerText = from;
         tr.appendChild(td2);
         const td3 = document.createElement('td');
         td3.innerText = message;
