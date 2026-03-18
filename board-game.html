@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            color: white;
+            background-color: black;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        svg {
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            border: 1px solid white;
+
+        }
+
+        th, td {
+            width: 70px;
+            height: 75px;
+        }
+
+        #shogi55-board td {
+            text-align: center;
+            font-size: 22px;
+        }
+
+        #connect4-board td {
+            text-align: center;
+            font-size: 40px;
+        }
+
+        #connect4-board th {
+            height: 21px;
+            font-size: 15px;
+            padding: 3px 0;
+        }
+
+        #error-message {
+            color: red;
+        }
+        input[type="text"] {
+            font-size: 20px;
+        }
+        input[type="button"] {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<table id="connect4-board">
+    <thead>
+    <tr>
+        <th>1</th>
+        <th>2</th>
+        <th>3</th>
+        <th>4</th>
+        <th>5</th>
+        <th>6</th>
+        <th>7</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="row-0">
+        <td class="col-0"></td>
+        <td class="col-1"></td>
+        <td class="col-2"></td>
+        <td class="col-3"></td>
+        <td class="col-4"></td>
+        <td class="col-5"></td>
+        <td class="col-6"></td>
+    </tr>
+    <tr class="row-1">
+        <td class="col-0"></td>
+        <td class="col-1"></td>
+        <td class="col-2"></td>
+        <td class="col-3"></td>
+        <td class="col-4"></td>
+        <td class="col-5"></td>
+        <td class="col-6"></td>
+    </tr>
+    <tr class="row-2">
+        <td class="col-0"></td>
+        <td class="col-1"></td>
+        <td class="col-2"></td>
+        <td class="col-3"></td>
+        <td class="col-4"></td>
+        <td class="col-5"></td>
+        <td class="col-6"></td>
+    </tr>
+    <tr class="row-3">
+        <td class="col-0"></td>
+        <td class="col-1"></td>
+        <td class="col-2"></td>
+        <td class="col-3"></td>
+        <td class="col-4"></td>
+        <td class="col-5"></td>
+        <td class="col-6"></td>
+    </tr>
+    <tr class="row-4">
+        <td class="col-0"></td>
+        <td class="col-1"></td>
+        <td class="col-2"></td>
+        <td class="col-3"></td>
+        <td class="col-4"></td>
+        <td class="col-5"></td>
+        <td class="col-6"></td>
+    </tr>
+    <tr class="row-5">
+        <td class="col-0"></td>
+        <td class="col-1"></td>
+        <td class="col-2"></td>
+        <td class="col-3"></td>
+        <td class="col-4"></td>
+        <td class="col-5"></td>
+        <td class="col-6"></td>
+    </tr>
+    </tbody>
+</table>
+<p id="connect4-stone" style="display: none;"></p>
+<table id="shogi55-board" style="display: none;">
+    <thead>
+    <tr>
+        <th></th>
+        <th></th>
+        <th>5</th>
+        <th>4</th>
+        <th>3</th>
+        <th>2</th>
+        <th>1</th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr id="r1">
+        <th id="sh2" class="in-hand"></th>
+        <th id="sh1" class="in-hand"></th>
+        <td id="place-51" class="place"></td>
+        <td id="place-41" class="place"></td>
+        <td id="place-31" class="place"></td>
+        <td id="place-21" class="place"></td>
+        <td id="place-11" class="place"></td>
+        <th>一</th>
+        <th id="fh9" class="in-hand"></th>
+        <th id="fh10" class="in-hand">
+    </tr>
+    <tr id="r2">
+        <th id="sh4" class="in-hand"></th>
+        <th id="sh3" class="in-hand"></th>
+        <td id="place-52" class="place"></td>
+        <td id="place-42" class="place"></td>
+        <td id="place-32" class="place"></td>
+        <td id="place-22" class="place"></td>
+        <td id="place-12" class="place"></td>
+        <th>二</th>
+        <th id="fh7" class="in-hand"></th>
+        <th id="fh8" class="in-hand">
+    </tr>
+    <tr id="r3">
+        <th id="sh6" class="in-hand"></th>
+        <th id="sh5" class="in-hand"></th>
+        <td id="place-53" class="place"></td>
+        <td id="place-43" class="place"></td>
+        <td id="place-33" class="place"></td>
+        <td id="place-23" class="place"></td>
+        <td id="place-13" class="place"></td>
+        <th>三</th>
+        <th id="fh5" class="in-hand"></th>
+        <th id="fh6" class="in-hand">
+    </tr>
+    <tr id="r4">
+        <th id="sh8" class="in-hand"></th>
+        <th id="sh7" class="in-hand"></th>
+        <td id="place-54" class="place"></td>
+        <td id="place-44" class="place"></td>
+        <td id="place-34" class="place"></td>
+        <td id="place-24" class="place"></td>
+        <td id="place-14" class="place"></td>
+        <th>四</th>
+        <th id="fh3" class="in-hand"></th>
+        <th id="fh4" class="in-hand">
+    </tr>
+    <tr id="r5">
+        <th id="sh10" class="in-hand"></th>
+        <th id="sh9" class="in-hand"></th>
+        <td id="place-55" class="place"></td>
+        <td id="place-45" class="place"></td>
+        <td id="place-35" class="place"></td>
+        <td id="place-25" class="place"></td>
+        <td id="place-15" class="place"></td>
+        <th>五</th>
+        <th id="fh1" class="in-hand"></th>
+        <th id="fh2" class="in-hand">
+    </tr>
+    </tbody>
+</table>
+<p id="evaluate-value"></p>
+<p id="game-result"></p>
+<p id="question-message"></p>
+<label>
+    <input type="text" id="answer-input"/>
+    <input type="button" value="送信" id="send-answer">
+</label>
+<p id="error-message"></p>
+<script type="module">
+    import init, {BoardGameApp} from "./board-game/board_game_app.js?t=202603181900";
+
+    await init();
+
+    const sendAnswerButton = document.querySelector("#send-answer");
+    const app = new BoardGameApp(new Date().getTime());
+    app.init_game();
+    app.get_question();
+    sendAnswerButton.onclick = function () {
+        const answer = document.querySelector("#answer-input").value;
+        setAnswerWrapper(answer);
+    }
+
+    function setAnswerWrapper(answer) {
+        try {
+            sendAnswerButton.setAttribute("disabled", "disabled");
+            app.set_answer(answer);
+            (async function () {
+                console.log('aaa', answer);
+                if (app.is_required_matching()) {
+                    console.log('bbb');
+                    await matching(app);
+                    console.log('ccc');
+                } else {
+                    console.log('ddd');
+                    app.get_question();
+                }
+                sendAnswerButton.removeAttribute("disabled");
+            })();
+        } catch (e) {
+            app.draw_error(e.toString());
+            sendAnswerButton.removeAttribute("disabled");
+        }
+    }
+
+    Array.from(document.querySelectorAll("#connect4-board tbody tr")).forEach((tr, currentRowIndex) => {
+        tr.querySelectorAll("td").forEach((td, colIndex) => {
+            td.onmouseenter = function () {
+                const nextStone = document.querySelector('#connect4-stone').innerHTML;
+                Array.from(document.querySelectorAll(`#connect4-board tbody .col-${colIndex}`)).find((td, rowIndex) => {
+                    let targetIndex = -1;
+                    if (td.innerHTML && !td.querySelector('.suggest') && rowIndex > 0) {
+                        targetIndex = rowIndex - 1;
+                    } else if (rowIndex === 5) {
+                        targetIndex = 5;
+                    }
+                    if (targetIndex !== -1) {
+                        const td = Array.from(document.querySelectorAll(`#connect4-board tbody .col-${colIndex}`))[targetIndex];
+                        if (td.innerHTML) {
+                            return false
+                        }
+                        const span = document.createElement('span');
+                        span.style.opacity = "0.5";
+                        span.innerHTML = nextStone;
+                        span.classList.add('suggest');
+                        td.appendChild(span);
+                        return true;
+                    }
+                });
+            }
+            td.onmouseleave = function () {
+                Array.from(document.querySelectorAll(`#connect4-board tbody .col-${colIndex}`)).find((td, rowIndex) => {
+                    const suggest = td.querySelector('.suggest');
+                    if (suggest) {
+                        td.removeChild(suggest);
+                        return true;
+                    }
+                });
+            }
+            td.onclick = function () {
+                console.log(colIndex + 1);
+                setAnswerWrapper(`${colIndex + 1}`);
+            }
+        });
+    });
+    Array.from(document.querySelectorAll(".place")).forEach((element) => {
+        const place_string = element.id.replace("place-", "");
+        element.onclick = function () {
+            console.log(place_string);
+            setAnswerWrapper(place_string);
+        }
+    });
+    Array.from(document.querySelectorAll(".in-hand")).forEach((element) => {
+        element.onclick = function () {
+            const piece_string = element.innerHTML;
+            console.log(piece_string);
+            setAnswerWrapper(piece_string);
+        }
+    });
+    const domain =
+        "https://matching-server-956911707039.asia-northeast1.run.app";
+
+    // (async function() {
+    //    await matching();
+    // })();
+    async function matching() {
+        console.log('matching start');
+        const json = JSON.stringify({
+            user_id_request_type: "Creating",
+            signaling_request_type: "OfferAccepting",
+            matcher_id: 20,
+            app_id: 10
+        });
+        const result = await fetch(`${domain}/start-matching`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: json
+        });
+        const data = JSON.parse(await result.text());
+        console.log(data);
+        const userId = data.user_id_response_type.Created;
+        console.log(userId);
+        const offer = data.signaling_response_type.Offering;
+        const opponent_id = data.response_type.Matched;
+        console.log('opponent_id', opponent_id);
+        console.log(offer);
+        if (offer) {
+            const answer = await createAnswerFromOffer(offer);
+            const request = {
+                sdp_type: {Answer: JSON.stringify(answer)},
+                user_id: userId,
+                app_id: 10,
+                matcher_id: 20,
+                opponent_id,
+                offer,
+            }
+            const result = await fetch(`${domain}/send-sdp`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(request)
+            });
+            JSON.parse(await result.text());
+        } else {
+            await createOfferForMatching(userId, data.response_type.Matched);
+        }
+    }
+
+    async function createOfferForMatching(userId, opponentUserId) {
+        const pc = new RTCPeerConnection({'iceServers': [{"urls": "stun:stun.l.google.com:19302"}]});
+        pc.onconnectionstatechange = function (event) {
+            console.log('onconnectionstatechange', event);
+        }
+        pc.onicegatheringstatechange = function (event) {
+            console.log('onicegatheringstatechange', event);
+        }
+        pc.onnegotiationneeded = function (event) {
+            console.log('onnegotiationneeded', event);
+        }
+
+        const dataChannel = pc.createDataChannel('matching');
+        dataChannel.onopen = function (event) {
+            app.set_data_channel(dataChannel, true);
+            console.log('dataChannel onopen');
+        }
+        dataChannel.onmessage = function (event) {
+            console.log('dataChannel onmessage');
+            console.log(event);
+            app.set_answer_json(event.data);
+        }
+        pc.onicecandidate = function (event) {
+            if (!event.candidate) {
+                const offer = JSON.stringify(pc.localDescription);
+                (async function () {
+                    const request = {
+                        sdp_type: {'Offer': offer},
+                        user_id: userId,
+                        app_id: 10,
+                        matcher_id: 20,
+                        opponent_id: opponentUserId,
+                        offer,
+                    }
+                    const result = await fetch(`${domain}/send-sdp`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(request)
+                    });
+                    const data = JSON.parse(await result.text());
+                    console.log(data)
+                    await pc.setRemoteDescription(JSON.parse(data.answer));
+                })();
+            }
+        }
+
+        pc.onnegotiationneeded = function (event) {
+            (async function () {
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+            })();
+        }
+    }
+
+    async function createAnswerFromOffer(offer) {
+        const pc = new RTCPeerConnection({'iceServers': [{"urls": "stun:stun.l.google.com:19302"}]});
+
+        pc.onconnectionstatechange = function (event) {
+            console.log('onconnectionstatechange', event);
+        }
+        pc.onicegatheringstatechange = function (event) {
+            console.log('onicegatheringstatechange', event);
+        }
+        pc.onnegotiationneeded = function (event) {
+            console.log('onnegotiationneeded', event);
+        }
+        pc.ondatachannel = function (event) {
+            const channel = event.channel;
+            channel.onopen = function (event) {
+                app.set_data_channel(channel, false);
+                console.log("onopen", event);
+            }
+            channel.onmessage = function (event) {
+                console.log("onmessage", event);
+                app.set_answer_json(event.data);
+            }
+        };
+        pc.onicecandidate = function (event) {
+            console.log(event);
+            if (!event.candidate) {
+                console.log('local', pc.localDescription);
+                console.log(JSON.stringify(pc.localDescription));
+                (async function () {
+                })();
+            } else {
+                console.log(event);
+            }
+
+        };
+        await pc.setRemoteDescription(JSON.parse(offer))
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        return answer;
+    }
+</script>
+</body>
+</html>
