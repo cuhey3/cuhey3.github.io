@@ -63,7 +63,7 @@
     </style>
 </head>
 <body>
-<table id="connect4-board">
+<table id="connect4-board" style="display: none;">
     <thead>
     <tr>
         <th>1</th>
@@ -133,7 +133,7 @@
     </tbody>
 </table>
 <p id="connect4-stone" style="display: none;"></p>
-<table id="shogi55-board" style="display: none;">
+<table id="shogi55-board">
     <thead>
     <tr>
         <th></th>
@@ -220,14 +220,18 @@
 </label>
 <p id="error-message"></p>
 <script type="module">
-    import init, {BoardGameApp} from "./board-game/board_game_app.js?t=202603181900";
+    import init, {BoardGameApp} from "./board-game/board_game_app.js?t=202603262300";
 
     await init();
 
     const sendAnswerButton = document.querySelector("#send-answer");
     const app = new BoardGameApp(new Date().getTime());
     app.init_game();
-    app.get_question();
+
+    (async function() {
+        await app.get_question();
+    })();
+
     sendAnswerButton.onclick = function () {
         const answer = document.querySelector("#answer-input").value;
         setAnswerWrapper(answer);
@@ -236,17 +240,9 @@
     function setAnswerWrapper(answer) {
         try {
             sendAnswerButton.setAttribute("disabled", "disabled");
-            app.set_answer(answer);
             (async function () {
-                console.log('aaa', answer);
-                if (app.is_required_matching()) {
-                    console.log('bbb');
-                    await matching(app);
-                    console.log('ccc');
-                } else {
-                    console.log('ddd');
-                    app.get_question();
-                }
+                await app.set_answer(answer);
+                await app.get_question();
                 sendAnswerButton.removeAttribute("disabled");
             })();
         } catch (e) {
@@ -295,6 +291,7 @@
             }
         });
     });
+
     Array.from(document.querySelectorAll(".place")).forEach((element) => {
         const place_string = element.id.replace("place-", "");
         element.onclick = function () {
@@ -302,6 +299,7 @@
             setAnswerWrapper(place_string);
         }
     });
+
     Array.from(document.querySelectorAll(".in-hand")).forEach((element) => {
         element.onclick = function () {
             const piece_string = element.innerHTML;
@@ -309,154 +307,6 @@
             setAnswerWrapper(piece_string);
         }
     });
-    const domain =
-        "https://matching-server-956911707039.asia-northeast1.run.app";
-
-    // (async function() {
-    //    await matching();
-    // })();
-    async function matching() {
-        console.log('matching start');
-        const json = JSON.stringify({
-            user_id_request_type: "Creating",
-            signaling_request_type: "OfferAccepting",
-            matcher_id: 20,
-            app_id: 10
-        });
-        const result = await fetch(`${domain}/start-matching`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: json
-        });
-        const data = JSON.parse(await result.text());
-        console.log(data);
-        const userId = data.user_id_response_type.Created;
-        console.log(userId);
-        const offer = data.signaling_response_type.Offering;
-        const opponent_id = data.response_type.Matched;
-        console.log('opponent_id', opponent_id);
-        console.log(offer);
-        if (offer) {
-            const answer = await createAnswerFromOffer(offer);
-            const request = {
-                sdp_type: {Answer: JSON.stringify(answer)},
-                user_id: userId,
-                app_id: 10,
-                matcher_id: 20,
-                opponent_id,
-                offer,
-            }
-            const result = await fetch(`${domain}/send-sdp`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(request)
-            });
-            JSON.parse(await result.text());
-        } else {
-            await createOfferForMatching(userId, data.response_type.Matched);
-        }
-    }
-
-    async function createOfferForMatching(userId, opponentUserId) {
-        const pc = new RTCPeerConnection({'iceServers': [{"urls": "stun:stun.l.google.com:19302"}]});
-        pc.onconnectionstatechange = function (event) {
-            console.log('onconnectionstatechange', event);
-        }
-        pc.onicegatheringstatechange = function (event) {
-            console.log('onicegatheringstatechange', event);
-        }
-        pc.onnegotiationneeded = function (event) {
-            console.log('onnegotiationneeded', event);
-        }
-
-        const dataChannel = pc.createDataChannel('matching');
-        dataChannel.onopen = function (event) {
-            app.set_data_channel(dataChannel, true);
-            console.log('dataChannel onopen');
-        }
-        dataChannel.onmessage = function (event) {
-            console.log('dataChannel onmessage');
-            console.log(event);
-            app.set_answer_json(event.data);
-        }
-        pc.onicecandidate = function (event) {
-            if (!event.candidate) {
-                const offer = JSON.stringify(pc.localDescription);
-                (async function () {
-                    const request = {
-                        sdp_type: {'Offer': offer},
-                        user_id: userId,
-                        app_id: 10,
-                        matcher_id: 20,
-                        opponent_id: opponentUserId,
-                        offer,
-                    }
-                    const result = await fetch(`${domain}/send-sdp`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(request)
-                    });
-                    const data = JSON.parse(await result.text());
-                    console.log(data)
-                    await pc.setRemoteDescription(JSON.parse(data.answer));
-                })();
-            }
-        }
-
-        pc.onnegotiationneeded = function (event) {
-            (async function () {
-                const offer = await pc.createOffer();
-                await pc.setLocalDescription(offer);
-            })();
-        }
-    }
-
-    async function createAnswerFromOffer(offer) {
-        const pc = new RTCPeerConnection({'iceServers': [{"urls": "stun:stun.l.google.com:19302"}]});
-
-        pc.onconnectionstatechange = function (event) {
-            console.log('onconnectionstatechange', event);
-        }
-        pc.onicegatheringstatechange = function (event) {
-            console.log('onicegatheringstatechange', event);
-        }
-        pc.onnegotiationneeded = function (event) {
-            console.log('onnegotiationneeded', event);
-        }
-        pc.ondatachannel = function (event) {
-            const channel = event.channel;
-            channel.onopen = function (event) {
-                app.set_data_channel(channel, false);
-                console.log("onopen", event);
-            }
-            channel.onmessage = function (event) {
-                console.log("onmessage", event);
-                app.set_answer_json(event.data);
-            }
-        };
-        pc.onicecandidate = function (event) {
-            console.log(event);
-            if (!event.candidate) {
-                console.log('local', pc.localDescription);
-                console.log(JSON.stringify(pc.localDescription));
-                (async function () {
-                })();
-            } else {
-                console.log(event);
-            }
-
-        };
-        await pc.setRemoteDescription(JSON.parse(offer))
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
-        return answer;
-    }
 </script>
 </body>
 </html>
